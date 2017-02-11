@@ -1,12 +1,13 @@
 module Main exposing (..)
 
 import Html exposing (..)
+import Html.Attributes exposing (..)
 import Http exposing (..)
-import Json.Decode as Decode
-import Markdown
 import Material
 import Material.Scheme
+import Material.Color as Color
 import Material.Layout as Layout
+import Entry exposing (..)
 
 
 main =
@@ -19,23 +20,19 @@ main =
 
 
 type alias Model =
-    { entries : List String
+    { entries : List Entry
     , mdl : Material.Model
     }
 
 
 type Msg
-    = PostList (Result Http.Error (List String))
+    = PostList (Result Http.Error (List Entry))
     | Mdl (Material.Msg Msg)
 
 
 init : ( Model, Cmd Msg )
 init =
-    let
-        _ =
-            Debug.log "init" ()
-    in
-        ( Model [ "Loading..." ] Material.model, getPostList )
+    ( Model [ Entry "title" "Loading..." ] Material.model, getPostList )
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -61,24 +58,21 @@ update msg model =
 
 view : Model -> Html Msg
 view model =
-    Material.Scheme.top <|
+    Material.Scheme.topWithScheme Color.Grey Color.Red <|
         Layout.render Mdl
             model.mdl
             [ Layout.fixedHeader ]
-            { header = [ h1 [] [ text "Bitterjug.com" ] ]
+            { header = [ h1 [] [ text "Bitterjug" ] ]
             , drawer = []
             , tabs = ( [], [] )
-            , main = [ viewEntries model ]
+            , main =
+                [ div [ class "mdl-grid", style [ ( "background-color", "#f5f5f5" ) ] ]
+                    [ div [ class "mdl-cell mdl-cell--1-col mdl-cell--hide-phone mdl-cell--hide-tablet" ] []
+                    , div [ class "mdl-cell mdl-cell--10-col" ] [ viewEntries model.entries ]
+                    , div [ class "mdl-cell mdl-cell--1-col mdl-cell--hide-phone mdl-cell--hide-tablet" ] []
+                    ]
+                ]
             }
-
-
-viewEntries : Model -> Html Msg
-viewEntries model =
-    let
-        viewPost content =
-            li [] [ Markdown.toHtml [] content ]
-    in
-        ul [] (List.map viewPost model.entries)
 
 
 getPostList : Cmd Msg
@@ -87,13 +81,4 @@ getPostList =
         url =
             "http://bitterjug.com/wp-json/wp/v2/posts/"
     in
-        Http.send PostList (Http.get url decodeContents)
-
-
-decodeContents : Decode.Decoder (List String)
-decodeContents =
-    let
-        decodePost =
-            Decode.at [ "content", "rendered" ] Decode.string
-    in
-        Decode.list decodePost
+        Http.send PostList (Http.get url decodeEntries)

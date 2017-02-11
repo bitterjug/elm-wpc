@@ -4,6 +4,9 @@ import Html exposing (..)
 import Http exposing (..)
 import Json.Decode as Decode
 import Markdown
+import Material
+import Material.Scheme
+import Material.Layout as Layout
 
 
 main =
@@ -16,11 +19,14 @@ main =
 
 
 type alias Model =
-    List String
+    { entries : List String
+    , mdl : Material.Model
+    }
 
 
 type Msg
     = PostList (Result Http.Error (List String))
+    | Mdl (Material.Msg Msg)
 
 
 init : ( Model, Cmd Msg )
@@ -29,7 +35,7 @@ init =
         _ =
             Debug.log "init" ()
     in
-        ( [ "Loading..." ], getPostList )
+        ( Model [ "Loading..." ] Material.model, getPostList )
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -40,7 +46,7 @@ update msg model =
                 _ =
                     Debug.log "OK:" contents
             in
-                contents ! []
+                Model contents model.mdl ! []
 
         PostList (Err _) ->
             let
@@ -49,14 +55,30 @@ update msg model =
             in
                 model ! []
 
+        Mdl msg_ ->
+            Material.update Mdl msg_ model
+
 
 view : Model -> Html Msg
 view model =
+    Material.Scheme.top <|
+        Layout.render Mdl
+            model.mdl
+            [ Layout.fixedHeader ]
+            { header = [ h1 [] [ text "Bitterjug.com" ] ]
+            , drawer = []
+            , tabs = ( [], [] )
+            , main = [ viewEntries model ]
+            }
+
+
+viewEntries : Model -> Html Msg
+viewEntries model =
     let
         viewPost content =
             li [] [ Markdown.toHtml [] content ]
     in
-        ul [] (List.map viewPost model)
+        ul [] (List.map viewPost model.entries)
 
 
 getPostList : Cmd Msg

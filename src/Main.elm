@@ -58,21 +58,20 @@ update msg model =
 
 view : Model -> Html Msg
 view model =
-    Material.Scheme.topWithScheme Color.Grey Color.Red <|
-        Layout.render Mdl
-            model.mdl
-            [ Layout.fixedHeader ]
-            { header = [ h1 [] [ text "Bitterjug" ] ]
-            , drawer = []
-            , tabs = ( [], [] )
-            , main =
-                [ div [ class "mdl-grid", style [ ( "background-color", "#f5f5f5" ) ] ]
-                    [ div [ class "mdl-cell mdl-cell--1-col mdl-cell--hide-phone mdl-cell--hide-tablet" ] []
-                    , div [ class "mdl-cell mdl-cell--10-col" ] [ viewEntries model.entries ]
-                    , div [ class "mdl-cell mdl-cell--1-col mdl-cell--hide-phone mdl-cell--hide-tablet" ] []
-                    ]
+    Layout.render Mdl
+        model.mdl
+        [ Layout.fixedHeader ]
+        { header = [ h1 [] [ text "Bitterjug" ] ]
+        , drawer = []
+        , tabs = ( [], [] )
+        , main =
+            [ div [ class "mdl-grid", style [ ( "background-color", "#f5f5f5" ) ] ]
+                [ div [ class "mdl-cell mdl-cell--1-col mdl-cell--hide-phone mdl-cell--hide-tablet" ] []
+                , div [ class "mdl-cell mdl-cell--10-col" ] [ viewEntries model.entries ]
+                , div [ class "mdl-cell mdl-cell--1-col mdl-cell--hide-phone mdl-cell--hide-tablet" ] []
                 ]
-            }
+            ]
+        }
 
 
 getPostList : Cmd Msg

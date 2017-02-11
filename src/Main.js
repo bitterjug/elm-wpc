@@ -15940,97 +15940,93 @@ var _user$project$Main$update = F2(
 		}
 	});
 var _user$project$Main$view = function (model) {
-	return A3(
-		_debois$elm_mdl$Material_Scheme$topWithScheme,
-		_debois$elm_mdl$Material_Color$Grey,
-		_debois$elm_mdl$Material_Color$Red,
-		A4(
-			_debois$elm_mdl$Material_Layout$render,
-			_user$project$Main$Mdl,
-			model.mdl,
-			{
+	return A4(
+		_debois$elm_mdl$Material_Layout$render,
+		_user$project$Main$Mdl,
+		model.mdl,
+		{
+			ctor: '::',
+			_0: _debois$elm_mdl$Material_Layout$fixedHeader,
+			_1: {ctor: '[]'}
+		},
+		{
+			header: {
 				ctor: '::',
-				_0: _debois$elm_mdl$Material_Layout$fixedHeader,
+				_0: A2(
+					_elm_lang$html$Html$h1,
+					{ctor: '[]'},
+					{
+						ctor: '::',
+						_0: _elm_lang$html$Html$text('Bitterjug'),
+						_1: {ctor: '[]'}
+					}),
 				_1: {ctor: '[]'}
 			},
-			{
-				header: {
-					ctor: '::',
-					_0: A2(
-						_elm_lang$html$Html$h1,
-						{ctor: '[]'},
-						{
+			drawer: {ctor: '[]'},
+			tabs: {
+				ctor: '_Tuple2',
+				_0: {ctor: '[]'},
+				_1: {ctor: '[]'}
+			},
+			main: {
+				ctor: '::',
+				_0: A2(
+					_elm_lang$html$Html$div,
+					{
+						ctor: '::',
+						_0: _elm_lang$html$Html_Attributes$class('mdl-grid'),
+						_1: {
 							ctor: '::',
-							_0: _elm_lang$html$Html$text('Bitterjug'),
+							_0: _elm_lang$html$Html_Attributes$style(
+								{
+									ctor: '::',
+									_0: {ctor: '_Tuple2', _0: 'background-color', _1: '#f5f5f5'},
+									_1: {ctor: '[]'}
+								}),
 							_1: {ctor: '[]'}
-						}),
-					_1: {ctor: '[]'}
-				},
-				drawer: {ctor: '[]'},
-				tabs: {
-					ctor: '_Tuple2',
-					_0: {ctor: '[]'},
-					_1: {ctor: '[]'}
-				},
-				main: {
-					ctor: '::',
-					_0: A2(
-						_elm_lang$html$Html$div,
-						{
-							ctor: '::',
-							_0: _elm_lang$html$Html_Attributes$class('mdl-grid'),
-							_1: {
+						}
+					},
+					{
+						ctor: '::',
+						_0: A2(
+							_elm_lang$html$Html$div,
+							{
 								ctor: '::',
-								_0: _elm_lang$html$Html_Attributes$style(
-									{
-										ctor: '::',
-										_0: {ctor: '_Tuple2', _0: 'background-color', _1: '#f5f5f5'},
-										_1: {ctor: '[]'}
-									}),
+								_0: _elm_lang$html$Html_Attributes$class('mdl-cell mdl-cell--1-col mdl-cell--hide-phone mdl-cell--hide-tablet'),
 								_1: {ctor: '[]'}
-							}
-						},
-						{
+							},
+							{ctor: '[]'}),
+						_1: {
 							ctor: '::',
 							_0: A2(
 								_elm_lang$html$Html$div,
 								{
 									ctor: '::',
-									_0: _elm_lang$html$Html_Attributes$class('mdl-cell mdl-cell--1-col mdl-cell--hide-phone mdl-cell--hide-tablet'),
+									_0: _elm_lang$html$Html_Attributes$class('mdl-cell mdl-cell--10-col'),
 									_1: {ctor: '[]'}
 								},
-								{ctor: '[]'}),
+								{
+									ctor: '::',
+									_0: _user$project$Entry$viewEntries(model.entries),
+									_1: {ctor: '[]'}
+								}),
 							_1: {
 								ctor: '::',
 								_0: A2(
 									_elm_lang$html$Html$div,
 									{
 										ctor: '::',
-										_0: _elm_lang$html$Html_Attributes$class('mdl-cell mdl-cell--10-col'),
+										_0: _elm_lang$html$Html_Attributes$class('mdl-cell mdl-cell--1-col mdl-cell--hide-phone mdl-cell--hide-tablet'),
 										_1: {ctor: '[]'}
 									},
-									{
-										ctor: '::',
-										_0: _user$project$Entry$viewEntries(model.entries),
-										_1: {ctor: '[]'}
-									}),
-								_1: {
-									ctor: '::',
-									_0: A2(
-										_elm_lang$html$Html$div,
-										{
-											ctor: '::',
-											_0: _elm_lang$html$Html_Attributes$class('mdl-cell mdl-cell--1-col mdl-cell--hide-phone mdl-cell--hide-tablet'),
-											_1: {ctor: '[]'}
-										},
-										{ctor: '[]'}),
-									_1: {ctor: '[]'}
-								}
+									{ctor: '[]'}),
+								_1: {ctor: '[]'}
 							}
-						}),
-					_1: {ctor: '[]'}
-				}
-			}));
+						}
+					}),
+				_1: {ctor: '[]'}
+			}
+		});
 };
 var _user$project$Main$PostList = function (a) {
 	return {ctor: 'PostList', _0: a};

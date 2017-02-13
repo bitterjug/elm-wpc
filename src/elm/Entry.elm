@@ -2,34 +2,45 @@ module Entry exposing (..)
 
 import Html exposing (..)
 import Html.Attributes exposing (..)
-import Json.Decode as Decode
+import Json.Decode as Decode exposing (Decoder)
 import Markdown
 
 
 type alias Entry =
     { title : String
     , content : String
+    , slug : String
     }
 
 
-decodeContent : Decode.Decoder String
+decodeContent : Decoder String
 decodeContent =
     Decode.at [ "content", "rendered" ] Decode.string
 
 
-decodeTitle : Decode.Decoder String
+decodeTitle : Decoder String
 decodeTitle =
     Decode.at [ "title", "rendered" ] Decode.string
 
 
-decodeEntry : Decode.Decoder Entry
+decodeSlug : Decoder String
+decodeSlug =
+    Decode.at [ "slug" ] Decode.string
+
+
+decodeEntry : Decoder Entry
 decodeEntry =
-    Decode.map2 Entry decodeTitle decodeContent
+    Decode.map3 Entry decodeTitle decodeContent decodeSlug
 
 
-decodeEntries : Decode.Decoder (List Entry)
+decodeEntries : Decoder (List Entry)
 decodeEntries =
     Decode.list decodeEntry
+
+
+loading : Entry
+loading =
+    Entry "..." "Loading..." ""
 
 
 viewEntry : Entry -> Html msg

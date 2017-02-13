@@ -4,6 +4,7 @@ import Html exposing (..)
 import Html.Attributes exposing (..)
 import Http exposing (..)
 import Material
+import Material.Icon as Icon
 import Material.Scheme
 import Material.Color as Color
 import Material.Layout as Layout
@@ -78,11 +79,20 @@ view model =
 
                 Single index ->
                     model.entries |> List.drop index |> List.take 1
+
+        header =
+            [ Layout.row []
+                [ Layout.navigation [] [ Layout.link [] [ Icon.i "arrow_back" ] ]
+                , Layout.title [] [ text "Bitterjug" ]
+                , Layout.spacer
+                , Layout.navigation [] [ Layout.link [] [ Icon.i "arrow_forward" ] ]
+                ]
+            ]
     in
         Layout.render Mdl
             model.mdl
             [ Layout.fixedHeader ]
-            { header = [ h1 [] [ text "Bitterjug" ] ]
+            { header = header
             , drawer = []
             , tabs = ( [], [] )
             , main =

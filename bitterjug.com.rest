@@ -1,3 +1,7 @@
 http://bitterjug.com
 GET /wp-json/wp/v2/posts?page=1
+
+
+http://bitterjug.com
+GET /wp-json/wp/v2/posts/1381
 # vim: ft=rest

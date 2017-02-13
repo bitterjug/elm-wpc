@@ -113,11 +113,12 @@ view model =
                         ]
                         [ Icon.i "arrow_back" ]
                     ]
+                , Layout.spacer
                 , Layout.title [] [ text "Bitterjug" ]
                 , Layout.spacer
                 , Layout.navigation []
                     [ Button.render Mdl
-                        [ 0 ]
+                        [ 1 ]
                         model.mdl
                         [ Button.icon
                         , Button.ripple
@@ -136,9 +137,9 @@ view model =
             , tabs = ( [], [] )
             , main =
                 [ div [ class "mdl-grid" ]
-                    [ div [ class "mdl-cell mdl-cell--1-col mdl-cell--hide-phone mdl-cell--hide-tablet" ] []
-                    , div [ class "mdl-cell mdl-cell--10-col" ] [ Entry.viewEntries entries ]
-                    , div [ class "mdl-cell mdl-cell--1-col mdl-cell--hide-phone mdl-cell--hide-tablet" ] []
+                    [ div [ class "mdl-cell mdl-cell--2-col mdl-cell--hide-phone mdl-cell--hide-tablet" ] []
+                    , div [ class "mdl-cell mdl-cell--8-col" ] [ Entry.viewEntries entries ]
+                    , div [ class "mdl-cell mdl-cell--2-col mdl-cell--hide-phone mdl-cell--hide-tablet" ] []
                     ]
                 ]
             }
@@ -148,6 +149,7 @@ getPostList : Cmd Msg
 getPostList =
     let
         url =
-            "http://bitterjug.com/wp-json/wp/v2/posts/"
+            -- "http://bitterjug.com/wp-json/wp/v2/posts/"
+            "posts.json"
     in
         Http.send PostList (Http.get url Entry.decodeEntries)

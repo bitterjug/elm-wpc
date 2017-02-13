@@ -1,0 +1,942 @@
+[
+    {
+        "_links": {
+            "about": [
+                {
+                    "href": "http://bitterjug.com/wp-json/wp/v2/types/post"
+                }
+            ],
+            "author": [
+                {
+                    "embeddable": true,
+                    "href": "http://bitterjug.com/wp-json/wp/v2/users/2"
+                }
+            ],
+            "collection": [
+                {
+                    "href": "http://bitterjug.com/wp-json/wp/v2/posts"
+                }
+            ],
+            "curies": [
+                {
+                    "href": "https://api.w.org/{rel}",
+                    "name": "wp",
+                    "templated": true
+                }
+            ],
+            "replies": [
+                {
+                    "embeddable": true,
+                    "href": "http://bitterjug.com/wp-json/wp/v2/comments?post=1384"
+                }
+            ],
+            "self": [
+                {
+                    "href": "http://bitterjug.com/wp-json/wp/v2/posts/1384"
+                }
+            ],
+            "version-history": [
+                {
+                    "href": "http://bitterjug.com/wp-json/wp/v2/posts/1384/revisions"
+                }
+            ],
+            "wp:attachment": [
+                {
+                    "href": "http://bitterjug.com/wp-json/wp/v2/media?parent=1384"
+                }
+            ],
+            "wp:term": [
+                {
+                    "embeddable": true,
+                    "href": "http://bitterjug.com/wp-json/wp/v2/categories?post=1384",
+                    "taxonomy": "category"
+                },
+                {
+                    "embeddable": true,
+                    "href": "http://bitterjug.com/wp-json/wp/v2/tags?post=1384",
+                    "taxonomy": "post_tag"
+                }
+            ]
+        },
+        "author": 2,
+        "categories": [
+            1
+        ],
+        "comment_status": "open",
+        "content": {
+            "protected": false,
+            "rendered": "<p>This is not the shortest Elm hello world program. But it is about as short as I can make an Html.program. Having written it, and read it, it felt somehow profound. Like a haiku.</p>\n<pre class=\"brush: plain; title: ; notranslate\" title=\"\">\r\nmodule Main exposing (..)\r\n\r\nimport Html exposing (..)\r\n\r\n\r\nmain =\r\n    Html.program\r\n        { init = () ! []\r\n        , update = (\\_ a -&gt; a ! [])\r\n        , view = (\\_ -&gt; h1 [] [ text &quot;Hello World&quot; ])\r\n        , subscriptions = (\\_ -&gt; Sub.none)\r\n        }\r\n\r\n</pre>\n"
+        },
+        "date": "2017-02-08T21:01:52",
+        "date_gmt": "2017-02-08T20:01:52",
+        "excerpt": {
+            "protected": false,
+            "rendered": "<p>This is not the shortest Elm hello world program. But it is about as short as I can make an Html.program. Having written it, and read it, it felt somehow profound. Like a haiku.</p>\n"
+        },
+        "featured_media": 0,
+        "format": "standard",
+        "guid": {
+            "rendered": "http://bitterjug.com/?p=1384"
+        },
+        "id": 1384,
+        "link": "http://bitterjug.com/blog/minimal-elm-program/",
+        "meta": [],
+        "modified": "2017-02-08T21:01:52",
+        "modified_gmt": "2017-02-08T20:01:52",
+        "ping_status": "open",
+        "slug": "minimal-elm-program",
+        "sticky": false,
+        "tags": [],
+        "template": "",
+        "title": {
+            "rendered": "Minimal elm program"
+        },
+        "type": "post"
+    },
+    {
+        "_links": {
+            "about": [
+                {
+                    "href": "http://bitterjug.com/wp-json/wp/v2/types/post"
+                }
+            ],
+            "author": [
+                {
+                    "embeddable": true,
+                    "href": "http://bitterjug.com/wp-json/wp/v2/users/2"
+                }
+            ],
+            "collection": [
+                {
+                    "href": "http://bitterjug.com/wp-json/wp/v2/posts"
+                }
+            ],
+            "curies": [
+                {
+                    "href": "https://api.w.org/{rel}",
+                    "name": "wp",
+                    "templated": true
+                }
+            ],
+            "replies": [
+                {
+                    "embeddable": true,
+                    "href": "http://bitterjug.com/wp-json/wp/v2/comments?post=1381"
+                }
+            ],
+            "self": [
+                {
+                    "href": "http://bitterjug.com/wp-json/wp/v2/posts/1381"
+                }
+            ],
+            "version-history": [
+                {
+                    "href": "http://bitterjug.com/wp-json/wp/v2/posts/1381/revisions"
+                }
+            ],
+            "wp:attachment": [
+                {
+                    "href": "http://bitterjug.com/wp-json/wp/v2/media?parent=1381"
+                }
+            ],
+            "wp:term": [
+                {
+                    "embeddable": true,
+                    "href": "http://bitterjug.com/wp-json/wp/v2/categories?post=1381",
+                    "taxonomy": "category"
+                },
+                {
+                    "embeddable": true,
+                    "href": "http://bitterjug.com/wp-json/wp/v2/tags?post=1381",
+                    "taxonomy": "post_tag"
+                }
+            ]
+        },
+        "author": 2,
+        "categories": [
+            1
+        ],
+        "comment_status": "open",
+        "content": {
+            "protected": false,
+            "rendered": "<p>Here are the Prezi &#8216;slides&#8217; from my talk tonight at the first Cambridge Elm meetup<br />\n<iframe id=\"iframe_container\" frameborder=\"0\" webkitallowfullscreen=\"\" mozallowfullscreen=\"\" allowfullscreen=\"\" width=\"500\" height=\"400\" src=\"https://prezi.com/embed/znqzyy6r7pbj/?bgcolor=ffffff&amp;lock_to_path=0&amp;autoplay=0&amp;autohide_ctrls=0&amp;landing_data=bHVZZmNaNDBIWnNjdEVENDRhZDFNZGNIUE43MHdLNWpsdFJLb2ZHanI5N1NweDRVN2dFazZzYTUzY0RqUnhUT1N3PT0&amp;landing_sign=XH3ysPvWi9ZTQ4brxmVeA8tHx61XsGeL0q-LPP_rIw0\"></iframe></p>\n"
+        },
+        "date": "2017-02-06T23:04:45",
+        "date_gmt": "2017-02-06T22:04:45",
+        "excerpt": {
+            "protected": false,
+            "rendered": "<p>Here are the Prezi &#8216;slides&#8217; from my talk tonight at the first Cambridge Elm meetup</p>\n"
+        },
+        "featured_media": 0,
+        "format": "standard",
+        "guid": {
+            "rendered": "http://bitterjug.com/?p=1381"
+        },
+        "id": 1381,
+        "link": "http://bitterjug.com/blog/an-overview-of-elm/",
+        "meta": [],
+        "modified": "2017-02-06T23:04:45",
+        "modified_gmt": "2017-02-06T22:04:45",
+        "ping_status": "open",
+        "slug": "an-overview-of-elm",
+        "sticky": false,
+        "tags": [],
+        "template": "",
+        "title": {
+            "rendered": "Elm Cambridge first meetup: an overview of Elm"
+        },
+        "type": "post"
+    },
+    {
+        "_links": {
+            "about": [
+                {
+                    "href": "http://bitterjug.com/wp-json/wp/v2/types/post"
+                }
+            ],
+            "author": [
+                {
+                    "embeddable": true,
+                    "href": "http://bitterjug.com/wp-json/wp/v2/users/2"
+                }
+            ],
+            "collection": [
+                {
+                    "href": "http://bitterjug.com/wp-json/wp/v2/posts"
+                }
+            ],
+            "curies": [
+                {
+                    "href": "https://api.w.org/{rel}",
+                    "name": "wp",
+                    "templated": true
+                }
+            ],
+            "replies": [
+                {
+                    "embeddable": true,
+                    "href": "http://bitterjug.com/wp-json/wp/v2/comments?post=1379"
+                }
+            ],
+            "self": [
+                {
+                    "href": "http://bitterjug.com/wp-json/wp/v2/posts/1379"
+                }
+            ],
+            "version-history": [
+                {
+                    "href": "http://bitterjug.com/wp-json/wp/v2/posts/1379/revisions"
+                }
+            ],
+            "wp:attachment": [
+                {
+                    "href": "http://bitterjug.com/wp-json/wp/v2/media?parent=1379"
+                }
+            ],
+            "wp:term": [
+                {
+                    "embeddable": true,
+                    "href": "http://bitterjug.com/wp-json/wp/v2/categories?post=1379",
+                    "taxonomy": "category"
+                },
+                {
+                    "embeddable": true,
+                    "href": "http://bitterjug.com/wp-json/wp/v2/tags?post=1379",
+                    "taxonomy": "post_tag"
+                }
+            ]
+        },
+        "author": 2,
+        "categories": [
+            1
+        ],
+        "comment_status": "open",
+        "content": {
+            "protected": false,
+            "rendered": "<p>I started <a href=\"https://github.com/bitterjug/vim-tagbar-ctags-elm\">this project</a> to make <a href=\"https://github.com/majutsushi/tagbar\">vim-tagbar</a> work with <a href=\"http://elm-lang.org/\">Elm</a>. I use tagbar to get an overview of my source files (especially python); I like\u00a0how it presents the scope of nested tags. I wanted that overview of my Elm modules too. <a href=\"https://github.com/kbsymanz/ctags-elm\">ctags-elm</a>\u00a0got me started but exuberant ctags doesn&#8217;t let you define scoped tags in config files. <a href=\"https://github.com/universal-ctags/ctags\">Universal Ctags</a> does. So now, after <a href=\"https://github.com/universal-ctags/ctags/pull/1260\">some discussion</a>, the Ctags part of vim-tagbar-ctags-elm\u00a0is a\u00a0Universal Ctags\u00a0<a href=\"http://docs.ctags.io/en/latest/optlib.html\">optlib</a>. Optlib lets you define a set of command line options in a file, and then generate c source from them so they ca be compiled into ctags executable.</p>\n<p>This was always in <a href=\"https://github.com/bitterjug/vim-tagbar-ctags-elm#relationship-to-other-projects\">the plan</a>. Next tagbar itself, maybe?</p>\n<p><img class=\"alignnone size-large\" src=\"https://github.com/bitterjug/vim-tagbar-ctags-elm/raw/master/img/elm-tagbar-ctags.png\" width=\"792\" height=\"582\" /></p>\n"
+        },
+        "date": "2017-02-06T23:00:04",
+        "date_gmt": "2017-02-06T22:00:04",
+        "excerpt": {
+            "protected": false,
+            "rendered": "<p>I started this project to make vim-tagbar work with Elm. I use tagbar to get an overview of my source files (especially python); I like\u00a0how it presents the scope of nested tags. I wanted that overview of my Elm modules too. ctags-elm\u00a0got me started but exuberant ctags doesn&#8217;t let you define scoped tags in config [&hellip;]</p>\n"
+        },
+        "featured_media": 0,
+        "format": "standard",
+        "guid": {
+            "rendered": "http://bitterjug.com/?p=1379"
+        },
+        "id": 1379,
+        "link": "http://bitterjug.com/blog/elm-support-compiled-into-universal-ctags/",
+        "meta": [],
+        "modified": "2017-02-06T23:00:04",
+        "modified_gmt": "2017-02-06T22:00:04",
+        "ping_status": "open",
+        "slug": "elm-support-compiled-into-universal-ctags",
+        "sticky": false,
+        "tags": [],
+        "template": "",
+        "title": {
+            "rendered": "Elm support compiled into Universal Ctags"
+        },
+        "type": "post"
+    },
+    {
+        "_links": {
+            "about": [
+                {
+                    "href": "http://bitterjug.com/wp-json/wp/v2/types/post"
+                }
+            ],
+            "author": [
+                {
+                    "embeddable": true,
+                    "href": "http://bitterjug.com/wp-json/wp/v2/users/2"
+                }
+            ],
+            "collection": [
+                {
+                    "href": "http://bitterjug.com/wp-json/wp/v2/posts"
+                }
+            ],
+            "curies": [
+                {
+                    "href": "https://api.w.org/{rel}",
+                    "name": "wp",
+                    "templated": true
+                }
+            ],
+            "replies": [
+                {
+                    "embeddable": true,
+                    "href": "http://bitterjug.com/wp-json/wp/v2/comments?post=1375"
+                }
+            ],
+            "self": [
+                {
+                    "href": "http://bitterjug.com/wp-json/wp/v2/posts/1375"
+                }
+            ],
+            "version-history": [
+                {
+                    "href": "http://bitterjug.com/wp-json/wp/v2/posts/1375/revisions"
+                }
+            ],
+            "wp:attachment": [
+                {
+                    "href": "http://bitterjug.com/wp-json/wp/v2/media?parent=1375"
+                }
+            ],
+            "wp:term": [
+                {
+                    "embeddable": true,
+                    "href": "http://bitterjug.com/wp-json/wp/v2/categories?post=1375",
+                    "taxonomy": "category"
+                },
+                {
+                    "embeddable": true,
+                    "href": "http://bitterjug.com/wp-json/wp/v2/tags?post=1375",
+                    "taxonomy": "post_tag"
+                }
+            ]
+        },
+        "author": 2,
+        "categories": [
+            17
+        ],
+        "comment_status": "open",
+        "content": {
+            "protected": false,
+            "rendered": "<p><img class=\"alignnone size-full wp-image-1376\" src=\"http://bitterjug.com/wp-content/uploads/2016/07/a-phone-romance.jpg\" alt=\"a-phone-romance\" width=\"500\" height=\"500\" srcset=\"http://bitterjug.com/wp-content/uploads/2016/07/a-phone-romance.jpg 500w, http://bitterjug.com/wp-content/uploads/2016/07/a-phone-romance-150x150.jpg 150w, http://bitterjug.com/wp-content/uploads/2016/07/a-phone-romance-300x300.jpg 300w\" sizes=\"(max-width: 500px) 100vw, 500px\" /></p>\n"
+        },
+        "date": "2016-07-27T22:12:23",
+        "date_gmt": "2016-07-27T21:12:23",
+        "excerpt": {
+            "protected": false,
+            "rendered": ""
+        },
+        "featured_media": 0,
+        "format": "standard",
+        "guid": {
+            "rendered": "http://bitterjug.com/?p=1375"
+        },
+        "id": 1375,
+        "link": "http://bitterjug.com/blog/a-phone-romance/",
+        "meta": [],
+        "modified": "2016-07-27T22:12:23",
+        "modified_gmt": "2016-07-27T21:12:23",
+        "ping_status": "open",
+        "slug": "a-phone-romance",
+        "sticky": false,
+        "tags": [],
+        "template": "",
+        "title": {
+            "rendered": "A &#8216;Phone Romance"
+        },
+        "type": "post"
+    },
+    {
+        "_links": {
+            "about": [
+                {
+                    "href": "http://bitterjug.com/wp-json/wp/v2/types/post"
+                }
+            ],
+            "author": [
+                {
+                    "embeddable": true,
+                    "href": "http://bitterjug.com/wp-json/wp/v2/users/2"
+                }
+            ],
+            "collection": [
+                {
+                    "href": "http://bitterjug.com/wp-json/wp/v2/posts"
+                }
+            ],
+            "curies": [
+                {
+                    "href": "https://api.w.org/{rel}",
+                    "name": "wp",
+                    "templated": true
+                }
+            ],
+            "replies": [
+                {
+                    "embeddable": true,
+                    "href": "http://bitterjug.com/wp-json/wp/v2/comments?post=1369"
+                }
+            ],
+            "self": [
+                {
+                    "href": "http://bitterjug.com/wp-json/wp/v2/posts/1369"
+                }
+            ],
+            "version-history": [
+                {
+                    "href": "http://bitterjug.com/wp-json/wp/v2/posts/1369/revisions"
+                }
+            ],
+            "wp:attachment": [
+                {
+                    "href": "http://bitterjug.com/wp-json/wp/v2/media?parent=1369"
+                }
+            ],
+            "wp:term": [
+                {
+                    "embeddable": true,
+                    "href": "http://bitterjug.com/wp-json/wp/v2/categories?post=1369",
+                    "taxonomy": "category"
+                },
+                {
+                    "embeddable": true,
+                    "href": "http://bitterjug.com/wp-json/wp/v2/tags?post=1369",
+                    "taxonomy": "post_tag"
+                }
+            ]
+        },
+        "author": 2,
+        "categories": [
+            26
+        ],
+        "comment_status": "open",
+        "content": {
+            "protected": false,
+            "rendered": "<p>So, I&#8217;m processing this list of js data which, for this evening, I know<br />\ncontains exactly one thingummy. I&#8217;m I want to wire up some Elm and get things<br />\nto type check before I start to worry about handling lists of different sizes.<br />\nCalling upon my conventional (python) wisdom, I set about processing the<br />\nsingleton in the list. </p>\n<pre class=\"brush: plain; title: ; notranslate\" title=\"\">\r\n  case msg of\r\n    UpdateThing msg' -&gt;\r\n    (thing, cmd) = Thingummy.update msg'  ... singleton element from model.things ...\r\n</pre>\n<p>How do I get that sucker? I&#8217;m thinking python: `model.things[0]` but, of<br />\ncourse, both `model.things !! 1`, and `List.head` return `Maybe a`. So now I&#8217;m<br />\ngoing:</p>\n<pre class=\"brush: plain; title: ; notranslate\" title=\"\">\r\n    ... (thing, cmd) ... = Maybe.map (Thingummy.update msg') (List.head model.things) ...\r\n</pre>\n<p>But now the lhs pattern is wrong, I&#8217;m using `map` and, ultimately, I need to<br />\nturn that updated singleton back into a list anyways. </p>\n<pre class=\"brush: plain; title: ; notranslate\" title=\"\">\r\n  case msg of\r\n    UpdateThing msg' -&gt;\r\n    (things, cmds) = List.unzip (List.map (Thingummy.update msg') model.things) \r\n</pre>\n<p>Job done. (I should qualify that the job here is just the quick hack for<br />\nmy singleton list. It&#8217;s applying the same change to all elements)</p>\n<p>Moral: it isn&#8217;t any less complex to deal with a list of things than<br />\nwith a thing taken from a list (Maybe). I can&#8217;t ask Elm to accept my<br />\nassumption that a list will contain exactly one item. Elm wants me to model<br />\nit.  If there&#8217;s exactly one, just use a variable. If there&#8217;s zero or one,<br />\nuse Maybe. Or just use a list, it&#8217;s just as simple!</p>\n"
+        },
+        "date": "2016-07-10T21:33:45",
+        "date_gmt": "2016-07-10T20:33:45",
+        "excerpt": {
+            "protected": false,
+            "rendered": "<p>So, I&#8217;m processing this list of js data which, for this evening, I know contains exactly one thingummy. I&#8217;m I want to wire up some Elm and get things to type check before I start to worry about handling lists of different sizes. Calling upon my conventional (python) wisdom, I set about processing the singleton [&hellip;]</p>\n"
+        },
+        "featured_media": 0,
+        "format": "standard",
+        "guid": {
+            "rendered": "http://bitterjug.com/?p=1369"
+        },
+        "id": 1369,
+        "link": "http://bitterjug.com/blog/thinking-in-elm/",
+        "meta": [],
+        "modified": "2016-07-10T22:25:16",
+        "modified_gmt": "2016-07-10T21:25:16",
+        "ping_status": "open",
+        "slug": "thinking-in-elm",
+        "sticky": false,
+        "tags": [],
+        "template": "",
+        "title": {
+            "rendered": "Thinking in Elm (and not cutting corners)"
+        },
+        "type": "post"
+    },
+    {
+        "_links": {
+            "about": [
+                {
+                    "href": "http://bitterjug.com/wp-json/wp/v2/types/post"
+                }
+            ],
+            "author": [
+                {
+                    "embeddable": true,
+                    "href": "http://bitterjug.com/wp-json/wp/v2/users/2"
+                }
+            ],
+            "collection": [
+                {
+                    "href": "http://bitterjug.com/wp-json/wp/v2/posts"
+                }
+            ],
+            "curies": [
+                {
+                    "href": "https://api.w.org/{rel}",
+                    "name": "wp",
+                    "templated": true
+                }
+            ],
+            "replies": [
+                {
+                    "embeddable": true,
+                    "href": "http://bitterjug.com/wp-json/wp/v2/comments?post=1358"
+                }
+            ],
+            "self": [
+                {
+                    "href": "http://bitterjug.com/wp-json/wp/v2/posts/1358"
+                }
+            ],
+            "version-history": [
+                {
+                    "href": "http://bitterjug.com/wp-json/wp/v2/posts/1358/revisions"
+                }
+            ],
+            "wp:attachment": [
+                {
+                    "href": "http://bitterjug.com/wp-json/wp/v2/media?parent=1358"
+                }
+            ],
+            "wp:term": [
+                {
+                    "embeddable": true,
+                    "href": "http://bitterjug.com/wp-json/wp/v2/categories?post=1358",
+                    "taxonomy": "category"
+                },
+                {
+                    "embeddable": true,
+                    "href": "http://bitterjug.com/wp-json/wp/v2/tags?post=1358",
+                    "taxonomy": "post_tag"
+                }
+            ]
+        },
+        "author": 2,
+        "categories": [
+            1
+        ],
+        "comment_status": "open",
+        "content": {
+            "protected": false,
+            "rendered": "<p>I&#8217;ve been tinkering with <a href=\"http://elm-lang.org/\" target=\"_blank\">Elm</a> recently. It&#8217;s a typed functional programming language that reminds me of the Haskell I wrote during my PhD. And, it&#8217;s great fun.\u00a0I wrote a toy application, and recently <a href=\"https://github.com/elm-lang/elm-platform/blob/master/upgrade-docs/0.17.md\" target=\"_blank\">upgraded it to 0.17</a>.\u00a0Along the way I had an insight about the Maybe type which I try and to explain in context.</p>\n<p>My generic text input field needs to be able to respond to the Enter\u00a0and Escape keys by triggering Latch and Reset messages respectively.</p>\n<p>My onKeyDown function generates an on-keydown handler\u00a0<a href=\"http://package.elm-lang.org/packages/elm-lang/html/1.0.0/Html-Attributes\">attribute</a> that maps Int key codes to messages.</p>\n<pre class=\"brush: plain; title: ; notranslate\" title=\"\">\r\nonKeyDown : (Int -&gt; msg) -&gt; Attribute msg\r\nonKeyDown mapping =\r\n    on &quot;keydown&quot; &lt;| Json.map mapping keyCode\r\n</pre>\n<p>This excerpt from my view function shows how I use it;\u00a0I define enter and escape as constant functions,\u00a0Latch and Reset are constructors from my Msg type:</p>\n<pre class=\"brush: plain; title: ; notranslate\" title=\"\">\r\nview model =\r\n    ...\r\n    div []\r\n\t[ input\r\n\t    [ type' &quot;text&quot;\r\n\t    , highlightStyle\r\n\t    , placeholder model.name\r\n\t    , value model.input\r\n\t    , autofocus True\r\n\t    , name model.name\r\n\t    , onInput UpdateInput\r\n\t    , onKeyDown\r\n\t\t&amp;lt;| keyMsg\r\n\t\t[ ( enter, Latch )\r\n\t\t, ( escape, Reset )\r\n\t\t]\r\n\t    ]\r\n\t    []\r\n\t]\r\n</pre>\n<p>The helper-function keyMsg takes a list of pairs (in lieu of literal dict syntax)\u00a0from which it builds a <a href=\"http://package.elm-lang.org/packages/elm-lang/core/4.0.1/Dict\">dict</a> of key codes and the corresponding messages</p>\n<pre class=\"brush: plain; title: ; notranslate\" title=\"\">\r\nkeyMsg : List ( Int, Msg ) -&gt; Int -&gt; Msg\r\nkeyMsg mapping keycode =\r\n    Dict.fromList mapping\r\n        |&gt; Dict.get keycode\r\n        |&gt; Maybe.withDefault NoOp\r\n</pre>\n<p>Now we get to the interesting part. While writing this I wondered how\u00a0to return the default value NoOp if the key code isn&#8217;t in the dictionary.\u00a0In python,\u00a0<a href=\"https://docs.python.org/3.5/library/stdtypes.html#dict.get\">dict.get(key [, default])</a> lets you specify the default, so I\u00a0started looking in the dict module. But it isn&#8217;t there. It&#8217;s in <a href=\"http://package.elm-lang.org/packages/elm-lang/core/4.0.1/Maybe#withDefault\">Maybe</a>.</p>\n<p>At which point I saw the <a href=\"http://tvtropes.org/pmwiki/pmwiki.php/Main/FridgeBrilliance\">Fridge Brilliance</a>\u00a0of Maybe.\u00a0Putting the default behaviour inside\u00a0dict.get means it has to be duplicated in any other data structures that\u00a0require default behaviour. Making it part of Maybe demonstrates why\u00a0Maybe so much more than just an abstraction of pointers that might be null.\u00a0It is the right place to define default-value behaviour.</p>\n<p>Edit!</p>\n<p>If I bring the names into scope,  keyMsg function shortens nicely like this:</p>\n<pre class=\"brush: plain; title: ; notranslate\" title=\"\">\r\nkeyMsg mapping keycode =\r\n    Dict.fromList mapping |&gt; get keycode |&gt; withDefault NoOp\r\n</pre>\n<p>Whoa! Even more brilliance with the <a href=\"http://package.elm-lang.org/packages/elm-community/maybe-extra/1.1.0/Maybe-Extra#?\">? operator</a>! </p>\n<pre class=\"brush: plain; title: ; notranslate\" title=\"\">\r\nkeyMsg mapping keycode =\r\n    Dict.fromList mapping |&gt; get keycode ? NoOp\r\n</pre>\n"
+        },
+        "date": "2016-05-30T20:38:57",
+        "date_gmt": "2016-05-30T19:38:57",
+        "excerpt": {
+            "protected": false,
+            "rendered": "<p>I&#8217;ve been tinkering with Elm recently. It&#8217;s a typed functional programming language that reminds me of the Haskell I wrote during my PhD. And, it&#8217;s great fun.\u00a0I wrote a toy application, and recently upgraded it to 0.17.\u00a0Along the way I had an insight about the Maybe type which I try and to explain in context. [&hellip;]</p>\n"
+        },
+        "featured_media": 0,
+        "format": "standard",
+        "guid": {
+            "rendered": "http://bitterjug.com/?p=1358"
+        },
+        "id": 1358,
+        "link": "http://bitterjug.com/blog/maybe-with-default/",
+        "meta": [],
+        "modified": "2016-05-31T19:46:50",
+        "modified_gmt": "2016-05-31T18:46:50",
+        "ping_status": "open",
+        "slug": "maybe-with-default",
+        "sticky": false,
+        "tags": [],
+        "template": "",
+        "title": {
+            "rendered": "The Fridge-brilliance of Maybe"
+        },
+        "type": "post"
+    },
+    {
+        "_links": {
+            "about": [
+                {
+                    "href": "http://bitterjug.com/wp-json/wp/v2/types/post"
+                }
+            ],
+            "author": [
+                {
+                    "embeddable": true,
+                    "href": "http://bitterjug.com/wp-json/wp/v2/users/2"
+                }
+            ],
+            "collection": [
+                {
+                    "href": "http://bitterjug.com/wp-json/wp/v2/posts"
+                }
+            ],
+            "curies": [
+                {
+                    "href": "https://api.w.org/{rel}",
+                    "name": "wp",
+                    "templated": true
+                }
+            ],
+            "replies": [
+                {
+                    "embeddable": true,
+                    "href": "http://bitterjug.com/wp-json/wp/v2/comments?post=1355"
+                }
+            ],
+            "self": [
+                {
+                    "href": "http://bitterjug.com/wp-json/wp/v2/posts/1355"
+                }
+            ],
+            "version-history": [
+                {
+                    "href": "http://bitterjug.com/wp-json/wp/v2/posts/1355/revisions"
+                }
+            ],
+            "wp:attachment": [
+                {
+                    "href": "http://bitterjug.com/wp-json/wp/v2/media?parent=1355"
+                }
+            ],
+            "wp:term": [
+                {
+                    "embeddable": true,
+                    "href": "http://bitterjug.com/wp-json/wp/v2/categories?post=1355",
+                    "taxonomy": "category"
+                },
+                {
+                    "embeddable": true,
+                    "href": "http://bitterjug.com/wp-json/wp/v2/tags?post=1355",
+                    "taxonomy": "post_tag"
+                }
+            ]
+        },
+        "author": 2,
+        "categories": [
+            1
+        ],
+        "comment_status": "open",
+        "content": {
+            "protected": false,
+            "rendered": "<p>Today I need to get a list of worksheets from a very large spreadsheet (~100 worksheets, many thousands of cells on each) quickly from the command line. My ruby script tried to parse the entire workbook and exploded all my RAM. Then I discovered grep -0 which prints matching occurrences only (each on a separate line) which is very useful with regular expression patterns. The &#8220;sheet name&#8221; entries are in the &#8220;workbook.xml&#8221; zipped up in the Excel file.</p>\n<pre class=\"brush: bash; title: ; notranslate\" title=\"\">\r\n$ unzip -c your-large-spreadsheet.xlsx\u00a0xl/workbook.xml | grep -o sheet\\ name=\\&quot;[^\\&quot;]*\\&quot; | cut -d = -f 2\r\n\r\n</pre>\n"
+        },
+        "date": "2016-04-14T12:29:49",
+        "date_gmt": "2016-04-14T11:29:49",
+        "excerpt": {
+            "protected": false,
+            "rendered": "<p>Today I need to get a list of worksheets from a very large spreadsheet (~100 worksheets, many thousands of cells on each) quickly from the command line. My ruby script tried to parse the entire workbook and exploded all my RAM. Then I discovered grep -0 which prints matching occurrences only (each on a separate [&hellip;]</p>\n"
+        },
+        "featured_media": 0,
+        "format": "standard",
+        "guid": {
+            "rendered": "http://bitterjug.com/?p=1355"
+        },
+        "id": 1355,
+        "link": "http://bitterjug.com/blog/list-worksheets-command-line/",
+        "meta": [],
+        "modified": "2016-05-31T10:39:54",
+        "modified_gmt": "2016-05-31T09:39:54",
+        "ping_status": "open",
+        "slug": "list-worksheets-command-line",
+        "sticky": false,
+        "tags": [],
+        "template": "",
+        "title": {
+            "rendered": "Get list of worksheets on the command line"
+        },
+        "type": "post"
+    },
+    {
+        "_links": {
+            "about": [
+                {
+                    "href": "http://bitterjug.com/wp-json/wp/v2/types/post"
+                }
+            ],
+            "author": [
+                {
+                    "embeddable": true,
+                    "href": "http://bitterjug.com/wp-json/wp/v2/users/2"
+                }
+            ],
+            "collection": [
+                {
+                    "href": "http://bitterjug.com/wp-json/wp/v2/posts"
+                }
+            ],
+            "curies": [
+                {
+                    "href": "https://api.w.org/{rel}",
+                    "name": "wp",
+                    "templated": true
+                }
+            ],
+            "replies": [
+                {
+                    "embeddable": true,
+                    "href": "http://bitterjug.com/wp-json/wp/v2/comments?post=1351"
+                }
+            ],
+            "self": [
+                {
+                    "href": "http://bitterjug.com/wp-json/wp/v2/posts/1351"
+                }
+            ],
+            "version-history": [
+                {
+                    "href": "http://bitterjug.com/wp-json/wp/v2/posts/1351/revisions"
+                }
+            ],
+            "wp:attachment": [
+                {
+                    "href": "http://bitterjug.com/wp-json/wp/v2/media?parent=1351"
+                }
+            ],
+            "wp:term": [
+                {
+                    "embeddable": true,
+                    "href": "http://bitterjug.com/wp-json/wp/v2/categories?post=1351",
+                    "taxonomy": "category"
+                },
+                {
+                    "embeddable": true,
+                    "href": "http://bitterjug.com/wp-json/wp/v2/tags?post=1351",
+                    "taxonomy": "post_tag"
+                }
+            ]
+        },
+        "author": 2,
+        "categories": [
+            1
+        ],
+        "comment_status": "open",
+        "content": {
+            "protected": false,
+            "rendered": "<p>Turns out that the Excel VBA function UsedRange <a href=\"http://blog.contextures.com/archives/2012/03/01/select-actual-used-range-in-excel-sheet/\">doesn&#8217;t always give the expected results</a>. It gives you the range of cells that have <strong>ever</strong> been used. If you&#8217;ve formatted them, or they used to have values in that you&#8217;ve since deleted, you still get those cells. Today I wanted to iterate all cells in a lot of sheets. Some of those sheets had lots of cells in their UsedRange. I hit upon a solution I&#8217;ve not seen anywhere else: take the union of constants and formulas in a sheet. This \u00a0is quick, because you can use <a href=\"https://msdn.microsoft.com/en-us/library/office/ff196157.aspx\">SpecialCells</a> to do the heavy lifting. And you can refine the results to exclude errors using SpecialCells Value argument (the default 23 below selects everything). Here&#8217;s the code</p>\n<pre class=\"brush: vb; title: ; notranslate\" title=\"\">\r\nFunction myUsedRange(ws As Worksheet, Optional lookfor As Long = 23) As Range\r\n    Dim c As Range, f As Range\r\n    On Error Resume Next\r\n    With ws.Range(&quot;A1&quot;)\r\n        Set c = .SpecialCells(xlCellTypeConstants, lookfor)\r\n        Set f = .SpecialCells(xlCellTypeFormulas, lookfor)\r\n        If c Is Nothing Then Set c = .Cells\r\n        If f Is Nothing Then Set f = .Cells\r\n    End With\r\n    Set myUsedRange = Union(c, f)\r\nEnd Function\r\n</pre>\n<p>This returns a non-contiguous range containing only the cells you want. This\u00a0version is a bit lazy and includes [A1] if there are no constants or no formulas matching your search. I didn&#8217;t mind because I was using lookfor=2 to search for text which reduced the number of cells by thousands. Hundreds of thousands in some cases. A better version would take a default as a parameter and return it only if neither \u00a0constants or formulas gave any results.</p>\n"
+        },
+        "date": "2016-04-05T13:02:12",
+        "date_gmt": "2016-04-05T12:02:12",
+        "excerpt": {
+            "protected": false,
+            "rendered": "<p>Turns out that the Excel VBA function UsedRange doesn&#8217;t always give the expected results. It gives you the range of cells that have ever been used. If you&#8217;ve formatted them, or they used to have values in that you&#8217;ve since deleted, you still get those cells. Today I wanted to iterate all cells in a [&hellip;]</p>\n"
+        },
+        "featured_media": 0,
+        "format": "standard",
+        "guid": {
+            "rendered": "http://bitterjug.com/?p=1351"
+        },
+        "id": 1351,
+        "link": "http://bitterjug.com/blog/usedrange/",
+        "meta": [],
+        "modified": "2016-04-05T13:02:55",
+        "modified_gmt": "2016-04-05T12:02:55",
+        "ping_status": "open",
+        "slug": "usedrange",
+        "sticky": false,
+        "tags": [],
+        "template": "",
+        "title": {
+            "rendered": "Getting round the limitations of Excel VBA&#8217;s UsedRange function"
+        },
+        "type": "post"
+    },
+    {
+        "_links": {
+            "about": [
+                {
+                    "href": "http://bitterjug.com/wp-json/wp/v2/types/post"
+                }
+            ],
+            "author": [
+                {
+                    "embeddable": true,
+                    "href": "http://bitterjug.com/wp-json/wp/v2/users/2"
+                }
+            ],
+            "collection": [
+                {
+                    "href": "http://bitterjug.com/wp-json/wp/v2/posts"
+                }
+            ],
+            "curies": [
+                {
+                    "href": "https://api.w.org/{rel}",
+                    "name": "wp",
+                    "templated": true
+                }
+            ],
+            "replies": [
+                {
+                    "embeddable": true,
+                    "href": "http://bitterjug.com/wp-json/wp/v2/comments?post=1341"
+                }
+            ],
+            "self": [
+                {
+                    "href": "http://bitterjug.com/wp-json/wp/v2/posts/1341"
+                }
+            ],
+            "version-history": [
+                {
+                    "href": "http://bitterjug.com/wp-json/wp/v2/posts/1341/revisions"
+                }
+            ],
+            "wp:attachment": [
+                {
+                    "href": "http://bitterjug.com/wp-json/wp/v2/media?parent=1341"
+                }
+            ],
+            "wp:term": [
+                {
+                    "embeddable": true,
+                    "href": "http://bitterjug.com/wp-json/wp/v2/categories?post=1341",
+                    "taxonomy": "category"
+                },
+                {
+                    "embeddable": true,
+                    "href": "http://bitterjug.com/wp-json/wp/v2/tags?post=1341",
+                    "taxonomy": "post_tag"
+                }
+            ]
+        },
+        "author": 2,
+        "categories": [
+            1
+        ],
+        "comment_status": "open",
+        "content": {
+            "protected": false,
+            "rendered": "<div class=\"markdown-here-wrapper\" data-md-url=\"http://bitterjug.com/wp-admin/post.php?post=1341&amp;action=edit\">\n<p style=\"margin: 0px 0px 1.2em !important;\">I just installed <a href=\"https://github.com/ReactiveX/RxPY\">RxPy</a> the Reactive extensions for Python, as you may guess from the title of this article. Well, that was easy. What next? Here\u2019s a delightfully short program which does \u2014 ahem \u2014 something:</p>\n<pre class=\"brush: python; title: ; notranslate\" title=\"\">\r\nimport sys\r\nimport rx\r\n\r\nrx.Observable.from_(sys.stdin).subscribe(print)\r\n</pre>\n<p style=\"margin: 0px 0px 1.2em !important;\">It echoes stdin to stdout. Kinda.</p>\n<ul style=\"margin: 1.2em 0px; padding-left: 2em;\">\n<li style=\"margin: 0.5em 0px;\">There are more newlines than I was expecting \u2014 an extra one after each line is echoed</li>\n<li style=\"margin: 0.5em 0px;\">The single line is actually an expression returning a Disposable that you can use to unsubscribe. I\u2019m discarding it.</li>\n<li style=\"margin: 0.5em 0px;\">I have <a href=\"https://github.com/scrooloose/syntastic\">syntastic</a> installed in Vim and <a href=\"https://www.pylint.org/\">pylint</a> complains of a syntax error when I pass <code style=\"font-size: 0.85em; font-family: Consolas, Inconsolata, Courier, monospace; margin: 0px 0.15em; padding: 0px 0.3em; white-space: pre-wrap; border: 1px solid #eaeaea; border-radius: 3px; display: inline; background-color: #f8f8f8;\">print</code> to <code style=\"font-size: 0.85em; font-family: Consolas, Inconsolata, Courier, monospace; margin: 0px 0.15em; padding: 0px 0.3em; white-space: pre-wrap; border: 1px solid #eaeaea; border-radius: 3px; display: inline; background-color: #f8f8f8;\">subscribe</code> so perhaps I need to configure it to know about python3.</li>\n</ul>\n</div>\n"
+        },
+        "date": "2016-03-22T22:47:22",
+        "date_gmt": "2016-03-22T21:47:22",
+        "excerpt": {
+            "protected": false,
+            "rendered": "<p>I just installed RxPy the Reactive extensions for Python, as you may guess from the title of this article. Well, that was easy. What next? Here\u2019s a delightfully short program which does \u2014 ahem \u2014 something: It echoes stdin to stdout. Kinda. There are more newlines than I was expecting \u2014 an extra one after [&hellip;]</p>\n"
+        },
+        "featured_media": 0,
+        "format": "standard",
+        "guid": {
+            "rendered": "http://bitterjug.com/?p=1341"
+        },
+        "id": 1341,
+        "link": "http://bitterjug.com/blog/pip-install-rx/",
+        "meta": [],
+        "modified": "2016-03-22T22:54:25",
+        "modified_gmt": "2016-03-22T21:54:25",
+        "ping_status": "open",
+        "slug": "pip-install-rx",
+        "sticky": false,
+        "tags": [],
+        "template": "",
+        "title": {
+            "rendered": "pip install rx"
+        },
+        "type": "post"
+    },
+    {
+        "_links": {
+            "about": [
+                {
+                    "href": "http://bitterjug.com/wp-json/wp/v2/types/post"
+                }
+            ],
+            "author": [
+                {
+                    "embeddable": true,
+                    "href": "http://bitterjug.com/wp-json/wp/v2/users/2"
+                }
+            ],
+            "collection": [
+                {
+                    "href": "http://bitterjug.com/wp-json/wp/v2/posts"
+                }
+            ],
+            "curies": [
+                {
+                    "href": "https://api.w.org/{rel}",
+                    "name": "wp",
+                    "templated": true
+                }
+            ],
+            "replies": [
+                {
+                    "embeddable": true,
+                    "href": "http://bitterjug.com/wp-json/wp/v2/comments?post=1332"
+                }
+            ],
+            "self": [
+                {
+                    "href": "http://bitterjug.com/wp-json/wp/v2/posts/1332"
+                }
+            ],
+            "version-history": [
+                {
+                    "href": "http://bitterjug.com/wp-json/wp/v2/posts/1332/revisions"
+                }
+            ],
+            "wp:attachment": [
+                {
+                    "href": "http://bitterjug.com/wp-json/wp/v2/media?parent=1332"
+                }
+            ],
+            "wp:term": [
+                {
+                    "embeddable": true,
+                    "href": "http://bitterjug.com/wp-json/wp/v2/categories?post=1332",
+                    "taxonomy": "category"
+                },
+                {
+                    "embeddable": true,
+                    "href": "http://bitterjug.com/wp-json/wp/v2/tags?post=1332",
+                    "taxonomy": "post_tag"
+                }
+            ]
+        },
+        "author": 2,
+        "categories": [
+            1
+        ],
+        "comment_status": "open",
+        "content": {
+            "protected": false,
+            "rendered": "<p>Long story short, I just opened a workbook with 37,000 styles :(. Apparently <a href=\"https://support.microsoft.com/en-us/kb/213904\">this is a common problem</a>). Allen Wyatt of ExcelTips suggests <a href=\"http://excel.tips.net/T002135_Deleting_Unwanted_Styles.html\">deleting non-builtin styles</a>. But I had over 6,000 of those. And some of my user-defined styles are important!</p>\n<p>My solution is to remove any style whose name ends with a number, keeping one of each base-name. Cells with deleted styles get &#8220;Normal&#8221;.</p>\n<p>The code uses regular expressions to trim trailing numbers from style names, and uses a dictionary for the set of base names.</p>\n<pre>\r\n<pre class=\"brush: vb; title: ; notranslate\" title=\"\">\r\nOption Explicit\r\n\r\nSub DeduplicateStyles()\r\n  Call DeleteDupStyles(Workbooks(&quot;NEW_multi_sector.xlsx&quot;))\r\nEnd Sub\r\n\r\nSub DeleteDupStyles(wb As Workbook)\r\n  Dim sty As style\r\n  Dim intRet As Integer\r\n  Dim dict As New Scripting.Dictionary\r\n  Dim count As Integer: count = 0\r\n\r\n  For Each sty In wb.styles\r\n    Dim n As String: n = trimTrailingNumbers(sty.Name)\r\n    If dict.Exists(n) Then\r\n      ' Debug.Print (&quot;deleting: &quot; &amp; sty.Name)\r\n      On Error Resume Next\r\n      sty.Delete\r\n      If Err.Number &lt;&gt; 0 Then\r\n        Debug.Print (&quot;ERROR deleting: &quot; &amp; sty.Name)\r\n      End If\r\n    Else\r\n      Debug.Print (&quot;keeping: &quot; &amp; sty.Name)\r\n      dict.Add n, 1\r\n    End If\r\n\r\n    count = count + 1\r\n    If count Mod 100 = 0 Then\r\n      DoEvents\r\n    End If\r\n  Next sty\r\nEnd Sub\r\n\r\nFunction regexp(pattern As String) As regexp\r\n  Dim rx As New regexp\r\n  With rx\r\n    .Global = True\r\n    .MultiLine = False\r\n    .IgnoreCase = False\r\n    .pattern = pattern\r\n  End With\r\n  Set regexp = rx\r\nEnd Function\r\n\r\nFunction trimTrailingNumbers(s As String) As String\r\n  trimTrailingNumbers = regexp(&quot;( \\d+)+$&quot;).Replace(s, &quot;&quot;)\r\nEnd Function\r\n\r\n</pre>\n"
+        },
+        "date": "2016-03-11T14:59:53",
+        "date_gmt": "2016-03-11T13:59:53",
+        "excerpt": {
+            "protected": false,
+            "rendered": "<p>Long story short, I just opened a workbook with 37,000 styles :(. Apparently this is a common problem). Allen Wyatt of ExcelTips suggests deleting non-builtin styles. But I had over 6,000 of those. And some of my user-defined styles are important! My solution is to remove any style whose name ends with a number, keeping [&hellip;]</p>\n"
+        },
+        "featured_media": 0,
+        "format": "standard",
+        "guid": {
+            "rendered": "http://bitterjug.com/?p=1332"
+        },
+        "id": 1332,
+        "link": "http://bitterjug.com/blog/excel-excess/",
+        "meta": [],
+        "modified": "2016-03-11T15:01:22",
+        "modified_gmt": "2016-03-11T14:01:22",
+        "ping_status": "open",
+        "slug": "excel-excess",
+        "sticky": false,
+        "tags": [],
+        "template": "",
+        "title": {
+            "rendered": "Excel excess: how to remove unwanted styles with VBA"
+        },
+        "type": "post"
+    }
+]

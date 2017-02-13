@@ -5,7 +5,7 @@ import Html.Attributes exposing (..)
 import Http exposing (..)
 import Material
 import Material.Icon as Icon
-import Material.Scheme
+import Material.Options as Options
 import Material.Color as Color
 import Material.Layout as Layout
 import Entry
@@ -29,12 +29,14 @@ type alias Model =
 
 
 type DisplayMode
-    = List
-    | Single Int
+    = EntryList
+    | SingleEntry Int
 
 
 type Msg
     = PostList (Result Http.Error (List Entry))
+    | Previous
+    | Next
     | Mdl (Material.Msg Msg)
 
 
@@ -42,7 +44,7 @@ init : ( Model, Cmd Msg )
 init =
     ( Model
         [ Entry "title" "Loading..." ]
-        (Single 0)
+        (SingleEntry 0)
         Material.model
     , getPostList
     )
@@ -68,24 +70,50 @@ update msg model =
         Mdl msg_ ->
             Material.update Mdl msg_ model
 
+        Previous ->
+            case model.displayMode of
+                EntryList ->
+                    model ! []
+
+                SingleEntry index ->
+                    { model | displayMode = SingleEntry (index + 1) } ! []
+
+        Next ->
+            case model.displayMode of
+                EntryList ->
+                    model ! []
+
+                SingleEntry index ->
+                    { model | displayMode = SingleEntry (index - 1) } ! []
+
 
 view : Model -> Html Msg
 view model =
     let
         entries =
             case model.displayMode of
-                List ->
+                EntryList ->
                     model.entries
 
-                Single index ->
-                    model.entries |> List.drop index |> List.take 1
+                SingleEntry index ->
+                    model.entries
+                        |> List.drop index
+                        |> List.take 1
 
         header =
             [ Layout.row []
-                [ Layout.navigation [] [ Layout.link [] [ Icon.i "arrow_back" ] ]
+                [ Layout.navigation []
+                    [ Layout.link
+                        [ Options.onClick Previous ]
+                        [ Icon.i "arrow_back" ]
+                    ]
                 , Layout.title [] [ text "Bitterjug" ]
                 , Layout.spacer
-                , Layout.navigation [] [ Layout.link [] [ Icon.i "arrow_forward" ] ]
+                , Layout.navigation []
+                    [ Layout.link
+                        [ Options.onClick Next ]
+                        [ Icon.i "arrow_forward" ]
+                    ]
                 ]
             ]
     in

@@ -8,6 +8,7 @@ import Material.Icon as Icon
 import Material.Options as Options
 import Material.Color as Color
 import Material.Layout as Layout
+import Material.Button as Button
 import Entry
 import Entry exposing (Entry)
 
@@ -103,15 +104,25 @@ view model =
         header =
             [ Layout.row []
                 [ Layout.navigation []
-                    [ Layout.link
-                        [ Options.onClick Previous ]
+                    [ Button.render Mdl
+                        [ 0 ]
+                        model.mdl
+                        [ Button.icon
+                        , Button.ripple
+                        , Options.onClick Previous
+                        ]
                         [ Icon.i "arrow_back" ]
                     ]
                 , Layout.title [] [ text "Bitterjug" ]
                 , Layout.spacer
                 , Layout.navigation []
-                    [ Layout.link
-                        [ Options.onClick Next ]
+                    [ Button.render Mdl
+                        [ 0 ]
+                        model.mdl
+                        [ Button.icon
+                        , Button.ripple
+                        , Options.onClick Next
+                        ]
                         [ Icon.i "arrow_forward" ]
                     ]
                 ]

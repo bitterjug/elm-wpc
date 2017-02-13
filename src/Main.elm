@@ -7,7 +7,8 @@ import Material
 import Material.Scheme
 import Material.Color as Color
 import Material.Layout as Layout
-import Entry exposing (..)
+import Entry
+import Entry exposing (Entry)
 
 
 main =
@@ -21,8 +22,14 @@ main =
 
 type alias Model =
     { entries : List Entry
+    , displayMode : DisplayMode
     , mdl : Material.Model
     }
+
+
+type DisplayMode
+    = List
+    | Single Int
 
 
 type Msg
@@ -32,7 +39,12 @@ type Msg
 
 init : ( Model, Cmd Msg )
 init =
-    ( Model [ Entry "title" "Loading..." ] Material.model, getPostList )
+    ( Model
+        [ Entry "title" "Loading..." ]
+        (Single 0)
+        Material.model
+    , getPostList
+    )
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -43,7 +55,7 @@ update msg model =
                 _ =
                     Debug.log "OK:" contents
             in
-                Model contents model.mdl ! []
+                { model | entries = contents } ! []
 
         PostList (Err _) ->
             let
@@ -58,20 +70,29 @@ update msg model =
 
 view : Model -> Html Msg
 view model =
-    Layout.render Mdl
-        model.mdl
-        [ Layout.fixedHeader ]
-        { header = [ h1 [] [ text "Bitterjug" ] ]
-        , drawer = []
-        , tabs = ( [], [] )
-        , main =
-            [ div [ class "mdl-grid", style [ ( "background-color", "#f5f5f5" ) ] ]
-                [ div [ class "mdl-cell mdl-cell--1-col mdl-cell--hide-phone mdl-cell--hide-tablet" ] []
-                , div [ class "mdl-cell mdl-cell--10-col" ] [ viewEntries model.entries ]
-                , div [ class "mdl-cell mdl-cell--1-col mdl-cell--hide-phone mdl-cell--hide-tablet" ] []
+    let
+        entries =
+            case model.displayMode of
+                List ->
+                    model.entries
+
+                Single index ->
+                    model.entries |> List.drop index |> List.take 1
+    in
+        Layout.render Mdl
+            model.mdl
+            [ Layout.fixedHeader ]
+            { header = [ h1 [] [ text "Bitterjug" ] ]
+            , drawer = []
+            , tabs = ( [], [] )
+            , main =
+                [ div [ class "mdl-grid" ]
+                    [ div [ class "mdl-cell mdl-cell--1-col mdl-cell--hide-phone mdl-cell--hide-tablet" ] []
+                    , div [ class "mdl-cell mdl-cell--10-col" ] [ Entry.viewEntries entries ]
+                    , div [ class "mdl-cell mdl-cell--1-col mdl-cell--hide-phone mdl-cell--hide-tablet" ] []
+                    ]
                 ]
-            ]
-        }
+            }
 
 
 getPostList : Cmd Msg
@@ -80,4 +101,4 @@ getPostList =
         url =
             "http://bitterjug.com/wp-json/wp/v2/posts/"
     in
-        Http.send PostList (Http.get url decodeEntries)
+        Http.send PostList (Http.get url Entry.decodeEntries)

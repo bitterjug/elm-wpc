@@ -34,8 +34,8 @@ decodeEntries =
 
 viewEntry : Entry -> Html msg
 viewEntry entry =
-    div
-        [ class "mdl-shadow--4dp", style [ ( "padding", "30px" ), ( "margin-bottom", "10px" ) ] ]
+    main_
+        [ class "mdl-shadow--4dp post" ]
         [ h1 [ class "mdl-typography--headline" ] [ text entry.title ]
         , Markdown.toHtml [] entry.content
         ]

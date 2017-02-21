@@ -27,13 +27,13 @@ main =
 
 type alias Model =
     { entries : List Entry
-    , route : Route
+    , page : Page
     , mdl : Material.Model
     , raised : Int
     }
 
 
-type Route
+type Page
     = EntryList
     | SingleEntry String
     | NotFound
@@ -41,7 +41,7 @@ type Route
 
 type Msg
     = PostList (Result Http.Error (List Entry))
-    | Show Route
+    | Show Page
     | Mdl (Material.Msg Msg)
     | Raise Int
 
@@ -49,7 +49,7 @@ type Msg
 init : Location -> ( Model, Cmd Msg )
 init location =
     ( { entries = [ Entry.loading ]
-      , route =
+      , page =
             EntryList
             -- TODO: later I want to start with most recent post
       , mdl = Material.model
@@ -64,19 +64,32 @@ locationChange =
     findPage >> Show
 
 
-findPage : Location -> Route
+findPage : Location -> Page
 findPage location =
     location
         |> Url.parsePath routeParser
         |> Maybe.withDefault NotFound
 
 
-routeParser : Url.Parser (Route -> Route) Route
+routeParser : Url.Parser (Page -> Page) Page
 routeParser =
     Url.oneOf
         [ Url.map EntryList Url.top
         , Url.map SingleEntry (Url.s "blog" </> Url.string)
         ]
+
+
+toUrl : Page -> String
+toUrl route =
+    case route of
+        EntryList ->
+            "/blog/"
+
+        SingleEntry slug ->
+            "/blog/" ++ slug
+
+        NotFound ->
+            "/404"
 
 
 {-| Find the index of a post in the list by its slug
@@ -114,8 +127,8 @@ update msg model =
         Mdl msg_ ->
             Material.update Mdl msg_ model
 
-        Show route ->
-            { model | route = route } ! []
+        Show page ->
+            { model | page = page } ! []
 
         Raise id ->
             { model | raised = id } ! []
@@ -125,7 +138,7 @@ view : Model -> Html Msg
 view model =
     let
         viewEntry : Int -> Entry.Entry -> Html Msg
-        viewEntry cardId =
+        viewEntry cardId entry =
             let
                 style =
                     Options.many
@@ -136,13 +149,13 @@ view model =
                         , Elevation.transition 250
                         , Options.onMouseEnter (Raise cardId)
                         , Options.onMouseLeave (Raise -1)
-                          -- Options.onClick ...
+                        , Options.onClick (Show <| SingleEntry entry.slug)
                         ]
             in
-                Entry.viewEntry style
+                Entry.viewEntry style entry
 
         content =
-            case model.route of
+            case model.page of
                 EntryList ->
                     Options.div [] <|
                         List.indexedMap viewEntry model.entries

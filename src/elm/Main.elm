@@ -7,6 +7,7 @@ import Material
 import Material.Icon as Icon
 import Material.Options as Options
 import Material.Color as Color
+import Material.Elevation as Elevation
 import Material.Layout as Layout
 import Material.Button as Button
 import Navigation exposing (Location)
@@ -28,6 +29,7 @@ type alias Model =
     { entries : List Entry
     , route : Route
     , mdl : Material.Model
+    , raised : Int
     }
 
 
@@ -41,15 +43,18 @@ type Msg
     = PostList (Result Http.Error (List Entry))
     | Show Route
     | Mdl (Material.Msg Msg)
+    | Raise Int
 
 
 init : Location -> ( Model, Cmd Msg )
 init location =
-    ( Model
-        [ Entry.loading ]
-        EntryList
-        -- TODO: later I want to start with most recent post
-        Material.model
+    ( { entries = [ Entry.loading ]
+      , route =
+            EntryList
+            -- TODO: later I want to start with most recent post
+      , mdl = Material.model
+      , raised = -1
+      }
     , getPostList
     )
 
@@ -112,14 +117,35 @@ update msg model =
         Show route ->
             { model | route = route } ! []
 
+        Raise id ->
+            { model | raised = id } ! []
+
 
 view : Model -> Html Msg
 view model =
     let
+        viewEntry : Int -> Entry.Entry -> Html Msg
+        viewEntry cardId =
+            let
+                style =
+                    Options.many
+                        [ if model.raised == cardId then
+                            Elevation.e8
+                          else
+                            Elevation.e2
+                        , Elevation.transition 250
+                        , Options.onMouseEnter (Raise cardId)
+                        , Options.onMouseLeave (Raise -1)
+                          -- Options.onClick ...
+                        ]
+            in
+                Entry.viewEntry style
+
         content =
             case model.route of
                 EntryList ->
-                    Entry.viewEntries model.entries
+                    Options.div [] <|
+                        List.indexedMap viewEntry model.entries
 
                 SingleEntry slug ->
                     let
@@ -131,7 +157,8 @@ view model =
                                 |> List.drop index
                                 |> List.take 1
                     in
-                        Entry.viewEntries entries
+                        Options.div [] <|
+                            List.indexedMap viewEntry entries
 
                 NotFound ->
                     div [] [ text "404 not found" ]

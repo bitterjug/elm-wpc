@@ -4,6 +4,8 @@ import Html exposing (..)
 import Html.Attributes exposing (..)
 import Json.Decode as Decode exposing (Decoder)
 import Markdown
+import Material.Card as Card
+import Material.Options as Options
 
 
 type alias Entry =
@@ -43,15 +45,10 @@ loading =
     Entry "..." "Loading..." ""
 
 
-viewEntry : Entry -> Html msg
-viewEntry entry =
-    main_
-        [ class "mdl-shadow--4dp post" ]
-        [ h1 [ class "mdl-typography--headline" ] [ text entry.title ]
-        , Markdown.toHtml [] entry.content
+viewEntry : Options.Style msg -> Entry -> Html msg
+viewEntry style entry =
+    Card.view
+        [ style ]
+        [ Card.title [] [ text entry.title ]
+        , Card.text [] [ Markdown.toHtml [] entry.content ]
         ]
-
-
-viewEntries : List Entry -> Html msg
-viewEntries entries =
-    div [] (List.map viewEntry entries)

@@ -16735,9 +16735,20 @@ var _user$project$Main$findPost = F2(
 								},
 								model.entries))))));
 	});
+var _user$project$Main$toUrl = function (route) {
+	var _p2 = route;
+	switch (_p2.ctor) {
+		case 'EntryList':
+			return '/blog/';
+		case 'SingleEntry':
+			return A2(_elm_lang$core$Basics_ops['++'], '/blog/', _p2._0);
+		default:
+			return '/404';
+	}
+};
 var _user$project$Main$Model = F4(
 	function (a, b, c, d) {
-		return {entries: a, route: b, mdl: c, raised: d};
+		return {entries: a, page: b, mdl: c, raised: d};
 	});
 var _user$project$Main$NotFound = {ctor: 'NotFound'};
 var _user$project$Main$SingleEntry = function (a) {
@@ -16774,20 +16785,20 @@ var _user$project$Main$Mdl = function (a) {
 };
 var _user$project$Main$update = F2(
 	function (msg, model) {
-		var _p2 = msg;
-		switch (_p2.ctor) {
+		var _p3 = msg;
+		switch (_p3.ctor) {
 			case 'PostList':
-				if (_p2._0.ctor === 'Ok') {
-					var _p4 = _p2._0._0;
-					var _p3 = A2(_elm_lang$core$Debug$log, 'OK:', _p4);
+				if (_p3._0.ctor === 'Ok') {
+					var _p5 = _p3._0._0;
+					var _p4 = A2(_elm_lang$core$Debug$log, 'OK:', _p5);
 					return A2(
 						_elm_lang$core$Platform_Cmd_ops['!'],
 						_elm_lang$core$Native_Utils.update(
 							model,
-							{entries: _p4}),
+							{entries: _p5}),
 						{ctor: '[]'});
 				} else {
-					var _p5 = A2(
+					var _p6 = A2(
 						_elm_lang$core$Debug$log,
 						'Err:',
 						{ctor: '_Tuple0'});
@@ -16797,23 +16808,30 @@ var _user$project$Main$update = F2(
 						{ctor: '[]'});
 				}
 			case 'Mdl':
-				return A3(_debois$elm_mdl$Material$update, _user$project$Main$Mdl, _p2._0, model);
+				return A3(_debois$elm_mdl$Material$update, _user$project$Main$Mdl, _p3._0, model);
 			case 'Show':
 				return A2(
 					_elm_lang$core$Platform_Cmd_ops['!'],
 					_elm_lang$core$Native_Utils.update(
 						model,
-						{route: _p2._0}),
+						{page: _p3._0}),
 					{ctor: '[]'});
 			default:
 				return A2(
 					_elm_lang$core$Platform_Cmd_ops['!'],
 					_elm_lang$core$Native_Utils.update(
 						model,
-						{raised: _p2._0}),
+						{raised: _p3._0}),
 					{ctor: '[]'});
 		}
 	});
+var _user$project$Main$Show = function (a) {
+	return {ctor: 'Show', _0: a};
+};
+var _user$project$Main$locationChange = function (_p7) {
+	return _user$project$Main$Show(
+		_user$project$Main$findPage(_p7));
+};
 var _user$project$Main$view = function (model) {
 	var header = {
 		ctor: '::',
@@ -16908,39 +16926,46 @@ var _user$project$Main$view = function (model) {
 			}),
 		_1: {ctor: '[]'}
 	};
-	var viewEntry = function (cardId) {
-		var style = _debois$elm_mdl$Material_Options$many(
-			{
-				ctor: '::',
-				_0: _elm_lang$core$Native_Utils.eq(model.raised, cardId) ? _debois$elm_mdl$Material_Elevation$e8 : _debois$elm_mdl$Material_Elevation$e2,
-				_1: {
+	var viewEntry = F2(
+		function (cardId, entry) {
+			var style = _debois$elm_mdl$Material_Options$many(
+				{
 					ctor: '::',
-					_0: _debois$elm_mdl$Material_Elevation$transition(250),
+					_0: _elm_lang$core$Native_Utils.eq(model.raised, cardId) ? _debois$elm_mdl$Material_Elevation$e8 : _debois$elm_mdl$Material_Elevation$e2,
 					_1: {
 						ctor: '::',
-						_0: _debois$elm_mdl$Material_Options$onMouseEnter(
-							_user$project$Main$Raise(cardId)),
+						_0: _debois$elm_mdl$Material_Elevation$transition(250),
 						_1: {
 							ctor: '::',
-							_0: _debois$elm_mdl$Material_Options$onMouseLeave(
-								_user$project$Main$Raise(-1)),
-							_1: {ctor: '[]'}
+							_0: _debois$elm_mdl$Material_Options$onMouseEnter(
+								_user$project$Main$Raise(cardId)),
+							_1: {
+								ctor: '::',
+								_0: _debois$elm_mdl$Material_Options$onMouseLeave(
+									_user$project$Main$Raise(-1)),
+								_1: {
+									ctor: '::',
+									_0: _debois$elm_mdl$Material_Options$onClick(
+										_user$project$Main$Show(
+											_user$project$Main$SingleEntry(entry.slug))),
+									_1: {ctor: '[]'}
+								}
+							}
 						}
 					}
-				}
-			});
-		return _user$project$Entry$viewEntry(style);
-	};
+				});
+			return A2(_user$project$Entry$viewEntry, style, entry);
+		});
 	var content = function () {
-		var _p6 = model.route;
-		switch (_p6.ctor) {
+		var _p8 = model.page;
+		switch (_p8.ctor) {
 			case 'EntryList':
 				return A2(
 					_debois$elm_mdl$Material_Options$div,
 					{ctor: '[]'},
 					A2(_elm_lang$core$List$indexedMap, viewEntry, model.entries));
 			case 'SingleEntry':
-				var index = A2(_user$project$Main$findPost, model, _p6._0);
+				var index = A2(_user$project$Main$findPost, model, _p8._0);
 				var entries = A2(
 					_elm_lang$core$List$take,
 					1,
@@ -17028,13 +17053,6 @@ var _user$project$Main$view = function (model) {
 			}
 		});
 };
-var _user$project$Main$Show = function (a) {
-	return {ctor: 'Show', _0: a};
-};
-var _user$project$Main$locationChange = function (_p7) {
-	return _user$project$Main$Show(
-		_user$project$Main$findPage(_p7));
-};
 var _user$project$Main$PostList = function (a) {
 	return {ctor: 'PostList', _0: a};
 };
@@ -17054,7 +17072,7 @@ var _user$project$Main$init = function (location) {
 				_0: _user$project$Entry$loading,
 				_1: {ctor: '[]'}
 			},
-			route: _user$project$Main$EntryList,
+			page: _user$project$Main$EntryList,
 			mdl: _debois$elm_mdl$Material$model,
 			raised: -1
 		},

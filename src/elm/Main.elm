@@ -160,14 +160,20 @@ view model =
                         , Options.onMouseEnter (Raise cardId)
                         , Options.onMouseLeave (Raise -1)
                         , Options.onClick (Show <| SingleEntry entry.slug)
+                        , Options.css "margin" "5px"
                         ]
             in
                 Entry.viewEntry style entry
 
+        flexStyle =
+            [ Options.css "display" "flex"
+            , Options.css "flex-flow" "row wrap"
+            ]
+
         content =
             case model.page of
                 EntryList ->
-                    Options.div [] <|
+                    Options.div flexStyle <|
                         List.indexedMap viewEntry model.entries
 
                 SingleEntry slug ->

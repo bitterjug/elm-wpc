@@ -1,7 +1,6 @@
 module Main exposing (..)
 
 import Html exposing (..)
-import Html.Attributes exposing (..)
 import Http exposing (..)
 import Material
 import Material.Icon as Icon
@@ -11,6 +10,8 @@ import Material.Grid as Grid
 import Material.Elevation as Elevation
 import Material.Layout as Layout
 import Material.Button as Button
+import RouteUrl exposing (UrlChange)
+import RouteUrl.Builder as Builder exposing (Builder)
 import Navigation exposing (Location)
 import UrlParser as Url exposing ((</>))
 import Entry
@@ -18,12 +19,39 @@ import Entry exposing (Entry)
 
 
 main =
-    Navigation.program locationChange
-        { init = init
+    RouteUrl.program
+        { delta2url = delta2hash
+        , location2messages = hash2message
+        , init = init
         , update = update
         , view = view
         , subscriptions = \model -> Layout.subs Mdl model.mdl
         }
+
+
+hash2message : Location -> List Msg
+hash2message =
+    findPage >> Show >> List.singleton
+
+
+delta2hash : Model -> Model -> Maybe UrlChange
+delta2hash prevous current =
+    if prevous.page == current.page then
+        Nothing
+    else
+        current.page
+            |> toUrl
+            |> RouteUrl.UrlChange RouteUrl.NewEntry
+            |> Just
+
+
+
+{-
+   Builder.builder
+       |> Builder.replaceHash (toUrl current.page)
+       |> Builder.toUrlChange
+       |> Just
+-}
 
 
 type alias Model =
@@ -47,12 +75,12 @@ type Msg
     | Raise Int
 
 
-init : Location -> ( Model, Cmd Msg )
-init location =
+init : ( Model, Cmd Msg )
+init =
     ( { entries = [ Entry.loading ]
       , page =
             EntryList
-            -- TODO: later I want to start with most recent post
+            --  TODO: later I want to start with most recent post
       , mdl = Material.model
       , raised = -1
       }
@@ -60,20 +88,15 @@ init location =
     )
 
 
-locationChange : Location -> Msg
-locationChange loc =
-    let
-        _ =
-            Debug.log "Location change:" loc
-    in
-        loc |> findPage |> Show
-
-
 findPage : Location -> Page
 findPage location =
-    location
-        |> Url.parseHash routeParser
-        |> Maybe.withDefault NotFound
+    let
+        _ =
+            Debug.log "Location:" location
+    in
+        location
+            |> Url.parsePath routeParser
+            |> Maybe.withDefault NotFound
 
 
 routeParser : Url.Parser (Page -> Page) Page
@@ -89,13 +112,26 @@ toUrl : Page -> String
 toUrl route =
     case route of
         EntryList ->
-            "/#blog/"
+            "blog"
 
         SingleEntry slug ->
-            "/#blog/" ++ slug
+            "blog/" ++ slug
 
         NotFound ->
-            "/#404"
+            "404"
+
+
+toPath : Page -> List String
+toPath route =
+    case route of
+        EntryList ->
+            [ "blog" ]
+
+        SingleEntry slug ->
+            [ "blog", slug ]
+
+        NotFound ->
+            [ "404" ]
 
 
 {-| Find the index of a post in the list by its slug
@@ -117,28 +153,16 @@ update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
         PostList (Ok contents) ->
-            let
-                _ =
-                    Debug.log "OK:" contents
-            in
-                { model | entries = contents } ! []
+            { model | entries = contents } ! []
 
         PostList (Err _) ->
-            let
-                _ =
-                    Debug.log "Err:" ()
-            in
-                model ! []
+            model ! []
 
         Mdl msg_ ->
             Material.update Mdl msg_ model
 
         Show page ->
-            if model.page == page then
-                model ! []
-            else
-                { model | page = page }
-                    ! [ Navigation.newUrl (toUrl page) ]
+            { model | page = page } ! []
 
         Raise id ->
             { model | raised = id } ! []

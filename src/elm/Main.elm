@@ -7,6 +7,7 @@ import Material
 import Material.Icon as Icon
 import Material.Options as Options
 import Material.Color as Color
+import Material.Grid as Grid
 import Material.Elevation as Elevation
 import Material.Layout as Layout
 import Material.Button as Button
@@ -61,10 +62,11 @@ init location =
 
 locationChange : Location -> Msg
 locationChange loc =
-  let 
-      _ = Debug.log  "Location change:" loc
-  in
-    loc |> findPage |> Show
+    let
+        _ =
+            Debug.log "Location change:" loc
+    in
+        loc |> findPage |> Show
 
 
 findPage : Location -> Page
@@ -132,11 +134,11 @@ update msg model =
             Material.update Mdl msg_ model
 
         Show page ->
-          if model.page == page then
-            model ! []
-          else
-            { model | page = page } ! 
-            [ Navigation.newUrl (toUrl page) ]
+            if model.page == page then
+                model ! []
+            else
+                { model | page = page }
+                    ! [ Navigation.newUrl (toUrl page) ]
 
         Raise id ->
             { model | raised = id } ! []
@@ -219,11 +221,8 @@ view model =
             , drawer = []
             , tabs = ( [], [] )
             , main =
-                [ div [ class "mdl-grid" ]
-                    [ div [ class "mdl-cell mdl-cell--2-col mdl-cell--hide-phone mdl-cell--hide-tablet" ] []
-                    , div [ class "mdl-cell mdl-cell--8-col" ] [ content ]
-                    , div [ class "mdl-cell mdl-cell--2-col mdl-cell--hide-phone mdl-cell--hide-tablet" ] []
-                    ]
+                [ Grid.grid []
+                    [ Grid.cell [ Grid.offset Grid.Desktop 2, Grid.size Grid.Desktop 8 ] [ content ] ]
                 ]
             }
 

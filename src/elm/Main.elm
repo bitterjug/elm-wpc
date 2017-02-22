@@ -83,13 +83,13 @@ toUrl : Page -> String
 toUrl route =
     case route of
         EntryList ->
-            "/blog/"
+            "/#blog/"
 
         SingleEntry slug ->
-            "/blog/" ++ slug
+            "/#blog/" ++ slug
 
         NotFound ->
-            "/404"
+            "/#404"
 
 
 {-| Find the index of a post in the list by its slug
@@ -128,7 +128,11 @@ update msg model =
             Material.update Mdl msg_ model
 
         Show page ->
-            { model | page = page } ! []
+          if model.page == page then
+            model ! []
+          else
+            { model | page = page } ! 
+            [ Navigation.newUrl (toUrl page) ]
 
         Raise id ->
             { model | raised = id } ! []

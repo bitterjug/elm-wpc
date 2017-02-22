@@ -60,14 +60,17 @@ init location =
 
 
 locationChange : Location -> Msg
-locationChange =
-    findPage >> Show
+locationChange loc =
+  let 
+      _ = Debug.log  "Location change:" loc
+  in
+    loc |> findPage |> Show
 
 
 findPage : Location -> Page
 findPage location =
     location
-        |> Url.parsePath routeParser
+        |> Url.parseHash routeParser
         |> Maybe.withDefault NotFound
 
 
@@ -75,6 +78,7 @@ routeParser : Url.Parser (Page -> Page) Page
 routeParser =
     Url.oneOf
         [ Url.map EntryList Url.top
+        , Url.map EntryList (Url.s "blog")
         , Url.map SingleEntry (Url.s "blog" </> Url.string)
         ]
 

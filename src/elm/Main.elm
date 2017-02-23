@@ -11,7 +11,6 @@ import Material.Elevation as Elevation
 import Material.Layout as Layout
 import Material.Button as Button
 import RouteUrl exposing (UrlChange)
-import RouteUrl.Builder as Builder exposing (Builder)
 import Navigation exposing (Location)
 import UrlParser as Url exposing ((</>))
 import Entry
@@ -43,15 +42,6 @@ delta2hash prevous current =
             |> toUrl
             |> RouteUrl.UrlChange RouteUrl.NewEntry
             |> Just
-
-
-
-{-
-   Builder.builder
-       |> Builder.replaceHash (toUrl current.page)
-       |> Builder.toUrlChange
-       |> Just
--}
 
 
 type alias Model =
@@ -110,28 +100,16 @@ routeParser =
 
 toUrl : Page -> String
 toUrl route =
-    case route of
-        EntryList ->
-            "#blog"
+    "#"
+        ++ case route of
+            EntryList ->
+                "blog"
 
-        SingleEntry slug ->
-            "#blog/" ++ slug
+            SingleEntry slug ->
+                "blog/" ++ slug
 
-        NotFound ->
-            "404"
-
-
-toPath : Page -> List String
-toPath route =
-    case route of
-        EntryList ->
-            [ "blog" ]
-
-        SingleEntry slug ->
-            [ "blog", slug ]
-
-        NotFound ->
-            [ "404" ]
+            NotFound ->
+                "404"
 
 
 {-| Find the index of a post in the list by its slug

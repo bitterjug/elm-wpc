@@ -183,7 +183,7 @@ view model =
                                 |> List.take 1
                     in
                         Options.div [] <|
-                            List.indexedMap (viewEntry Entry.viewEntry) entries
+                            List.indexedMap (viewEntry Entry.viewDetail) entries
 
                 NotFound ->
                     div [] [ text "404 not found" ]

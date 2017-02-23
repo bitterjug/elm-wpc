@@ -1,5 +1,7 @@
 module Entry exposing (..)
 
+import Date
+import Date.Format exposing (format)
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Json.Decode as Decode exposing (Decoder)
@@ -13,12 +15,25 @@ type alias Entry =
     , content : String
     , excerpt : String
     , slug : String
+    , date : Date.Date
     }
 
 
 decodeContent : Decoder String
 decodeContent =
     Decode.at [ "content", "rendered" ] Decode.string
+
+
+decodeDate : Decoder Date.Date
+decodeDate =
+    let
+        stringToDate =
+            Date.fromString >> Result.withDefault borindDate
+
+        decodeDate =
+            Decode.map stringToDate Decode.string
+    in
+        Decode.field "date" decodeDate
 
 
 decodeExcerpt : Decoder String
@@ -33,12 +48,18 @@ decodeTitle =
 
 decodeSlug : Decoder String
 decodeSlug =
-    Decode.at [ "slug" ] Decode.string
+    Decode.field "slug" Decode.string
 
 
 decodeEntry : Decoder Entry
 decodeEntry =
-    Decode.map4 Entry decodeTitle decodeContent decodeExcerpt decodeSlug
+    Decode.map5
+        Entry
+        decodeTitle
+        decodeContent
+        decodeExcerpt
+        decodeSlug
+        decodeDate
 
 
 decodeEntries : Decoder (List Entry)
@@ -48,22 +69,35 @@ decodeEntries =
 
 loading : Entry
 loading =
-    Entry "..." "Loading..." "" ""
+    Entry "..." "Loading..." "" "" borindDate
 
 
-viewEntry : Options.Style msg -> Entry -> Html msg
-viewEntry style entry =
+viewEntry : String -> (Entry -> String) -> Options.Style msg -> Entry -> Html msg
+viewEntry typeClass getContent style entry =
     Card.view
-        [ style, Options.cs "entry entry-detail" ]
-        [ Card.title [] [ Card.head [] [ text entry.title ] ]
-        , Card.text [] [ Markdown.toHtml [] entry.content ]
+        [ style, Options.cs <| "entry " ++ typeClass ]
+        [ Card.title []
+            [ Card.head [] [ text entry.title ]
+            , Card.subhead [] [ formatDate entry.date ]
+            ]
+        , Card.text [] [ Markdown.toHtml [] (getContent entry) ]
         ]
+
+
+viewDetail : Options.Style msg -> Entry -> Html msg
+viewDetail =
+    viewEntry "entry-detail" .content
 
 
 viewSummary : Options.Style msg -> Entry -> Html msg
-viewSummary style entry =
-    Card.view
-        [ style, Options.cs "entry entry-summary" ]
-        [ Card.title [] [ Card.head [] [ text entry.title ] ]
-        , Card.text [] [ Markdown.toHtml [] entry.excerpt ]
-        ]
+viewSummary =
+    viewEntry "entry-summary" .excerpt
+
+
+formatDate : Date.Date -> Html msg
+formatDate =
+    format "%e %B %Y" >> String.trim >> text
+
+
+borindDate =
+    Date.fromTime 0

@@ -184,7 +184,10 @@ view model =
                         , Options.onMouseEnter (Raise cardId)
                         , Options.onMouseLeave (Raise -1)
                         , Options.onClick (Show <| SingleEntry entry.slug)
-                        , Options.css "margin" "5px"
+                        , Options.css "max-height" "50rem"
+                        , Options.css "margin" "10px"
+                        , Options.css "width" "100%"
+                        , Options.css "max-width" "532px"
                         ]
             in
                 Entry.viewEntry style entry
@@ -192,6 +195,7 @@ view model =
         flexStyle =
             [ Options.css "display" "flex"
             , Options.css "flex-flow" "row wrap"
+            , Options.css "align-items" "flex-start"
             ]
 
         content =
@@ -252,7 +256,7 @@ view model =
             , tabs = ( [], [] )
             , main =
                 [ Grid.grid []
-                    [ Grid.cell [ Grid.offset Grid.Desktop 2, Grid.size Grid.Desktop 8 ] [ content ] ]
+                    [ Grid.cell [ Grid.offset Grid.Desktop 1, Grid.size Grid.Desktop 10 ] [ content ] ]
                 ]
             }
 

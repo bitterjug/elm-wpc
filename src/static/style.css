@@ -2,8 +2,18 @@ body>div {
     background-color: #eee;
 }
 
-.post {
-    padding: 30px;
-    margin-bottom: 10px;
-    background-color: white;
+.entry-list-container {
+    display: flex;
+    flex-flow: row wrap;
+    align-items: flex-start;
+}
+
+.entry {
+    margin: 10px;
+    width: 100%;
+    max-width: 532px;
+}
+
+.entry-summary {
+    max-height: 50rem;
 }

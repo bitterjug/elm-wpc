@@ -95,7 +95,7 @@ findPage location =
             Debug.log "Location:" location
     in
         location
-            |> Url.parsePath routeParser
+            |> Url.parseHash routeParser
             |> Maybe.withDefault NotFound
 
 
@@ -112,10 +112,10 @@ toUrl : Page -> String
 toUrl route =
     case route of
         EntryList ->
-            "blog"
+            "#blog"
 
         SingleEntry slug ->
-            "blog/" ++ slug
+            "#blog/" ++ slug
 
         NotFound ->
             "404"
@@ -184,24 +184,14 @@ view model =
                         , Options.onMouseEnter (Raise cardId)
                         , Options.onMouseLeave (Raise -1)
                         , Options.onClick (Show <| SingleEntry entry.slug)
-                        , Options.css "max-height" "50rem"
-                        , Options.css "margin" "10px"
-                        , Options.css "width" "100%"
-                        , Options.css "max-width" "532px"
                         ]
             in
                 cardView style entry
 
-        flexStyle =
-            [ Options.css "display" "flex"
-            , Options.css "flex-flow" "row wrap"
-            , Options.css "align-items" "flex-start"
-            ]
-
         content =
             case model.page of
                 EntryList ->
-                    Options.div flexStyle <|
+                    Options.div [ Options.cs "entry-list-container" ] <|
                         List.indexedMap (viewEntry Entry.viewSummary) model.entries
 
                 SingleEntry slug ->

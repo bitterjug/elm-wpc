@@ -54,8 +54,8 @@ loading =
 viewEntry : Options.Style msg -> Entry -> Html msg
 viewEntry style entry =
     Card.view
-        [ style ]
-        [ Card.title [] [ text entry.title ]
+        [ style, Options.cs "entry entry-detail" ]
+        [ Card.title [] [ Card.head [] [ text entry.title ] ]
         , Card.text [] [ Markdown.toHtml [] entry.content ]
         ]
 
@@ -63,7 +63,7 @@ viewEntry style entry =
 viewSummary : Options.Style msg -> Entry -> Html msg
 viewSummary style entry =
     Card.view
-        [ style ]
+        [ style, Options.cs "entry entry-summary" ]
         [ Card.title [] [ Card.head [] [ text entry.title ] ]
         , Card.text [] [ Markdown.toHtml [] entry.excerpt ]
         ]

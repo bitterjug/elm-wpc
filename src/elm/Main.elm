@@ -202,9 +202,10 @@ view model =
                         [ Icon.i "arrow_back" ]
                     ]
                 , Layout.spacer
-                , Layout.title [ Layout.href <| toUrl EntryList ] [ img [ src "images/bjlogo.png" ] [] ]
+                , Layout.title []
+                    [ Html.a [ Html.Attributes.href <| toUrl EntryList ] [ img [ src "images/bjlogo.png" ] [] ]
+                    ]
                 , Layout.spacer
-                , Layout.link [ Layout.href <| toUrl EntryList ] [ text "Index" ]
                 , Layout.navigation []
                     [ Button.render Mdl
                         [ 1 ]

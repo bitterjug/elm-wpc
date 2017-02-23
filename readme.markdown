@@ -15,3 +15,4 @@ To Do
 - [ ] Make list entries click through to their corresponding pages
 
 
+- [ ] Adding buttons to cards is going to entail giving each one an unique button id number

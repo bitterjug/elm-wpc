@@ -11,6 +11,7 @@ import Material.Options as Options
 type alias Entry =
     { title : String
     , content : String
+    , excerpt : String
     , slug : String
     }
 
@@ -18,6 +19,11 @@ type alias Entry =
 decodeContent : Decoder String
 decodeContent =
     Decode.at [ "content", "rendered" ] Decode.string
+
+
+decodeExcerpt : Decoder String
+decodeExcerpt =
+    Decode.at [ "excerpt", "rendered" ] Decode.string
 
 
 decodeTitle : Decoder String
@@ -32,7 +38,7 @@ decodeSlug =
 
 decodeEntry : Decoder Entry
 decodeEntry =
-    Decode.map3 Entry decodeTitle decodeContent decodeSlug
+    Decode.map4 Entry decodeTitle decodeContent decodeExcerpt decodeSlug
 
 
 decodeEntries : Decoder (List Entry)
@@ -42,7 +48,7 @@ decodeEntries =
 
 loading : Entry
 loading =
-    Entry "..." "Loading..." ""
+    Entry "..." "Loading..." "" ""
 
 
 viewEntry : Options.Style msg -> Entry -> Html msg
@@ -51,4 +57,13 @@ viewEntry style entry =
         [ style ]
         [ Card.title [] [ text entry.title ]
         , Card.text [] [ Markdown.toHtml [] entry.content ]
+        ]
+
+
+viewSummary : Options.Style msg -> Entry -> Html msg
+viewSummary style entry =
+    Card.view
+        [ style ]
+        [ Card.title [] [ Card.head [] [ text entry.title ] ]
+        , Card.text [] [ Markdown.toHtml [] entry.excerpt ]
         ]

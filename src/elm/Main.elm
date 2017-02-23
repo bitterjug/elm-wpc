@@ -171,8 +171,8 @@ update msg model =
 view : Model -> Html Msg
 view model =
     let
-        viewEntry : Int -> Entry.Entry -> Html Msg
-        viewEntry cardId entry =
+        viewEntry : (Options.Style Msg -> Entry.Entry -> Html Msg) -> Int -> Entry.Entry -> Html Msg
+        viewEntry cardView cardId entry =
             let
                 style =
                     Options.many
@@ -190,7 +190,7 @@ view model =
                         , Options.css "max-width" "532px"
                         ]
             in
-                Entry.viewEntry style entry
+                cardView style entry
 
         flexStyle =
             [ Options.css "display" "flex"
@@ -202,7 +202,7 @@ view model =
             case model.page of
                 EntryList ->
                     Options.div flexStyle <|
-                        List.indexedMap viewEntry model.entries
+                        List.indexedMap (viewEntry Entry.viewSummary) model.entries
 
                 SingleEntry slug ->
                     let
@@ -215,7 +215,7 @@ view model =
                                 |> List.take 1
                     in
                         Options.div [] <|
-                            List.indexedMap viewEntry entries
+                            List.indexedMap (viewEntry Entry.viewEntry) entries
 
                 NotFound ->
                     div [] [ text "404 not found" ]

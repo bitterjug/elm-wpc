@@ -1,6 +1,7 @@
 module Main exposing (..)
 
 import Html exposing (..)
+import Html.Attributes exposing (src)
 import Http exposing (..)
 import Material
 import Material.Icon as Icon
@@ -189,7 +190,7 @@ view model =
                     div [] [ text "404 not found" ]
 
         header =
-            [ Layout.row []
+            [ Layout.row [ Options.cs "header-row" ]
                 [ Layout.navigation []
                     [ Button.render Mdl
                         [ 0 ]
@@ -201,8 +202,9 @@ view model =
                         [ Icon.i "arrow_back" ]
                     ]
                 , Layout.spacer
-                , Layout.title [] [ text "Bitterjug" ]
+                , Layout.title [ Layout.href <| toUrl EntryList ] [ img [ src "images/bjlogo.png" ] [] ]
                 , Layout.spacer
+                , Layout.link [ Layout.href <| toUrl EntryList ] [ text "Index" ]
                 , Layout.navigation []
                     [ Button.render Mdl
                         [ 1 ]

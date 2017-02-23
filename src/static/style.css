@@ -1,5 +1,5 @@
 body>div {
-    background-color: #eee;
+    background-color: #d4d0d0;
 }
 
 .entry-list-container {
@@ -14,3 +14,7 @@ body>div {
     max-width: 532px;
 }
 
+.header-row {
+    height: 133px;
+    background-color: #eee;
+}

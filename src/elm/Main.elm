@@ -147,6 +147,20 @@ update msg model =
             { model | raised = id } ! []
 
 
+prevNextButton : Material.Model -> Int -> String -> Maybe String -> Html Msg
+prevNextButton mdl id iconName maybeUrl =
+    Button.render Mdl
+        [ id ]
+        mdl
+        [ Button.icon
+        , Button.ripple
+        , maybeUrl
+            |> Maybe.map Button.link
+            |> Maybe.withDefault Button.disabled
+        ]
+        [ Icon.i iconName ]
+
+
 view : Model -> Html Msg
 view model =
     let
@@ -189,33 +203,21 @@ view model =
                 NotFound ->
                     div [] [ text "404 not found" ]
 
+        previousButton =
+            prevNextButton model.mdl 0 "arrow_back" Nothing
+
+        nextButton =
+            prevNextButton model.mdl 1 "arrow_forward" Nothing
+
         header =
             [ Layout.row [ Options.cs "header-row" ]
-                [ Layout.navigation []
-                    [ Button.render Mdl
-                        [ 0 ]
-                        model.mdl
-                        [ Button.icon
-                        , Button.ripple
-                          -- , Options.onClick Previous
-                        ]
-                        [ Icon.i "arrow_back" ]
-                    ]
+                [ Layout.navigation [] [ previousButton ]
                 , Layout.spacer
                 , Layout.title []
                     [ Html.a [ Html.Attributes.href <| toUrl EntryList ] [ img [ src "images/bjlogo.png" ] [] ]
                     ]
                 , Layout.spacer
-                , Layout.navigation []
-                    [ Button.render Mdl
-                        [ 1 ]
-                        model.mdl
-                        [ Button.icon
-                        , Button.ripple
-                          -- , Options.onClick Next
-                        ]
-                        [ Icon.i "arrow_forward" ]
-                    ]
+                , Layout.navigation [] [ nextButton ]
                 ]
             ]
     in

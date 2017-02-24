@@ -77,6 +77,13 @@ init =
     )
 
 
+{-| Under what circumstances should this return NotFound?
+  | - When the pattern doesn't match any of the routes,
+  | - Wheh the pattern is #blog/slug but slug can't be found
+  | Now when slug can't be found in the current cache we need to
+  | search for it and receive a negative answer before we know its
+  | not found.
+-}
 findPage : Location -> Page
 findPage location =
     location
@@ -108,8 +115,8 @@ toUrl route =
 
 
 {-| Find the index of a post in the list by its slug
-   Currently return 0 as fefault but should somehow
-   allow us to trigger fetching more ...
+  | Currently return 0 as fefault but should somehow
+  |  allow us to trigger fetching more ...
 -}
 findPost : Model -> String -> Int
 findPost model slug =

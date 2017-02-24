@@ -69,9 +69,7 @@ type Msg
 init : ( Model, Cmd Msg )
 init =
     ( { entries = [ Entry.loading ]
-      , page =
-            EntryList
-            --  TODO: later I want to start with most recent post
+      , page = EntryList
       , mdl = Material.model
       , raised = -1
       }
@@ -81,13 +79,9 @@ init =
 
 findPage : Location -> Page
 findPage location =
-    let
-        _ =
-            Debug.log "Location:" location
-    in
-        location
-            |> Url.parseHash routeParser
-            |> Maybe.withDefault NotFound
+    location
+        |> Url.parseHash routeParser
+        |> Maybe.withDefault NotFound
 
 
 routeParser : Url.Parser (Page -> Page) Page

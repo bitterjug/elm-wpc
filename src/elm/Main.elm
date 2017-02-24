@@ -53,9 +53,13 @@ type alias Model =
     }
 
 
+type alias Slug =
+    String
+
+
 type Page
     = EntryList
-    | SingleEntry String
+    | SingleEntry Slug
     | NotFound
 
 
@@ -118,7 +122,7 @@ toUrl route =
   | Currently return 0 as fefault but should somehow
   |  allow us to trigger fetching more ...
 -}
-findPost : Model -> String -> Int
+findPost : Model -> Slug -> Int
 findPost model slug =
     model.entries
         |> List.map .slug
@@ -127,6 +131,29 @@ findPost model slug =
         |> List.head
         |> Maybe.map Tuple.first
         |> Maybe.withDefault 0
+
+
+previousPostIfAvailable : Model -> Maybe Slug
+previousPostIfAvailable model =
+    let
+        currentSlug =
+            case model.page of
+                SingleEntry slug ->
+                    Just slug
+
+                _ ->
+                    Nothing
+
+        currentIndex =
+            currentSlug
+                |> Maybe.map findPost model
+
+        previousIndex =
+            currentIndex - 1
+    in
+        model.entries
+            |> List.drop previousIndex
+            |> Maybe.map
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )

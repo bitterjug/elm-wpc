@@ -4,31 +4,7 @@ import Test exposing (..)
 import Expect
 import Fuzz exposing (list, int, tuple, string)
 import String
-
-
-indexOf : (a -> Bool) -> List a -> Maybe Int
-indexOf predicate list =
-    list
-        |> List.indexedMap (,)
-        |> List.filter (\( i, val ) -> predicate val)
-        |> List.head
-        |> Maybe.map Tuple.first
-
-
-getPrevious : List a -> (a -> Bool) -> Maybe a
-getPrevious list predicate =
-    let
-        decrement n =
-            if n > 0 then
-                Just (n - 1)
-            else
-                Nothing
-    in
-        list
-            |> indexOf predicate
-            |> Maybe.andThen decrement
-            |> Maybe.map (flip List.drop list)
-            |> Maybe.andThen List.head
+import ListLib exposing (..)
 
 
 all : Test
@@ -36,6 +12,7 @@ all =
     describe "All tests"
         [ testIndexOf
         , testGetPrevious
+        , testGetNext
         ]
 
 
@@ -66,6 +43,32 @@ testIndexOf =
             \() ->
                 indexOf ((==) "d") [ "a", "b", "c", "d", "e", "f" ]
                     |> Expect.equal (Just 3)
+        ]
+
+
+testGetNext : Test
+testGetNext =
+    describe "Test my get Previous function"
+        [ test "Next of first element is second " <|
+            \() ->
+                getNext [ "a", "b", "c" ] ((==) "a")
+                    |> Expect.equal (Just "b")
+        , test "Next of not found is Nothing" <|
+            \() ->
+                getNext [] ((==) 1)
+                    |> Expect.equal Nothing
+        , test "Next of median element " <|
+            \() ->
+                getNext [ "a", "b", "c" ] ((==) "b")
+                    |> Expect.equal (Just "c")
+        , test "Next of median element " <|
+            \() ->
+                getNext [ "a", "b", "c" ] ((==) "c")
+                    |> Expect.equal Nothing
+        , test "Next of median element " <|
+            \() ->
+                getNext [ "c" ] ((==) "c")
+                    |> Expect.equal Nothing
         ]
 
 

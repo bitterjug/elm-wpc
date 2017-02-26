@@ -5,9 +5,14 @@ import Date.Format exposing (format)
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Json.Decode as Decode exposing (Decoder)
+import ListLib
 import Markdown
 import Material.Card as Card
 import Material.Options as Options
+
+
+type alias Slug =
+    String
 
 
 type alias Entry =
@@ -101,3 +106,20 @@ formatDate =
 
 borindDate =
     Date.fromTime 0
+
+
+hasSlug : Slug -> Entry -> Bool
+hasSlug slug entry =
+    entry.slug == slug
+
+
+nextSlugIfAvailable : List Entry -> Slug -> Maybe Slug
+nextSlugIfAvailable entries slug =
+    ListLib.getPrevious entries (hasSlug slug)
+        |> Maybe.map .slug
+
+
+previousSlugIfAvailable : List Entry -> Slug -> Maybe Slug
+previousSlugIfAvailable entries slug =
+    ListLib.getNext entries (hasSlug slug)
+        |> Maybe.map .slug

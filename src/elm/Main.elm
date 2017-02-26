@@ -1,11 +1,9 @@
 module Main exposing (..)
 
-import Entry
-import Entry exposing (Entry)
+import Entry exposing (Entry, Slug)
 import Html exposing (..)
 import Html.Attributes exposing (src)
-import Http exposing (..)
-import ListLib
+import Http
 import Material
 import Material.Icon as Icon
 import Material.Options as Options
@@ -17,6 +15,7 @@ import Material.Button as Button
 import Navigation exposing (Location)
 import RouteUrl exposing (UrlChange)
 import UrlParser as Url exposing ((</>))
+import WordpressRestApi exposing (..)
 
 
 main =
@@ -54,10 +53,6 @@ type alias Model =
     }
 
 
-type alias Slug =
-    String
-
-
 type Page
     = EntryList
     | SingleEntry Slug
@@ -78,7 +73,7 @@ init =
       , mdl = Material.model
       , raised = -1
       }
-    , getPostList
+    , getPostList PostList
     )
 
 
@@ -134,23 +129,14 @@ findPost model slug =
         |> Maybe.withDefault 0
 
 
-nextSlugIfAvailable : (List Entry -> (Entry -> Bool) -> Maybe Entry) -> Model -> Maybe Slug
-nextSlugIfAvailable getNeighbour model =
-    let
-        currentSlug =
-            case model.page of
-                SingleEntry slug ->
-                    Just slug
+currentSlug : Model -> Maybe Slug
+currentSlug model =
+    case model.page of
+        SingleEntry slug ->
+            Just slug
 
-                _ ->
-                    Nothing
-
-        getPrevEntry slug =
-            getNeighbour model.entries (\entry -> entry.slug == slug)
-    in
-        currentSlug
-            |> Maybe.andThen getPrevEntry
-            |> Maybe.map .slug
+        _ ->
+            Nothing
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -172,24 +158,22 @@ update msg model =
             { model | raised = id } ! []
 
 
-prevNextButton : Material.Model -> Int -> String -> Maybe String -> Html Msg
-prevNextButton mdl id iconName maybeSlug =
-    let
-        _ =
-            Debug.log iconName maybeSlug
-    in
-        Button.render Mdl
-            [ id ]
-            mdl
-            [ Button.icon
-            , Button.ripple
-            , maybeSlug
-                |> Maybe.map SingleEntry
-                |> Maybe.map toUrl
-                |> Maybe.map Button.link
-                |> Maybe.withDefault Button.disabled
-            ]
-            [ Icon.i iconName ]
+prevNextButton : Model -> Int -> String -> (List Entry -> Slug -> Maybe Slug) -> Html Msg
+prevNextButton model id iconName getNeighbourIfAvailable =
+    Button.render Mdl
+        [ id ]
+        model.mdl
+        [ Button.icon
+        , Button.ripple
+        , model
+            |> currentSlug
+            |> Maybe.andThen (getNeighbourIfAvailable model.entries)
+            |> Maybe.map SingleEntry
+            |> Maybe.map toUrl
+            |> Maybe.map Button.link
+            |> Maybe.withDefault Button.disabled
+        ]
+        [ Icon.i iconName ]
 
 
 view : Model -> Html Msg
@@ -235,10 +219,10 @@ view model =
                     div [] [ text "404 not found" ]
 
         previousButton =
-            prevNextButton model.mdl 0 "arrow_back" <| nextSlugIfAvailable ListLib.getNext model
+            prevNextButton model 0 "arrow_back" Entry.previousSlugIfAvailable
 
         nextButton =
-            prevNextButton model.mdl 1 "arrow_forward" <| nextSlugIfAvailable ListLib.getPrevious model
+            prevNextButton model 1 "arrow_forward" Entry.nextSlugIfAvailable
 
         header =
             [ Layout.row [ Options.cs "header-row" ]
@@ -263,13 +247,3 @@ view model =
                     [ Grid.cell [ Grid.offset Grid.Desktop 1, Grid.size Grid.Desktop 10 ] [ content ] ]
                 ]
             }
-
-
-getPostList : Cmd Msg
-getPostList =
-    let
-        url =
-            -- "http://bitterjug.com/wp-json/wp/v2/posts/"
-            "posts.json"
-    in
-        Http.send PostList (Http.get url Entry.decodeEntries)

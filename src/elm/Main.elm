@@ -1,8 +1,11 @@
 module Main exposing (..)
 
+import Entry
+import Entry exposing (Entry)
 import Html exposing (..)
 import Html.Attributes exposing (src)
 import Http exposing (..)
+import ListLib
 import Material
 import Material.Icon as Icon
 import Material.Options as Options
@@ -11,11 +14,9 @@ import Material.Grid as Grid
 import Material.Elevation as Elevation
 import Material.Layout as Layout
 import Material.Button as Button
-import RouteUrl exposing (UrlChange)
 import Navigation exposing (Location)
+import RouteUrl exposing (UrlChange)
 import UrlParser as Url exposing ((</>))
-import Entry
-import Entry exposing (Entry)
 
 
 main =
@@ -133,8 +134,8 @@ findPost model slug =
         |> Maybe.withDefault 0
 
 
-previousPostIfAvailable : Model -> Maybe Slug
-previousPostIfAvailable model =
+nextSlugIfAvailable : (List Entry -> (Entry -> Bool) -> Maybe Entry) -> Model -> Maybe Slug
+nextSlugIfAvailable getNeighbour model =
     let
         currentSlug =
             case model.page of
@@ -144,16 +145,12 @@ previousPostIfAvailable model =
                 _ ->
                     Nothing
 
-        currentIndex =
-            currentSlug
-                |> Maybe.map findPost model
-
-        previousIndex =
-            currentIndex - 1
+        getPrevEntry slug =
+            getNeighbour model.entries (\entry -> entry.slug == slug)
     in
-        model.entries
-            |> List.drop previousIndex
-            |> Maybe.map
+        currentSlug
+            |> Maybe.andThen getPrevEntry
+            |> Maybe.map .slug
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -176,23 +173,29 @@ update msg model =
 
 
 prevNextButton : Material.Model -> Int -> String -> Maybe String -> Html Msg
-prevNextButton mdl id iconName maybeUrl =
-    Button.render Mdl
-        [ id ]
-        mdl
-        [ Button.icon
-        , Button.ripple
-        , maybeUrl
-            |> Maybe.map Button.link
-            |> Maybe.withDefault Button.disabled
-        ]
-        [ Icon.i iconName ]
+prevNextButton mdl id iconName maybeSlug =
+    let
+        _ =
+            Debug.log iconName maybeSlug
+    in
+        Button.render Mdl
+            [ id ]
+            mdl
+            [ Button.icon
+            , Button.ripple
+            , maybeSlug
+                |> Maybe.map SingleEntry
+                |> Maybe.map toUrl
+                |> Maybe.map Button.link
+                |> Maybe.withDefault Button.disabled
+            ]
+            [ Icon.i iconName ]
 
 
 view : Model -> Html Msg
 view model =
     let
-        viewEntry : (Options.Style Msg -> Entry.Entry -> Html Msg) -> Int -> Entry.Entry -> Html Msg
+        viewEntry : (Options.Style Msg -> Entry -> Html Msg) -> Int -> Entry -> Html Msg
         viewEntry cardView cardId entry =
             let
                 style =
@@ -232,10 +235,10 @@ view model =
                     div [] [ text "404 not found" ]
 
         previousButton =
-            prevNextButton model.mdl 0 "arrow_back" Nothing
+            prevNextButton model.mdl 0 "arrow_back" <| nextSlugIfAvailable ListLib.getNext model
 
         nextButton =
-            prevNextButton model.mdl 1 "arrow_forward" Nothing
+            prevNextButton model.mdl 1 "arrow_forward" <| nextSlugIfAvailable ListLib.getPrevious model
 
         header =
             [ Layout.row [ Options.cs "header-row" ]

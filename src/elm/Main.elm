@@ -1,10 +1,9 @@
 module Main exposing (..)
 
-import Entry exposing (Entry, Slug)
+import Entry exposing (Entry, Slug, Neighbours)
 import Html exposing (..)
 import Html.Attributes exposing (src)
 import Http
-import ListLib
 import Material
 import Material.Icon as Icon
 import Material.Options as Options
@@ -51,12 +50,6 @@ type alias Model =
     , page : Page
     , mdl : Material.Model
     , raised : Int
-    }
-
-
-type alias Neighbours =
-    { previous : Maybe Slug
-    , next : Maybe Slug
     }
 
 
@@ -135,11 +128,29 @@ currentSlug model =
             Nothing
 
 
+pageWithNeighbours : Page -> List Entry -> Page
+pageWithNeighbours page entries =
+    case page of
+        SingleEntry _ slug ->
+            let
+                neighbours =
+                    Entry.neighboursFor slug entries
+            in
+                SingleEntry neighbours slug
+
+        _ ->
+            page
+
+
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
         PostList (Ok contents) ->
-            { model | entries = contents } ! []
+            { model
+                | entries = contents
+                , page = pageWithNeighbours model.page contents
+            }
+                ! []
 
         PostList (Err _) ->
             model ! []
@@ -148,33 +159,21 @@ update msg model =
             Material.update Mdl msg_ model
 
         Show page ->
-            case page of
-                SingleEntry _ slug ->
-                    let
-                        neighbours =
-                            unknownNeighbours
-                    in
-                        { model | page = SingleEntry neighbours slug } ! []
-
-                _ ->
-                    { model | page = page } ! []
+            { model | page = pageWithNeighbours page model.entries } ! []
 
         Raise id ->
             { model | raised = id } ! []
 
 
-prevNextButton : Model -> Int -> String -> (List Entry -> (Entry -> Bool) -> Maybe Entry) -> Html Msg
-prevNextButton model id iconName getNeighbour =
+prevNextButton : Model -> Int -> String -> Maybe Slug -> Html Msg
+prevNextButton model id iconName neighbour =
     Button.render Mdl
         [ id ]
         model.mdl
         [ Button.icon
         , Button.ripple
-        , model
-            |> currentSlug
-            |> Maybe.map Entry.hasSlug
-            |> Maybe.andThen (getNeighbour model.entries)
-            |> Maybe.map (Button.link << toUrl << SingleEntry unknownNeighbours << .slug)
+        , neighbour
+            |> Maybe.map (Button.link << toUrl << SingleEntry unknownNeighbours)
             |> Maybe.withDefault Button.disabled
         ]
         [ Icon.i iconName ]
@@ -203,37 +202,39 @@ view model =
         notFound =
             div [] [ text "404 not found" ]
 
-        content =
+        ( prevSlug, nextSlug, content ) =
             case model.page of
                 EntryList ->
-                    Options.div [ Options.cs "entry-list-container" ] <|
-                        List.indexedMap (viewEntry Entry.viewSummary) model.entries
+                    let
+                        entries =
+                            Options.div [ Options.cs "entry-list-container" ] <|
+                                List.indexedMap (viewEntry Entry.viewSummary) model.entries
+                    in
+                        ( Nothing, Nothing, entries )
 
-                SingleEntry neighbours slug ->
-                    model.entries
-                        |> Entry.findPost (Entry.hasSlug slug)
-                        |> Maybe.map (flip List.drop model.entries >> List.take 1)
-                        |> Maybe.map (Options.div [] << List.indexedMap (viewEntry Entry.viewDetail))
-                        |> Maybe.withDefault notFound
+                SingleEntry { previous, next } slug ->
+                    let
+                        entries =
+                            model.entries
+                                |> Entry.findPost (Entry.hasSlug slug)
+                                |> Maybe.map (flip List.drop model.entries >> List.take 1)
+                                |> Maybe.map (Options.div [] << List.indexedMap (viewEntry Entry.viewDetail))
+                                |> Maybe.withDefault notFound
+                    in
+                        ( previous, next, entries )
 
                 NotFound ->
-                    notFound
-
-        previousButton =
-            prevNextButton model 0 "arrow_back" ListLib.getNext
-
-        nextButton =
-            prevNextButton model 1 "arrow_forward" ListLib.getPrevious
+                    ( Nothing, Nothing, notFound )
 
         header =
             [ Layout.row [ Options.cs "header-row" ]
-                [ Layout.navigation [] [ previousButton ]
+                [ Layout.navigation [] [ prevNextButton model 0 "arrow_back" prevSlug ]
                 , Layout.spacer
                 , Layout.title []
                     [ Html.a [ Html.Attributes.href <| toUrl EntryList ] [ img [ src "images/bjlogo.png" ] [] ]
                     ]
                 , Layout.spacer
-                , Layout.navigation [] [ nextButton ]
+                , Layout.navigation [] [ prevNextButton model 1 "arrow_forward" nextSlug ]
                 ]
             ]
     in

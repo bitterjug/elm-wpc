@@ -24,6 +24,12 @@ type alias Entry =
     }
 
 
+type alias Neighbours =
+    { previous : Maybe Slug
+    , next : Maybe Slug
+    }
+
+
 decodeContent : Decoder String
 decodeContent =
     Decode.at [ "content", "rendered" ] Decode.string
@@ -120,3 +126,16 @@ findPost predicate entries =
 hasSlug : Slug -> Entry -> Bool
 hasSlug slug entry =
     entry.slug == slug
+
+
+neighboursFor : Slug -> List Entry -> Neighbours
+neighboursFor slug entries =
+    { previous =
+        hasSlug slug
+            |> ListLib.getNext entries
+            |> Maybe.map .slug
+    , next =
+        hasSlug slug
+            |> ListLib.getPrevious entries
+            |> Maybe.map .slug
+    }

@@ -54,9 +54,19 @@ type alias Model =
     }
 
 
+type alias Neighbours =
+    { previous : Maybe Slug
+    , next : Maybe Slug
+    }
+
+
+unknownNeighbours =
+    Neighbours Nothing Nothing
+
+
 type Page
     = EntryList
-    | SingleEntry Slug
+    | SingleEntry Neighbours Slug
     | NotFound
 
 
@@ -97,7 +107,7 @@ routeParser =
     Url.oneOf
         [ Url.map EntryList Url.top
         , Url.map EntryList (Url.s "blog")
-        , Url.map SingleEntry (Url.s "blog" </> Url.string)
+        , Url.map (SingleEntry unknownNeighbours) (Url.s "blog" </> Url.string)
         ]
 
 
@@ -108,7 +118,7 @@ toUrl route =
             EntryList ->
                 "blog"
 
-            SingleEntry slug ->
+            SingleEntry _ slug ->
                 "blog/" ++ slug
 
             NotFound ->
@@ -118,7 +128,7 @@ toUrl route =
 currentSlug : Model -> Maybe Slug
 currentSlug model =
     case model.page of
-        SingleEntry slug ->
+        SingleEntry _ slug ->
             Just slug
 
         _ ->
@@ -138,7 +148,16 @@ update msg model =
             Material.update Mdl msg_ model
 
         Show page ->
-            { model | page = page } ! []
+            case page of
+                SingleEntry _ slug ->
+                    let
+                        neighbours =
+                            unknownNeighbours
+                    in
+                        { model | page = SingleEntry neighbours slug } ! []
+
+                _ ->
+                    { model | page = page } ! []
 
         Raise id ->
             { model | raised = id } ! []
@@ -155,7 +174,7 @@ prevNextButton model id iconName getNeighbour =
             |> currentSlug
             |> Maybe.map Entry.hasSlug
             |> Maybe.andThen (getNeighbour model.entries)
-            |> Maybe.map (Button.link << toUrl << SingleEntry << .slug)
+            |> Maybe.map (Button.link << toUrl << SingleEntry unknownNeighbours << .slug)
             |> Maybe.withDefault Button.disabled
         ]
         [ Icon.i iconName ]
@@ -176,7 +195,7 @@ view model =
                         , Elevation.transition 250
                         , Options.onMouseEnter (Raise cardId)
                         , Options.onMouseLeave (Raise -1)
-                        , Options.onClick (Show <| SingleEntry entry.slug)
+                        , Options.onClick (Show <| SingleEntry unknownNeighbours entry.slug)
                         ]
             in
                 cardView style entry
@@ -190,7 +209,7 @@ view model =
                     Options.div [ Options.cs "entry-list-container" ] <|
                         List.indexedMap (viewEntry Entry.viewSummary) model.entries
 
-                SingleEntry slug ->
+                SingleEntry neighbours slug ->
                     model.entries
                         |> Entry.findPost (Entry.hasSlug slug)
                         |> Maybe.map (flip List.drop model.entries >> List.take 1)

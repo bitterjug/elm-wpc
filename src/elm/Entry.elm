@@ -108,6 +108,15 @@ borindDate =
     Date.fromTime 0
 
 
+findPost : (Entry -> Bool) -> List Entry -> Maybe Int
+findPost predicate entries =
+    entries
+        |> List.indexedMap (,)
+        |> List.filter (predicate << Tuple.second)
+        |> List.head
+        |> Maybe.map Tuple.first
+
+
 hasSlug : Slug -> Entry -> Bool
 hasSlug slug entry =
     entry.slug == slug

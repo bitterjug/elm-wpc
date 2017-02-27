@@ -115,21 +115,6 @@ toUrl route =
                 "404"
 
 
-{-| Find the index of a post in the list by its slug
-  | Currently return 0 as fefault but should somehow
-  |  allow us to trigger fetching more ...
--}
-findPost : Model -> Slug -> Int
-findPost model slug =
-    model.entries
-        |> List.map .slug
-        |> List.indexedMap (,)
-        |> List.filter (\( i, entrySlug ) -> entrySlug == slug)
-        |> List.head
-        |> Maybe.map Tuple.first
-        |> Maybe.withDefault 0
-
-
 currentSlug : Model -> Maybe Slug
 currentSlug model =
     case model.page of
@@ -196,6 +181,9 @@ view model =
             in
                 cardView style entry
 
+        notFound =
+            div [] [ text "404 not found" ]
+
         content =
             case model.page of
                 EntryList ->
@@ -203,20 +191,14 @@ view model =
                         List.indexedMap (viewEntry Entry.viewSummary) model.entries
 
                 SingleEntry slug ->
-                    let
-                        index =
-                            findPost model slug
-
-                        entries =
-                            model.entries
-                                |> List.drop index
-                                |> List.take 1
-                    in
-                        Options.div [] <|
-                            List.indexedMap (viewEntry Entry.viewDetail) entries
+                    model.entries
+                        |> Entry.findPost (Entry.hasSlug slug)
+                        |> Maybe.map (flip List.drop model.entries >> List.take 1)
+                        |> Maybe.map (Options.div [] << List.indexedMap (viewEntry Entry.viewDetail))
+                        |> Maybe.withDefault notFound
 
                 NotFound ->
-                    div [] [ text "404 not found" ]
+                    notFound
 
         previousButton =
             prevNextButton model 0 "arrow_back" ListLib.getNext

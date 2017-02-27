@@ -6,7 +6,7 @@ Currently I'm building and running with this:
 ```
 elm-live --open --pushstate --dir=src/static src/elm/Main.elm --output src/static/Main.js
 ```
-To Do
+To Doer
 =======
 
 - [x] Make list entries click through to their corresponding pages
@@ -44,4 +44,12 @@ To Do
 - [ ] Do we need a way to know if we've reached the actual beginning or end of the 
   list of entries so as to avoid repeatedly requesting the next page at the end?
 
+  The response headers give us that information 
+
 - [ ] Adding buttons to cards is going to entail giving each one an unique button id number
+
+At the moment we don't know until we try and render a post page -- and its neighbours
+-- if we need to fetch more data or not. Bu that's the wrong place. The right place is 
+in update. So perhaps we should set the prev and next as part of the update. Either
+we set them there or we just check for them there. That seems wasteful to calculate
+the neighbours twice.

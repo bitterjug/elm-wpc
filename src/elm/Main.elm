@@ -130,32 +130,59 @@ currentSlug model =
             Nothing
 
 
-pageWithNeighbours : Page -> List Entry -> Page
-pageWithNeighbours page entries =
+getPageNeighbours : Page -> List Entry -> Int -> ( Page, Cmd Msg )
+getPageNeighbours page entries highestJsonPage =
     case page of
         SingleEntry _ slug ->
             let
                 neighbours =
                     Entry.neighboursFor slug entries
+
+                nextJsonPage =
+                    highestJsonPage + 1
+
+                previousCommand =
+                    -- IF previous == Nothing then generate command to fetch earlier entries
+                    case neighbours.previous of
+                        Nothing ->
+                            WP.getPostList (PostList nextJsonPage) nextJsonPage
+
+                        Just _ ->
+                            Cmd.none
+
+                _ =
+                    Debug.log "Looking for neighbours:" previousCommand
             in
                 SingleEntry neighbours slug
+                    ! [ previousCommand ]
 
-        -- IF previous == Nothing then generate command to fetch earlier entries
         -- If next == Nothing then generate command to fetch later entries
         _ ->
-            page
+            page ! []
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
-        PostList pageNo (Ok contents) ->
-            { model
-                | entries = contents
-                , jsonPage = pageNo
-                , page = pageWithNeighbours model.page contents
-            }
-                ! []
+        PostList jsonPageNo (Ok contents) ->
+            let
+                updatedEntries =
+                    if model.jsonPage == 0 then
+                        -- replace "Loading..." with the first page
+                        contents
+                    else
+                        -- append new entries
+                        model.entries ++ contents
+
+                ( pageWithNeighbours, msg ) =
+                    getPageNeighbours model.page updatedEntries jsonPageNo
+            in
+                { model
+                    | entries = updatedEntries
+                    , jsonPage = jsonPageNo
+                    , page = pageWithNeighbours
+                }
+                    ! [ msg ]
 
         PostList _ (Err _) ->
             model ! []
@@ -164,7 +191,11 @@ update msg model =
             Material.update Mdl msg_ model
 
         Show page ->
-            { model | page = pageWithNeighbours page model.entries } ! []
+            let
+                ( pageWithNeighbours, msg ) =
+                    getPageNeighbours page model.entries model.jsonPage
+            in
+                { model | page = pageWithNeighbours } ! [ msg ]
 
         Raise id ->
             { model | raised = id } ! []

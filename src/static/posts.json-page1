@@ -159,7 +159,7 @@
         "comment_status": "open",
         "content": {
             "protected": false,
-            "rendered": "<p>Here are the Prezi &#8216;slides&#8217; from my talk tonight at the first Cambridge Elm meetup<br />\n<iframe id=\"iframe_container\" frameborder=\"0\" webkitallowfullscreen=\"\" mozallowfullscreen=\"\" allowfullscreen=\"\" width=\"500\" height=\"400\" src=\"https://prezi.com/embed/znqzyy6r7pbj/?bgcolor=ffffff&amp;lock_to_path=0&amp;autoplay=0&amp;autohide_ctrls=0&amp;landing_data=bHVZZmNaNDBIWnNjdEVENDRhZDFNZGNIUE43MHdLNWpsdFJLb2ZHanI5N1NweDRVN2dFazZzYTUzY0RqUnhUT1N3PT0&amp;landing_sign=XH3ysPvWi9ZTQ4brxmVeA8tHx61XsGeL0q-LPP_rIw0\"></iframe></p>\n"
+            "rendered": "<p>Here are the Prezi &#8216;slides&#8217; from my talk tonight at the first Cambridge Elm meetup<br />\nstuff</p>\n"
         },
         "date": "2017-02-06T23:04:45",
         "date_gmt": "2017-02-06T22:04:45",

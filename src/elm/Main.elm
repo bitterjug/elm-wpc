@@ -4,6 +4,7 @@ import Entry exposing (Entry, Slug)
 import Html exposing (..)
 import Html.Attributes exposing (src)
 import Http
+import ListLib
 import Material
 import Material.Icon as Icon
 import Material.Options as Options
@@ -158,8 +159,8 @@ update msg model =
             { model | raised = id } ! []
 
 
-prevNextButton : Model -> Int -> String -> (List Entry -> Slug -> Maybe Slug) -> Html Msg
-prevNextButton model id iconName getNeighbourIfAvailable =
+prevNextButton : Model -> Int -> String -> (List Entry -> (Entry -> Bool) -> Maybe Entry) -> Html Msg
+prevNextButton model id iconName getNeighbour =
     Button.render Mdl
         [ id ]
         model.mdl
@@ -167,10 +168,9 @@ prevNextButton model id iconName getNeighbourIfAvailable =
         , Button.ripple
         , model
             |> currentSlug
-            |> Maybe.andThen (getNeighbourIfAvailable model.entries)
-            |> Maybe.map SingleEntry
-            |> Maybe.map toUrl
-            |> Maybe.map Button.link
+            |> Maybe.map Entry.hasSlug
+            |> Maybe.andThen (getNeighbour model.entries)
+            |> Maybe.map (Button.link << toUrl << SingleEntry << .slug)
             |> Maybe.withDefault Button.disabled
         ]
         [ Icon.i iconName ]
@@ -219,10 +219,10 @@ view model =
                     div [] [ text "404 not found" ]
 
         previousButton =
-            prevNextButton model 0 "arrow_back" Entry.previousSlugIfAvailable
+            prevNextButton model 0 "arrow_back" ListLib.getNext
 
         nextButton =
-            prevNextButton model 1 "arrow_forward" Entry.nextSlugIfAvailable
+            prevNextButton model 1 "arrow_forward" ListLib.getPrevious
 
         header =
             [ Layout.row [ Options.cs "header-row" ]

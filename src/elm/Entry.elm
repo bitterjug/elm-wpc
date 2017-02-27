@@ -111,15 +111,3 @@ borindDate =
 hasSlug : Slug -> Entry -> Bool
 hasSlug slug entry =
     entry.slug == slug
-
-
-nextSlugIfAvailable : List Entry -> Slug -> Maybe Slug
-nextSlugIfAvailable entries slug =
-    ListLib.getPrevious entries (hasSlug slug)
-        |> Maybe.map .slug
-
-
-previousSlugIfAvailable : List Entry -> Slug -> Maybe Slug
-previousSlugIfAvailable entries slug =
-    ListLib.getNext entries (hasSlug slug)
-        |> Maybe.map .slug

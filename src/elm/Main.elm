@@ -15,7 +15,7 @@ import Material.Button as Button
 import Navigation exposing (Location)
 import RouteUrl exposing (UrlChange)
 import UrlParser as Url exposing ((</>))
-import WordpressRestApi exposing (..)
+import WordpressRestApi as WP
 
 
 main =
@@ -47,6 +47,7 @@ delta2hash prevous current =
 
 type alias Model =
     { entries : List Entry
+    , jsonPage : Int
     , page : Page
     , mdl : Material.Model
     , raised : Int
@@ -64,7 +65,7 @@ type Page
 
 
 type Msg
-    = PostList (Result Http.Error (List Entry))
+    = PostList Int (Result Http.Error (List Entry))
     | Show Page
     | Mdl (Material.Msg Msg)
     | Raise Int
@@ -73,11 +74,12 @@ type Msg
 init : ( Model, Cmd Msg )
 init =
     ( { entries = [ Entry.loading ]
+      , jsonPage = 0
       , page = EntryList
       , mdl = Material.model
       , raised = -1
       }
-    , getPostList PostList
+    , WP.getPostList (PostList 1) 1
     )
 
 
@@ -138,6 +140,8 @@ pageWithNeighbours page entries =
             in
                 SingleEntry neighbours slug
 
+        -- IF previous == Nothing then generate command to fetch earlier entries
+        -- If next == Nothing then generate command to fetch later entries
         _ ->
             page
 
@@ -145,14 +149,15 @@ pageWithNeighbours page entries =
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
-        PostList (Ok contents) ->
+        PostList pageNo (Ok contents) ->
             { model
                 | entries = contents
+                , jsonPage = pageNo
                 , page = pageWithNeighbours model.page contents
             }
                 ! []
 
-        PostList (Err _) ->
+        PostList _ (Err _) ->
             model ! []
 
         Mdl msg_ ->

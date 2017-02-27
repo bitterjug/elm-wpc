@@ -14,12 +14,24 @@ To Doer
 - [x] Add a previous link to the previous blog's address
   So that I don't have to type in a full slug
 
+- [x] At the moment we don't know until we try and render a post page -- and
+  its neighbours -- if we need to fetch more data or not. Bu that's the wrong
+  place. The right place is in update. So perhaps we should set the previous
+  and next as part of the update. Either we set them there or we just check for
+  them there. That seems wasteful to calculate the neighbours twice.
+
 - [ ] Now when rendering a blog, if the previous link isn't available, we should
   kick off a request for the next page of entries, and when those arrive we should
   redraw and recalculate whether the previous is available
 
+  - [x] The problem here was that when we're rendering it, its too late, we
+    need to do that during update. So first we have to refactor the code
+    so that the neighbours get recalculated  when a) we visit a single entry
+    page or, b) when we receive more data from the server which might provide
+    neighbours for an antry we didnt previously have neighbours for.
 
-- [ ] Create separate module for Wordpress REST Api
+
+- [x] Create separate module for Wordpress REST API
 
 - we're going to need to get at the response headers which means we'll need
   expectStringResponse and the only way to set that up is apparently to 
@@ -48,8 +60,3 @@ To Doer
 
 - [ ] Adding buttons to cards is going to entail giving each one an unique button id number
 
-At the moment we don't know until we try and render a post page -- and its neighbours
--- if we need to fetch more data or not. Bu that's the wrong place. The right place is 
-in update. So perhaps we should set the prev and next as part of the update. Either
-we set them there or we just check for them there. That seems wasteful to calculate
-the neighbours twice.

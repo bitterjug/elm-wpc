@@ -1,0 +1,942 @@
+[
+    {
+        "_links": {
+            "about": [
+                {
+                    "href": "http://bitterjug.com/wp-json/wp/v2/types/post"
+                }
+            ],
+            "author": [
+                {
+                    "embeddable": true,
+                    "href": "http://bitterjug.com/wp-json/wp/v2/users/2"
+                }
+            ],
+            "collection": [
+                {
+                    "href": "http://bitterjug.com/wp-json/wp/v2/posts"
+                }
+            ],
+            "curies": [
+                {
+                    "href": "https://api.w.org/{rel}",
+                    "name": "wp",
+                    "templated": true
+                }
+            ],
+            "replies": [
+                {
+                    "embeddable": true,
+                    "href": "http://bitterjug.com/wp-json/wp/v2/comments?post=1322"
+                }
+            ],
+            "self": [
+                {
+                    "href": "http://bitterjug.com/wp-json/wp/v2/posts/1322"
+                }
+            ],
+            "version-history": [
+                {
+                    "href": "http://bitterjug.com/wp-json/wp/v2/posts/1322/revisions"
+                }
+            ],
+            "wp:attachment": [
+                {
+                    "href": "http://bitterjug.com/wp-json/wp/v2/media?parent=1322"
+                }
+            ],
+            "wp:term": [
+                {
+                    "embeddable": true,
+                    "href": "http://bitterjug.com/wp-json/wp/v2/categories?post=1322",
+                    "taxonomy": "category"
+                },
+                {
+                    "embeddable": true,
+                    "href": "http://bitterjug.com/wp-json/wp/v2/tags?post=1322",
+                    "taxonomy": "post_tag"
+                }
+            ]
+        },
+        "author": 2,
+        "categories": [
+            1
+        ],
+        "comment_status": "open",
+        "content": {
+            "protected": false,
+            "rendered": "<p>It just took me way too long to solve this, so I&#8217;m going to write it up quickly:</p>\n<h2>The Problem</h2>\n<ul>\n<li>I have a file containing the <a href=\"https://en.wikipedia.org/wiki/Basename\">basenames</a> of spreadsheets that I want to keep in a directory structure. I want to delete all the other spreadsheets.</li>\n<li>There are levels of nested directories and the files are distributed among them</li>\n<li>The file names, and the directory names contain spaces (don&#8217;t look at me like that, it&#8217;s other people&#8217;s work on Windoze &#8212; at least I&#8217;m using bash</li>\n<li>I&#8217;m using <a href=\"https://www.gnu.org/software/bash/\">bash</a> on Linux, so I have proper find, etc.</li>\n</ul>\n<h2>A Solution</h2>\n<pre class=\"brush: bash; title: ; notranslate\" title=\"\">\r\n#!/bin/bash\r\nmodelfiles=../files-to-keep.txt\r\n\r\nfind . -name \\*.xls\\?\u00a0 | while read\u00a0 f\r\ndo\r\n    if ! grep -q &quot;${f##*/}&quot; $modelfiles\r\n    then\r\n        rm &quot;$f&quot;\r\n    fi\r\ndone\r\n</pre>\n<p>I&#8217;m sure there are more efficient ways. Contact me if you have ideas. Meanwhile I&#8217;ve got to get back to work so I&#8217;m sticking with &#8220;it works&#8221;.</p>\n<p>UPDATE: that didn&#8217;t work when I tried to re-run it just now. So switched from grep -v to if ! &#8230;</p>\n"
+        },
+        "date": "2016-02-01T18:28:39",
+        "date_gmt": "2016-02-01T17:28:39",
+        "excerpt": {
+            "protected": false,
+            "rendered": "<p>It just took me way too long to solve this, so I&#8217;m going to write it up quickly: The Problem I have a file containing the basenames of spreadsheets that I want to keep in a directory structure. I want to delete all the other spreadsheets. There are levels of nested directories and the files [&hellip;]</p>\n"
+        },
+        "featured_media": 0,
+        "format": "standard",
+        "guid": {
+            "rendered": "http://bitterjug.com/?p=1322"
+        },
+        "id": 1322,
+        "link": "http://bitterjug.com/blog/keeping-named-files-in-bash/",
+        "meta": [],
+        "modified": "2016-02-10T12:58:48",
+        "modified_gmt": "2016-02-10T11:58:48",
+        "ping_status": "open",
+        "slug": "keeping-named-files-in-bash",
+        "sticky": false,
+        "tags": [],
+        "template": "",
+        "title": {
+            "rendered": "Keeping named files in bash"
+        },
+        "type": "post"
+    },
+    {
+        "_links": {
+            "about": [
+                {
+                    "href": "http://bitterjug.com/wp-json/wp/v2/types/post"
+                }
+            ],
+            "author": [
+                {
+                    "embeddable": true,
+                    "href": "http://bitterjug.com/wp-json/wp/v2/users/2"
+                }
+            ],
+            "collection": [
+                {
+                    "href": "http://bitterjug.com/wp-json/wp/v2/posts"
+                }
+            ],
+            "curies": [
+                {
+                    "href": "https://api.w.org/{rel}",
+                    "name": "wp",
+                    "templated": true
+                }
+            ],
+            "replies": [
+                {
+                    "embeddable": true,
+                    "href": "http://bitterjug.com/wp-json/wp/v2/comments?post=1313"
+                }
+            ],
+            "self": [
+                {
+                    "href": "http://bitterjug.com/wp-json/wp/v2/posts/1313"
+                }
+            ],
+            "version-history": [
+                {
+                    "href": "http://bitterjug.com/wp-json/wp/v2/posts/1313/revisions"
+                }
+            ],
+            "wp:attachment": [
+                {
+                    "href": "http://bitterjug.com/wp-json/wp/v2/media?parent=1313"
+                }
+            ],
+            "wp:term": [
+                {
+                    "embeddable": true,
+                    "href": "http://bitterjug.com/wp-json/wp/v2/categories?post=1313",
+                    "taxonomy": "category"
+                },
+                {
+                    "embeddable": true,
+                    "href": "http://bitterjug.com/wp-json/wp/v2/tags?post=1313",
+                    "taxonomy": "post_tag"
+                }
+            ]
+        },
+        "author": 2,
+        "categories": [
+            21
+        ],
+        "comment_status": "open",
+        "content": {
+            "protected": false,
+            "rendered": "<p>A recent conversation with <a href=\"http://www.laurenserota.com/\">Lauren Serota</a> reminded me of a challenge we often face building small-to-medium sized digital solutions for our clients: the right platform.</p>\n<p>We were talking about building custom phone apps in the context of <a href=\"http://www.ictworks.org/2015/09/30/wow-myanmar-is-going-straight-to-smartphones/\">Myanmar&#8217;s smartphone revolution</a>, and the challenge of finding the right partners to implement innovative mobile service delivery systems. She told a story of one such development which looked great but cost too much to make small changes to. That entailed going through another development cycle with the software company; for changes that felt like they should be under the service team&#8217;s control.<br />\n&#8220;They wrote a custom native app.&#8221;, she said, &#8220;instead of building a platform.&#8221;<br />\nThis started me revisiting similar stories from <a href=\"http://aptivate.org/\">Aptivate</a>, where we were the software company.</p>\n<h2>The IT Specialists</h2>\n<p>I&#8217;m thinking about <a href=\"http://www.authoraid.info/\">AuthorAID</a>, which helps <a href=\"https://en.wikipedia.org/wiki/AuthorAID\">support researchers from developing countries preparing academic articles for publication in peer-reviewed journals</a>. It is a fairly complex web application which functions not entirely unlike a dating site (matching mentors with mentees) with a way to track collaboration through research publishing tasks. We built it with <a href=\"https://docs.djangoproject.com/\">Django</a>, a powerful framework rapid web development.</p>\n<p>Django was a great choice, it enabled us to build AuthorAID at a cost within <a href=\"http://inasp.info/\">INASP</a>&#8216;s budget; an impressive achievement because AuthorAID is essentially a fairly complex, bespoke web application serving a relatively small audience. That&#8217;s why it&#8217;s our web platform of choice. But neither AuthorAID, nor Django are the <em>platform</em> I think Lauren was talking about.</p>\n<p>As we maintain and develop AuthorAID for INASP, some of the changes we make, like adding <a href=\"https://en.wikipedia.org/wiki/Faceted_search\">faceted search</a>, feel like they belong squarely with the &#8220;IT specialists&#8221;. Others, like adding fields to the form that users fill when they register, feel like they belong with the team running the site.</p>\n<p>A lot of Django&#8217;s power for rapidly building web applications comes from its focus on meta-data. To add those new fields to the sign-up form, we edit the <a href=\"https://docs.djangoproject.com/en/1.8/topics/db/models/\"><em>Model</em> file</a> which is written in <a href=\"https://www.python.org/\">Python</a>, the programing language Django is written in. So, you have to be a programmer to change them. But once that&#8217;s done, changes to web-forms can be generated automatically from the models. The new field values will need to be stored in Django&#8217;s relational database, but the necessary changes to the database schema can also be generated from the models, and theres a whole system to <a href=\"https://docs.djangoproject.com/en/1.8/topics/migrations/\">manage applying those database changes</a>. Django is a great tool for the &#8220;IT specialists&#8221;. Which makes sense: it was created by <a href=\"https://en.wikipedia.org/wiki/Django_(web_framework)#History\">web developers at a Newspaper</a>.</p>\n<p>This works out well for INASP who retain a relationship with Aptivate that enables us to act as their &#8220;IT specialists&#8221;, for the website stuff. But some of the web applications we build aren&#8217;t commissioned by organisations like INASP, but as part of change programmes with a limited lifetime and budget. They can&#8217;t afford to keep us on as IT specialists, in case their web application needs to be tweaked or extended. If they want to change the data they gather or report on, they need to be able to make those changes themselves. They don&#8217;t want a bespoke application built with a rapid-development framework; I think they need the &#8220;Platform&#8221;.</p>\n<h2>The General Solution</h2>\n<p>I&#8217;m thinking now of another project that, in the end, we didn&#8217;t do. We were written into the budget proposal for a three year programme with institutional funding, to provide a database for monitoring and evaluation (M&amp;E) data. Budget was small and the requirements weren&#8217;t very clear until the programme started and a team assembled. We did our discovery process soon found out that our clients had high hopes for their M&amp;E database, but they could predict neither the structure of the data they would be storing, nor the work-flows they would want it to support.</p>\n<p>Trying to manage the risk of Building The Wrong Thing, we pushed for specifics specific examples.<br />\n&#8220;It doesn&#8217;t have to be an all singing, all dancing system.&#8221;, they told us in one meeting.<br />\n&#8220;Okay&#8221;, I replied, &#8220;but you have to tell us exactly which songs, and which dances you will want it to do.<br />\nEventually they told us not to keep trying to understand their specific requirements, and &#8220;just deliver the generic version&#8221;.</p>\n<p>It&#8217;s much harder (read more expensive) to build a generic tool than a specific one. It&#8217;s very hard to get the abstractions right, especially without passing through specific examples on the way. But our client had had something specific in mind: a low-cost, generic solution. I think I understand where they were coming from: Excel. The generic solution, for fifty bucks, built on billions of dollars of R&amp;D and decades of getting the abstractions right.</p>\n<p>Most people have never bought bespoke software, and don&#8217;t know how to. If we were one of those people, the closest thing we can imagine to bespoke software might be a customised spreadsheet; with some protected cells, nice colouring, some predefined formulae and some VBA macros behind the scenes. I&#8217;m actually working on one of these at the moment, for another client. If I don&#8217;t do all the customisation work, what will be left? The full awesome power of Excel. Users would have to work harder to use it but, with the right skills, they could do so. Excel is a cheap product and all that customization effort is expensive IT specialist consultancy. I understand it must feel frustrating When the IT specialists start asking &#8216;which songs and which dances?&#8217;. Just give us The Thing. The thing we can live in and work it out for ourselves. The web-based Excel* for data-driven applications.</p>\n<p>* I know this sounds like Google sheets, but they weren&#8217;t actually looking for an on-line spreadsheet.</p>\n<p>Compared to evolving a customised spreadsheet, building a bespoke web application in, say, Django is a completely different proposition. It takes significant work to get to an MVP and when you get there the only data and workflow it supports are those the product designers have chosen to include. There are no blank workbooks to fall back on.</p>\n<p>I&#8217;m wondering if there is something awesome we should be using as a platform for web applications. And if there isn&#8217;t shouldn&#8217;t we be designing it?</p>\n"
+        },
+        "date": "2015-10-10T20:34:17",
+        "date_gmt": "2015-10-10T19:34:17",
+        "excerpt": {
+            "protected": false,
+            "rendered": "<p>A recent conversation with Lauren Serota reminded me of a challenge we often face building small-to-medium sized digital solutions for our clients: the right platform. We were talking about building custom phone apps in the context of Myanmar&#8217;s smartphone revolution, and the challenge of finding the right partners to implement innovative mobile service delivery systems. [&hellip;]</p>\n"
+        },
+        "featured_media": 0,
+        "format": "standard",
+        "guid": {
+            "rendered": "http://bitterjug.com/?p=1313"
+        },
+        "id": 1313,
+        "link": "http://bitterjug.com/blog/waiting-on-the-platform/",
+        "meta": [],
+        "modified": "2015-10-29T22:26:35",
+        "modified_gmt": "2015-10-29T21:26:35",
+        "ping_status": "open",
+        "slug": "waiting-on-the-platform",
+        "sticky": false,
+        "tags": [],
+        "template": "",
+        "title": {
+            "rendered": "Waiting on the platform"
+        },
+        "type": "post"
+    },
+    {
+        "_links": {
+            "about": [
+                {
+                    "href": "http://bitterjug.com/wp-json/wp/v2/types/post"
+                }
+            ],
+            "author": [
+                {
+                    "embeddable": true,
+                    "href": "http://bitterjug.com/wp-json/wp/v2/users/2"
+                }
+            ],
+            "collection": [
+                {
+                    "href": "http://bitterjug.com/wp-json/wp/v2/posts"
+                }
+            ],
+            "curies": [
+                {
+                    "href": "https://api.w.org/{rel}",
+                    "name": "wp",
+                    "templated": true
+                }
+            ],
+            "replies": [
+                {
+                    "embeddable": true,
+                    "href": "http://bitterjug.com/wp-json/wp/v2/comments?post=1306"
+                }
+            ],
+            "self": [
+                {
+                    "href": "http://bitterjug.com/wp-json/wp/v2/posts/1306"
+                }
+            ],
+            "version-history": [
+                {
+                    "href": "http://bitterjug.com/wp-json/wp/v2/posts/1306/revisions"
+                }
+            ],
+            "wp:attachment": [
+                {
+                    "href": "http://bitterjug.com/wp-json/wp/v2/media?parent=1306"
+                }
+            ],
+            "wp:term": [
+                {
+                    "embeddable": true,
+                    "href": "http://bitterjug.com/wp-json/wp/v2/categories?post=1306",
+                    "taxonomy": "category"
+                },
+                {
+                    "embeddable": true,
+                    "href": "http://bitterjug.com/wp-json/wp/v2/tags?post=1306",
+                    "taxonomy": "post_tag"
+                }
+            ]
+        },
+        "author": 2,
+        "categories": [
+            21
+        ],
+        "comment_status": "open",
+        "content": {
+            "protected": false,
+            "rendered": "<p>I&#8217;m only a day into my new asynchronous web development project in Tornado, and I already have a deadlock. And this is remarkable, I think, because all I have done so far is a copy-and-paste the Hello World example app from the <a href=\"http://www.tornadoweb.org/en/stable/\">Tornado website</a>. An example which &#8220;does not use any of Tornado&#8217;s asynchronous features&#8221;. So, how did I manage to get deadlock?</p>\n<p>Well, on top of Hello World, I have a test. A functional test, written with <a href=\"https://github.com/pytest-dev/pytest-bdd\">pytest-bdd</a> that uses <a href=\"https://github.com/pytest-dev/pytest-splinter\">pytest-splinter</a> makes sure here is some sort of web server up and running. Now pytest-splinter provides a browser object as a py.test fixture. Tests can use this to access the site, so<br />\nlong as a server is running. Since I&#8217;m shopping for py.test plugins, I added <a href=\"https://github.com/eugeniy/pytest-tornado\">pytest-tornado</a> whose <cite>http_server</cite> fixture starts a tornado HTTP server, serving the application I provide by defining an app fixture.</p>\n<p>All set to go? I thought I was. But I got the big crunch. My splinter browser starts but no page loads. What&#8217;s up? Turns out the tests aren&#8217;t asynchronous. The splinter driver is blocking and the asynchronous web server never gets a look-in to serve the content. Pytest-tornado wants me<br />\nto write tests using Tornado&#8217;s asynchronous http client, so it and the server can play nicely together.</p>\n<p>That&#8217;s all fair, but I want to use Splinter on this project so I&#8217;m going to want to start my server in a thread. I created an apprunner module that can start my Tornado app in a thread (and return the url to access it). And also provides a function to instruct the server to stop, and exit the<br />\nthread:</p>\n<pre class=\"brush: python; title: ; notranslate\" title=\"\">\r\nimport threading\r\nimport tornado\r\nfrom .application import Application\r\n\r\n\r\nioloop = tornado.ioloop.IOLoop.instance()\r\n\r\n\r\ndef start(TESTING_PORT=8192):\r\n    &quot;&quot;&quot; Start Application runing on given port. Retrn the listening url&quot;&quot;&quot;\r\n    global thread\r\n    app = Application()\r\n    app.listen(TESTING_PORT)\r\n    thread = threading.Thread(target=ioloop.start)\r\n    thread.start()\r\n    return &quot;http://localhost:{}&quot;.format(TESTING_PORT)\r\n\r\n\r\ndef stop():\r\n    &quot;&quot;&quot; Ask IOLoop to stop running, and wait for its thread to complete&quot;&quot;&quot;\r\n    global thread\r\n    ioloop.add_callback(ioloop.stop)\r\n    thread.join()\r\n</pre>\n<p>Then I define my own fixture to start and stop the server using pytest<br />\n<a class=\"reference external\" href=\"http://pytest.org/latest/yieldfixture.html\">yield_fixture</a>:</p>\n<pre class=\"brush: python; title: ; notranslate\" title=\"\">\r\n@pytest.yield_fixture\r\ndef app():\r\n    yield start()\r\n    stop()\r\n</pre>\n<p>And now I can write lovely clean BDD steps using splinter browser and my<br />\nown app running in a thread, like this:</p>\n<pre class=\"brush: python; title: ; notranslate\" title=\"\">\r\n@when(&quot;I visit the site&quot;)\r\ndef visit_site(browser, app):\r\n    browser.visit(app)\r\n</pre>\n"
+        },
+        "date": "2015-09-23T22:38:02",
+        "date_gmt": "2015-09-23T21:38:02",
+        "excerpt": {
+            "protected": false,
+            "rendered": "<p>I&#8217;m only a day into my new asynchronous web development project in Tornado, and I already have a deadlock. And this is remarkable, I think, because all I have done so far is a copy-and-paste the Hello World example app from the Tornado website. An example which &#8220;does not use any of Tornado&#8217;s asynchronous features&#8221;. [&hellip;]</p>\n"
+        },
+        "featured_media": 0,
+        "format": "standard",
+        "guid": {
+            "rendered": "http://bitterjug.com/?p=1306"
+        },
+        "id": 1306,
+        "link": "http://bitterjug.com/blog/deadlock-bdd-testing-a-python-tornado-app-with-py-test-and-splinter/",
+        "meta": [],
+        "modified": "2015-10-16T22:54:53",
+        "modified_gmt": "2015-10-16T21:54:53",
+        "ping_status": "open",
+        "slug": "deadlock-bdd-testing-a-python-tornado-app-with-py-test-and-splinter",
+        "sticky": false,
+        "tags": [],
+        "template": "",
+        "title": {
+            "rendered": "Deadlock: BDD testing a python Tornado app with py.test and Splinter"
+        },
+        "type": "post"
+    },
+    {
+        "_links": {
+            "about": [
+                {
+                    "href": "http://bitterjug.com/wp-json/wp/v2/types/post"
+                }
+            ],
+            "author": [
+                {
+                    "embeddable": true,
+                    "href": "http://bitterjug.com/wp-json/wp/v2/users/2"
+                }
+            ],
+            "collection": [
+                {
+                    "href": "http://bitterjug.com/wp-json/wp/v2/posts"
+                }
+            ],
+            "curies": [
+                {
+                    "href": "https://api.w.org/{rel}",
+                    "name": "wp",
+                    "templated": true
+                }
+            ],
+            "replies": [
+                {
+                    "embeddable": true,
+                    "href": "http://bitterjug.com/wp-json/wp/v2/comments?post=1292"
+                }
+            ],
+            "self": [
+                {
+                    "href": "http://bitterjug.com/wp-json/wp/v2/posts/1292"
+                }
+            ],
+            "version-history": [
+                {
+                    "href": "http://bitterjug.com/wp-json/wp/v2/posts/1292/revisions"
+                }
+            ],
+            "wp:attachment": [
+                {
+                    "href": "http://bitterjug.com/wp-json/wp/v2/media?parent=1292"
+                }
+            ],
+            "wp:term": [
+                {
+                    "embeddable": true,
+                    "href": "http://bitterjug.com/wp-json/wp/v2/categories?post=1292",
+                    "taxonomy": "category"
+                },
+                {
+                    "embeddable": true,
+                    "href": "http://bitterjug.com/wp-json/wp/v2/tags?post=1292",
+                    "taxonomy": "post_tag"
+                }
+            ]
+        },
+        "author": 2,
+        "categories": [
+            1
+        ],
+        "comment_status": "open",
+        "content": {
+            "protected": false,
+            "rendered": "<p>When this question comes up in a children&#8217;s book these days, what do the characters do?</p>\n<p><a href=\"http://bitterjug.com/wp-content/uploads/2015/06/20150627_073158-e1435515480563.jpg\"><img class=\"alignnone wp-image-1294\" src=\"http://bitterjug.com/wp-content/uploads/2015/06/20150627_073158-e1435515480563-900x1024.jpg\" alt=\"20150627_073158\" width=\"600\" height=\"683\" srcset=\"http://bitterjug.com/wp-content/uploads/2015/06/20150627_073158-e1435515480563-900x1024.jpg 900w, http://bitterjug.com/wp-content/uploads/2015/06/20150627_073158-e1435515480563-264x300.jpg 264w, http://bitterjug.com/wp-content/uploads/2015/06/20150627_073158-e1435515480563.jpg 1003w\" sizes=\"(max-width: 600px) 100vw, 600px\" /></a></p>\n<p>Zoe (<a href=\"http://www.zoeandbeans.com/hellooscar.html\" target=\"_blank\">and Beans</a>) rushes inside to <a href=\"https://www.google.co.uk/search?hl=en&amp;q=what%20do%20chamelians%20eat\" target=\"_blank\">Google it</a>.</p>\n<p>Which brings me to <a href=\"http://www.mrmen.com/characters/mr-christmas/index.html\" target=\"_blank\">Mr Christmas</a> and his flying teapot:<a href=\"http://bitterjug.com/wp-content/uploads/2015/06/20150627_073030.jpg\"><img class=\"alignnone wp-image-1297\" src=\"http://bitterjug.com/wp-content/uploads/2015/06/20150627_073030-1024x516.jpg\" alt=\"20150627_073030\" width=\"600\" height=\"302\" srcset=\"http://bitterjug.com/wp-content/uploads/2015/06/20150627_073030-1024x516.jpg 1024w, http://bitterjug.com/wp-content/uploads/2015/06/20150627_073030-300x151.jpg 300w\" sizes=\"(max-width: 600px) 100vw, 600px\" /></a></p>\n<blockquote><p>All you do is refuel every thousand miles, and you can fly up to three times the speed of sound!</p></blockquote>\n<p>Nic was sceptical.\u00a0\u00a0 Google couldn&#8217;t give the answer, but <a href=\"http://wolfr.am/5BB~mEgL\">Wolfram Alpha did</a>.</p>\n<p>At three times the speed of sound, he&#8217;s going to have to refuel (with teabags) every 26 minutes and three seconds. For a trip round the world&#8217;s circumference that&#8217;s <a href=\"http://wolfr.am/5BCon8Ai\">nearly eleven hours</a> travel not counting time taken to deliver presents. On top of that he has to stop at least every half hour to brew up. Now add in loo breaks&#8230; he&#8217;s not going to make it.</p>\n"
+        },
+        "date": "2015-06-28T19:39:20",
+        "date_gmt": "2015-06-28T18:39:20",
+        "excerpt": {
+            "protected": false,
+            "rendered": "<p>When this question comes up in a children&#8217;s book these days, what do the characters do? Zoe (and Beans) rushes inside to Google it. Which brings me to Mr Christmas and his flying teapot: All you do is refuel every thousand miles, and you can fly up to three times the speed of sound! Nic [&hellip;]</p>\n"
+        },
+        "featured_media": 0,
+        "format": "standard",
+        "guid": {
+            "rendered": "http://bitterjug.com/?p=1292"
+        },
+        "id": 1292,
+        "link": "http://bitterjug.com/blog/what-do-chameleons-eat/",
+        "meta": [],
+        "modified": "2015-06-28T19:42:38",
+        "modified_gmt": "2015-06-28T18:42:38",
+        "ping_status": "open",
+        "slug": "what-do-chameleons-eat",
+        "sticky": false,
+        "tags": [],
+        "template": "",
+        "title": {
+            "rendered": "What do chameleons eat?"
+        },
+        "type": "post"
+    },
+    {
+        "_links": {
+            "about": [
+                {
+                    "href": "http://bitterjug.com/wp-json/wp/v2/types/post"
+                }
+            ],
+            "author": [
+                {
+                    "embeddable": true,
+                    "href": "http://bitterjug.com/wp-json/wp/v2/users/2"
+                }
+            ],
+            "collection": [
+                {
+                    "href": "http://bitterjug.com/wp-json/wp/v2/posts"
+                }
+            ],
+            "curies": [
+                {
+                    "href": "https://api.w.org/{rel}",
+                    "name": "wp",
+                    "templated": true
+                }
+            ],
+            "replies": [
+                {
+                    "embeddable": true,
+                    "href": "http://bitterjug.com/wp-json/wp/v2/comments?post=1259"
+                }
+            ],
+            "self": [
+                {
+                    "href": "http://bitterjug.com/wp-json/wp/v2/posts/1259"
+                }
+            ],
+            "version-history": [
+                {
+                    "href": "http://bitterjug.com/wp-json/wp/v2/posts/1259/revisions"
+                }
+            ],
+            "wp:attachment": [
+                {
+                    "href": "http://bitterjug.com/wp-json/wp/v2/media?parent=1259"
+                }
+            ],
+            "wp:term": [
+                {
+                    "embeddable": true,
+                    "href": "http://bitterjug.com/wp-json/wp/v2/categories?post=1259",
+                    "taxonomy": "category"
+                },
+                {
+                    "embeddable": true,
+                    "href": "http://bitterjug.com/wp-json/wp/v2/tags?post=1259",
+                    "taxonomy": "post_tag"
+                }
+            ]
+        },
+        "author": 2,
+        "categories": [
+            1
+        ],
+        "comment_status": "open",
+        "content": {
+            "protected": false,
+            "rendered": "<h2>Turning This&#8230;</h2>\n<p><a href=\"http://bitterjug.com/wp-content/uploads/2015/05/Screenshot-from-2015-04-01-220311.png\"><img class=\" size-medium wp-image-1262 alignnone\" src=\"http://bitterjug.com/wp-content/uploads/2015/05/Screenshot-from-2015-04-01-220311-300x186.png\" alt=\"Exaile out the box\" width=\"300\" height=\"186\" srcset=\"http://bitterjug.com/wp-content/uploads/2015/05/Screenshot-from-2015-04-01-220311-300x186.png 300w, http://bitterjug.com/wp-content/uploads/2015/05/Screenshot-from-2015-04-01-220311.png 994w\" sizes=\"(max-width: 300px) 100vw, 300px\" /></a></p>\n<p>Exaile, out of the box, is a smart looking multi-platform music player. The <a href=\"http://www.exaile.org/\" target=\"_blank\">Exaile website</a> lists &#8220;Simple interface&#8221; as its number-one feature, and mentions that it has lots of plugins. Exaile should be the first choice for Swing-dance DJs, and anyone else who wants to build play-lists on the fly.</p>\n<h2>Into This&#8230;</h2>\n<p><a href=\"http://bitterjug.com/wp-content/uploads/2015/05/Screenshot-from-2015-04-01-211504.png\"><img class=\"alignnone size-medium wp-image-1263\" src=\"http://bitterjug.com/wp-content/uploads/2015/05/Screenshot-from-2015-04-01-211504-300x163.png\" alt=\"Screenshot from 2015-04-01 21:15:04\" width=\"300\" height=\"163\" srcset=\"http://bitterjug.com/wp-content/uploads/2015/05/Screenshot-from-2015-04-01-211504-300x163.png 300w, http://bitterjug.com/wp-content/uploads/2015/05/Screenshot-from-2015-04-01-211504-1024x557.png 1024w, http://bitterjug.com/wp-content/uploads/2015/05/Screenshot-from-2015-04-01-211504.png 1227w\" sizes=\"(max-width: 300px) 100vw, 300px\" /></a></p>\n<p>Exaile does stuff other music players haven&#8217;t even heard of. To get the most out of it you have to enable and configure some of its plugins. Here&#8217;s how I set up mine:<br />\n<!--more--></p>\n<h2>Preview device</h2>\n<p><a href=\"http://bitterjug.com/wp-content/uploads/2015/05/playback-device.png\"><img class=\"alignnone wp-image-1272\" src=\"http://bitterjug.com/wp-content/uploads/2015/05/playback-device.png\" alt=\"playback-device\" width=\"602\" height=\"132\" srcset=\"http://bitterjug.com/wp-content/uploads/2015/05/playback-device.png 698w, http://bitterjug.com/wp-content/uploads/2015/05/playback-device-300x66.png 300w\" sizes=\"(max-width: 602px) 100vw, 602px\" /></a></p>\n<p>Got a USB sound-card? Preview tracks you&#8217;re adding while your playlist is playing through your main soundcard. Enable the plugin (under Output in Preferences/Plugins) and select your your sound card in its preferences (I like to preview on my laptop&#8217;s built-in sound-card while playing live through my USB). Right click on a track and select &#8216;Preview&#8217; from the pop-up menu.</p>\n<p><a href=\"http://bitterjug.com/wp-content/uploads/2015/05/preview-device-settings.png\"><img class=\"alignnone size-medium wp-image-1271\" src=\"http://bitterjug.com/wp-content/uploads/2015/05/preview-device-settings-300x238.png\" alt=\"preview-device-settings\" width=\"300\" height=\"238\" srcset=\"http://bitterjug.com/wp-content/uploads/2015/05/preview-device-settings-300x238.png 300w, http://bitterjug.com/wp-content/uploads/2015/05/preview-device-settings.png 630w\" sizes=\"(max-width: 300px) 100vw, 300px\" /></a></p>\n<h2>Don&#8217;t interrupt the currently playing track</h2>\n<p>You know how annoying that is, especially when people are dancing. Turn it off! In preferences under Playback (not a plugin this time) check &#8216;Disallow playing new tracks when another track is playing&#8217;.</p>\n<p><a href=\"http://bitterjug.com/wp-content/uploads/2015/05/dontinterrupt.png\"><img class=\"alignnone size-medium wp-image-1276\" src=\"http://bitterjug.com/wp-content/uploads/2015/05/dontinterrupt-300x235.png\" alt=\"dontinterrupt\" width=\"300\" height=\"235\" srcset=\"http://bitterjug.com/wp-content/uploads/2015/05/dontinterrupt-300x235.png 300w, http://bitterjug.com/wp-content/uploads/2015/05/dontinterrupt.png 630w\" sizes=\"(max-width: 300px) 100vw, 300px\" /></a></p>\n<h2>BPM Counter</h2>\n<p>No, I don&#8217;t DJ from BPMs. But I like to know what they are.</p>\n<p>Right-click on the column headings in the playlist and check BPM. What, no data? OK let&#8217;s add some. Enable the BPM Counter<a href=\"http://bitterjug.com/wp-content/uploads/2015/05/bpm.png\"><img class=\" size-full wp-image-1275 alignright\" src=\"http://bitterjug.com/wp-content/uploads/2015/05/bpm.png\" alt=\"bpm\" width=\"99\" height=\"106\" /></a> plugin (under Utility) and it adds a BPM tap widget to both the main and preview devices. Tap on the number to measure the beats per minute. Or focus the widget and tap on the space bar. The apply BPM button writes the BPM to the track.</p>\n<p>Now use Exaile&#8217;s smart playlists to group my tracks by speed. Right click on &#8216;Smart Playlists&#8217; and choose New Smart Playlist. Here&#8217;s an example:</p>\n<p><a href=\"http://bitterjug.com/wp-content/uploads/2015/05/smartplaylist.png\"><img class=\"alignnone size-full wp-image-1277\" src=\"http://bitterjug.com/wp-content/uploads/2015/05/smartplaylist.png\" alt=\"smartplaylist\" width=\"486\" height=\"224\" srcset=\"http://bitterjug.com/wp-content/uploads/2015/05/smartplaylist.png 486w, http://bitterjug.com/wp-content/uploads/2015/05/smartplaylist-300x138.png 300w\" sizes=\"(max-width: 486px) 100vw, 486px\" /></a></p>\n<h2>Moodbar</h2>\n<h2><img class=\"alignnone size-full wp-image-1270\" src=\"http://bitterjug.com/wp-content/uploads/2015/05/moodbar-waveform.png\" alt=\"moodbar-waveform\" width=\"470\" height=\"33\" srcset=\"http://bitterjug.com/wp-content/uploads/2015/05/moodbar-waveform.png 470w, http://bitterjug.com/wp-content/uploads/2015/05/moodbar-waveform-300x21.png 300w\" sizes=\"(max-width: 470px) 100vw, 470px\" /></h2>\n<p>I&#8217;m on Ubuntu, so I can easily install <a href=\"https://userbase.kde.org/Amarok/Manual/Various/Moodbar/en\">Amarok&#8217;s moodbar</a> from the software centre. Exaile&#8217;s moodbar plugin replaces the progress bar with a graphical representation of the music. By default when you enable moodbar you get coloured spectra, like in the <a href=\"https://en.wikipedia.org/wiki/Moodbar#/media/File:Amarok1_moodbar.png\">Wikipedia article</a>. I haven&#8217;t learned to interpret those. I prefer a wave form view: here&#8217;s how I configure my plugin options:</p>\n<p><a href=\"http://bitterjug.com/wp-content/uploads/2015/05/moodbar-config.png\"><img class=\"alignnone size-medium wp-image-1268\" src=\"http://bitterjug.com/wp-content/uploads/2015/05/moodbar-config-300x238.png\" alt=\"moodbar-config\" width=\"300\" height=\"238\" srcset=\"http://bitterjug.com/wp-content/uploads/2015/05/moodbar-config-300x238.png 300w, http://bitterjug.com/wp-content/uploads/2015/05/moodbar-config.png 630w\" sizes=\"(max-width: 300px) 100vw, 300px\" /></a></p>\n<p>I like to see the waveform on the track I&#8217;m previewing, so I can see long quiet intros or applause at the end. When I turned on Moodbar and Preview Device I was sad that the moodbar showed up only on the main player. But Exaile is Open Source, right? So, I exercised <a href=\"https://www.gnu.org/events/rms-nyu-2001-transcript.html\">Freedom One</a> and changed it so Moodbar works on both players, like in my screenshot above. You&#8217;ll have to wait for Exaile version 3.4.6 to get this feature.</p>\n<h2>Split playlist view<a href=\"http://bitterjug.com/wp-content/uploads/2015/05/movetoother.png\"><img class=\" size-full wp-image-1278 alignright\" src=\"http://bitterjug.com/wp-content/uploads/2015/05/movetoother.png\" alt=\"movetoother\" width=\"272\" height=\"306\" srcset=\"http://bitterjug.com/wp-content/uploads/2015/05/movetoother.png 272w, http://bitterjug.com/wp-content/uploads/2015/05/movetoother-267x300.png 267w\" sizes=\"(max-width: 272px) 100vw, 272px\" /></a></h2>\n<p>Exaile lets you open multiple playlists in tabs. You can drag and drop tracks between them. To make this even easier, you can split the playlist view horizontally. I like to have my current queue at the bottom and drag tracks to it from other playlists open at the top. Right click on the playlist you want to move and select &#8216;Move to Other View&#8217;</p>\n<h2 style=\"clear: both;\">Darkness</h2>\n<p>I DJ in the dark; I want a dark screen. This isn&#8217;t an Exaile featurel, but I&#8217;m on Ubuntu so I installed <a href=\"http://gnome-look.org/content/show.php/Ambiance+Dark+Red+Theme?content=165030\">Ambience Dark Red</a> Gnome theme.</p>\n<p><a href=\"http://bitterjug.com/wp-content/uploads/2015/05/Screenshot-from-2015-04-01-211504.png\"><img class=\"alignnone wp-image-1263\" src=\"http://bitterjug.com/wp-content/uploads/2015/05/Screenshot-from-2015-04-01-211504.png\" alt=\"Screenshot from 2015-04-01 21:15:04\" width=\"600\" height=\"326\" srcset=\"http://bitterjug.com/wp-content/uploads/2015/05/Screenshot-from-2015-04-01-211504.png 1227w, http://bitterjug.com/wp-content/uploads/2015/05/Screenshot-from-2015-04-01-211504-300x163.png 300w, http://bitterjug.com/wp-content/uploads/2015/05/Screenshot-from-2015-04-01-211504-1024x557.png 1024w\" sizes=\"(max-width: 600px) 100vw, 600px\" /></a></p>\n<h2>And more</h2>\n<p>There&#8217;s a bunch more cool stuff in Exaile. Dustin Spicuzza describes the awesome Group Tagger plugin in <a href=\"http://www.virtualroadside.com/blog/index.php/2012/10/06/use-the-grouping-tag-to-organize-your-audio-files-with-exaile-3-3-0/\">his own blog</a>. Exaile started out as an Amarok-like player using GTK, but now it differentiates itself from the others with unique features for DJs.</p>\n"
+        },
+        "date": "2015-05-06T22:20:04",
+        "date_gmt": "2015-05-06T21:20:04",
+        "excerpt": {
+            "protected": false,
+            "rendered": "<p>Exaile started out as an Amarok-like player but now it differentiates itself from the others with unique features for DJs.</p>\n"
+        },
+        "featured_media": 0,
+        "format": "standard",
+        "guid": {
+            "rendered": "http://bitterjug.com/?p=1259"
+        },
+        "id": 1259,
+        "link": "http://bitterjug.com/blog/exaile-dj-workstation/",
+        "meta": [],
+        "modified": "2015-05-07T21:05:59",
+        "modified_gmt": "2015-05-07T20:05:59",
+        "ping_status": "open",
+        "slug": "exaile-dj-workstation",
+        "sticky": false,
+        "tags": [],
+        "template": "",
+        "title": {
+            "rendered": "Exaile as a DJ workstation"
+        },
+        "type": "post"
+    },
+    {
+        "_links": {
+            "about": [
+                {
+                    "href": "http://bitterjug.com/wp-json/wp/v2/types/post"
+                }
+            ],
+            "author": [
+                {
+                    "embeddable": true,
+                    "href": "http://bitterjug.com/wp-json/wp/v2/users/2"
+                }
+            ],
+            "collection": [
+                {
+                    "href": "http://bitterjug.com/wp-json/wp/v2/posts"
+                }
+            ],
+            "curies": [
+                {
+                    "href": "https://api.w.org/{rel}",
+                    "name": "wp",
+                    "templated": true
+                }
+            ],
+            "replies": [
+                {
+                    "embeddable": true,
+                    "href": "http://bitterjug.com/wp-json/wp/v2/comments?post=1242"
+                }
+            ],
+            "self": [
+                {
+                    "href": "http://bitterjug.com/wp-json/wp/v2/posts/1242"
+                }
+            ],
+            "version-history": [
+                {
+                    "href": "http://bitterjug.com/wp-json/wp/v2/posts/1242/revisions"
+                }
+            ],
+            "wp:attachment": [
+                {
+                    "href": "http://bitterjug.com/wp-json/wp/v2/media?parent=1242"
+                }
+            ],
+            "wp:term": [
+                {
+                    "embeddable": true,
+                    "href": "http://bitterjug.com/wp-json/wp/v2/categories?post=1242",
+                    "taxonomy": "category"
+                },
+                {
+                    "embeddable": true,
+                    "href": "http://bitterjug.com/wp-json/wp/v2/tags?post=1242",
+                    "taxonomy": "post_tag"
+                }
+            ]
+        },
+        "author": 2,
+        "categories": [
+            23
+        ],
+        "comment_status": "open",
+        "content": {
+            "protected": false,
+            "rendered": "<p><img class=\"aligncenter size-full wp-image-1243\" alt=\"brang01\" src=\"http://bitterjug.com/wp-content/uploads/2014/05/brang01.jpg\" width=\"500\" height=\"500\" srcset=\"http://bitterjug.com/wp-content/uploads/2014/05/brang01.jpg 500w, http://bitterjug.com/wp-content/uploads/2014/05/brang01-150x150.jpg 150w, http://bitterjug.com/wp-content/uploads/2014/05/brang01-300x300.jpg 300w\" sizes=\"(max-width: 500px) 100vw, 500px\" /> <img class=\"aligncenter size-full wp-image-1244\" alt=\"brang02\" src=\"http://bitterjug.com/wp-content/uploads/2014/05/brang02.jpg\" width=\"500\" height=\"500\" srcset=\"http://bitterjug.com/wp-content/uploads/2014/05/brang02.jpg 500w, http://bitterjug.com/wp-content/uploads/2014/05/brang02-150x150.jpg 150w, http://bitterjug.com/wp-content/uploads/2014/05/brang02-300x300.jpg 300w\" sizes=\"(max-width: 500px) 100vw, 500px\" /><img class=\"aligncenter size-full wp-image-1245\" alt=\"brang03\" src=\"http://bitterjug.com/wp-content/uploads/2014/05/brang03.jpg\" width=\"500\" height=\"500\" srcset=\"http://bitterjug.com/wp-content/uploads/2014/05/brang03.jpg 500w, http://bitterjug.com/wp-content/uploads/2014/05/brang03-150x150.jpg 150w, http://bitterjug.com/wp-content/uploads/2014/05/brang03-300x300.jpg 300w\" sizes=\"(max-width: 500px) 100vw, 500px\" /> <img class=\"aligncenter size-full wp-image-1246\" alt=\"brang04\" src=\"http://bitterjug.com/wp-content/uploads/2014/05/brang04.jpg\" width=\"500\" height=\"500\" srcset=\"http://bitterjug.com/wp-content/uploads/2014/05/brang04.jpg 500w, http://bitterjug.com/wp-content/uploads/2014/05/brang04-150x150.jpg 150w, http://bitterjug.com/wp-content/uploads/2014/05/brang04-300x300.jpg 300w\" sizes=\"(max-width: 500px) 100vw, 500px\" /> <img class=\"aligncenter size-full wp-image-1247\" alt=\"brang05\" src=\"http://bitterjug.com/wp-content/uploads/2014/05/brang05.jpg\" width=\"500\" height=\"500\" srcset=\"http://bitterjug.com/wp-content/uploads/2014/05/brang05.jpg 500w, http://bitterjug.com/wp-content/uploads/2014/05/brang05-150x150.jpg 150w, http://bitterjug.com/wp-content/uploads/2014/05/brang05-300x300.jpg 300w\" sizes=\"(max-width: 500px) 100vw, 500px\" /> <img class=\"aligncenter size-full wp-image-1248\" alt=\"brang06\" src=\"http://bitterjug.com/wp-content/uploads/2014/05/brang06.jpg\" width=\"500\" height=\"500\" srcset=\"http://bitterjug.com/wp-content/uploads/2014/05/brang06.jpg 500w, http://bitterjug.com/wp-content/uploads/2014/05/brang06-150x150.jpg 150w, http://bitterjug.com/wp-content/uploads/2014/05/brang06-300x300.jpg 300w\" sizes=\"(max-width: 500px) 100vw, 500px\" /></p>\n"
+        },
+        "date": "2014-05-30T23:08:22",
+        "date_gmt": "2014-05-30T22:08:22",
+        "excerpt": {
+            "protected": false,
+            "rendered": ""
+        },
+        "featured_media": 0,
+        "format": "standard",
+        "guid": {
+            "rendered": "http://bitterjug.com/?p=1242"
+        },
+        "id": 1242,
+        "link": "http://bitterjug.com/blog/loss-of-language/",
+        "meta": [],
+        "modified": "2014-05-30T23:08:22",
+        "modified_gmt": "2014-05-30T22:08:22",
+        "ping_status": "open",
+        "slug": "loss-of-language",
+        "sticky": false,
+        "tags": [],
+        "template": "",
+        "title": {
+            "rendered": "Loss of language"
+        },
+        "type": "post"
+    },
+    {
+        "_links": {
+            "about": [
+                {
+                    "href": "http://bitterjug.com/wp-json/wp/v2/types/post"
+                }
+            ],
+            "author": [
+                {
+                    "embeddable": true,
+                    "href": "http://bitterjug.com/wp-json/wp/v2/users/2"
+                }
+            ],
+            "collection": [
+                {
+                    "href": "http://bitterjug.com/wp-json/wp/v2/posts"
+                }
+            ],
+            "curies": [
+                {
+                    "href": "https://api.w.org/{rel}",
+                    "name": "wp",
+                    "templated": true
+                }
+            ],
+            "replies": [
+                {
+                    "embeddable": true,
+                    "href": "http://bitterjug.com/wp-json/wp/v2/comments?post=1232"
+                }
+            ],
+            "self": [
+                {
+                    "href": "http://bitterjug.com/wp-json/wp/v2/posts/1232"
+                }
+            ],
+            "version-history": [
+                {
+                    "href": "http://bitterjug.com/wp-json/wp/v2/posts/1232/revisions"
+                }
+            ],
+            "wp:attachment": [
+                {
+                    "href": "http://bitterjug.com/wp-json/wp/v2/media?parent=1232"
+                }
+            ],
+            "wp:term": [
+                {
+                    "embeddable": true,
+                    "href": "http://bitterjug.com/wp-json/wp/v2/categories?post=1232",
+                    "taxonomy": "category"
+                },
+                {
+                    "embeddable": true,
+                    "href": "http://bitterjug.com/wp-json/wp/v2/tags?post=1232",
+                    "taxonomy": "post_tag"
+                }
+            ]
+        },
+        "author": 2,
+        "categories": [
+            23
+        ],
+        "comment_status": "open",
+        "content": {
+            "protected": false,
+            "rendered": "<p><img class=\"aligncenter size-full wp-image-1237\" alt=\"01-silly-world\" src=\"http://bitterjug.com/wp-content/uploads/2014/05/01-silly-world.jpg\" width=\"500\" height=\"500\" srcset=\"http://bitterjug.com/wp-content/uploads/2014/05/01-silly-world.jpg 500w, http://bitterjug.com/wp-content/uploads/2014/05/01-silly-world-150x150.jpg 150w, http://bitterjug.com/wp-content/uploads/2014/05/01-silly-world-300x300.jpg 300w\" sizes=\"(max-width: 500px) 100vw, 500px\" /><br />\n<img class=\"aligncenter size-full wp-image-1236\" alt=\"02-silly-world\" src=\"http://bitterjug.com/wp-content/uploads/2014/05/02-silly-world.jpg\" width=\"500\" height=\"500\" srcset=\"http://bitterjug.com/wp-content/uploads/2014/05/02-silly-world.jpg 500w, http://bitterjug.com/wp-content/uploads/2014/05/02-silly-world-150x150.jpg 150w, http://bitterjug.com/wp-content/uploads/2014/05/02-silly-world-300x300.jpg 300w\" sizes=\"(max-width: 500px) 100vw, 500px\" /><br />\n<img class=\"aligncenter size-full wp-image-1235\" alt=\"03-silly-world\" src=\"http://bitterjug.com/wp-content/uploads/2014/05/03-silly-world.jpg\" width=\"500\" height=\"500\" srcset=\"http://bitterjug.com/wp-content/uploads/2014/05/03-silly-world.jpg 500w, http://bitterjug.com/wp-content/uploads/2014/05/03-silly-world-150x150.jpg 150w, http://bitterjug.com/wp-content/uploads/2014/05/03-silly-world-300x300.jpg 300w\" sizes=\"(max-width: 500px) 100vw, 500px\" /><br />\n<img class=\"aligncenter size-full wp-image-1234\" alt=\"04-silly-world\" src=\"http://bitterjug.com/wp-content/uploads/2014/05/04-silly-world.jpg\" width=\"500\" height=\"500\" srcset=\"http://bitterjug.com/wp-content/uploads/2014/05/04-silly-world.jpg 500w, http://bitterjug.com/wp-content/uploads/2014/05/04-silly-world-150x150.jpg 150w, http://bitterjug.com/wp-content/uploads/2014/05/04-silly-world-300x300.jpg 300w\" sizes=\"(max-width: 500px) 100vw, 500px\" /><img class=\"aligncenter size-full wp-image-1239\" alt=\"05-silly-world\" src=\"http://bitterjug.com/wp-content/uploads/2014/05/05-silly-world1.jpg\" width=\"500\" height=\"500\" srcset=\"http://bitterjug.com/wp-content/uploads/2014/05/05-silly-world1.jpg 500w, http://bitterjug.com/wp-content/uploads/2014/05/05-silly-world1-150x150.jpg 150w, http://bitterjug.com/wp-content/uploads/2014/05/05-silly-world1-300x300.jpg 300w\" sizes=\"(max-width: 500px) 100vw, 500px\" /></p>\n"
+        },
+        "date": "2014-05-18T23:23:00",
+        "date_gmt": "2014-05-18T22:23:00",
+        "excerpt": {
+            "protected": false,
+            "rendered": ""
+        },
+        "featured_media": 0,
+        "format": "standard",
+        "guid": {
+            "rendered": "http://bitterjug.com/?p=1232"
+        },
+        "id": 1232,
+        "link": "http://bitterjug.com/blog/silly-world/",
+        "meta": [],
+        "modified": "2014-05-30T23:23:04",
+        "modified_gmt": "2014-05-30T22:23:04",
+        "ping_status": "open",
+        "slug": "silly-world",
+        "sticky": false,
+        "tags": [],
+        "template": "",
+        "title": {
+            "rendered": "Silly World"
+        },
+        "type": "post"
+    },
+    {
+        "_links": {
+            "about": [
+                {
+                    "href": "http://bitterjug.com/wp-json/wp/v2/types/post"
+                }
+            ],
+            "author": [
+                {
+                    "embeddable": true,
+                    "href": "http://bitterjug.com/wp-json/wp/v2/users/2"
+                }
+            ],
+            "collection": [
+                {
+                    "href": "http://bitterjug.com/wp-json/wp/v2/posts"
+                }
+            ],
+            "curies": [
+                {
+                    "href": "https://api.w.org/{rel}",
+                    "name": "wp",
+                    "templated": true
+                }
+            ],
+            "replies": [
+                {
+                    "embeddable": true,
+                    "href": "http://bitterjug.com/wp-json/wp/v2/comments?post=1229"
+                }
+            ],
+            "self": [
+                {
+                    "href": "http://bitterjug.com/wp-json/wp/v2/posts/1229"
+                }
+            ],
+            "version-history": [
+                {
+                    "href": "http://bitterjug.com/wp-json/wp/v2/posts/1229/revisions"
+                }
+            ],
+            "wp:attachment": [
+                {
+                    "href": "http://bitterjug.com/wp-json/wp/v2/media?parent=1229"
+                }
+            ],
+            "wp:term": [
+                {
+                    "embeddable": true,
+                    "href": "http://bitterjug.com/wp-json/wp/v2/categories?post=1229",
+                    "taxonomy": "category"
+                },
+                {
+                    "embeddable": true,
+                    "href": "http://bitterjug.com/wp-json/wp/v2/tags?post=1229",
+                    "taxonomy": "post_tag"
+                }
+            ]
+        },
+        "author": 2,
+        "categories": [
+            1
+        ],
+        "comment_status": "open",
+        "content": {
+            "protected": false,
+            "rendered": "<p><a href=\"http://bitterjug.com/wp-content/uploads/2014/05/wpid-2014-05-11-14.56.40.png.png\"><img title=\"2014-05-11 14.56.40.png\" class=\"alignnone size-full\" alt=\"image\" src=\"http://bitterjug.com/wp-content/uploads/2014/05/wpid-2014-05-11-14.56.40.png.png\" /></a></p>\n"
+        },
+        "date": "2014-05-11T15:21:34",
+        "date_gmt": "2014-05-11T14:21:34",
+        "excerpt": {
+            "protected": false,
+            "rendered": ""
+        },
+        "featured_media": 0,
+        "format": "standard",
+        "guid": {
+            "rendered": "http://bitterjug.com/?p=1229"
+        },
+        "id": 1229,
+        "link": "http://bitterjug.com/blog/straw/",
+        "meta": [],
+        "modified": "2014-05-11T15:21:34",
+        "modified_gmt": "2014-05-11T14:21:34",
+        "ping_status": "open",
+        "slug": "straw",
+        "sticky": false,
+        "tags": [],
+        "template": "",
+        "title": {
+            "rendered": "Straw"
+        },
+        "type": "post"
+    },
+    {
+        "_links": {
+            "about": [
+                {
+                    "href": "http://bitterjug.com/wp-json/wp/v2/types/post"
+                }
+            ],
+            "author": [
+                {
+                    "embeddable": true,
+                    "href": "http://bitterjug.com/wp-json/wp/v2/users/2"
+                }
+            ],
+            "collection": [
+                {
+                    "href": "http://bitterjug.com/wp-json/wp/v2/posts"
+                }
+            ],
+            "curies": [
+                {
+                    "href": "https://api.w.org/{rel}",
+                    "name": "wp",
+                    "templated": true
+                }
+            ],
+            "replies": [
+                {
+                    "embeddable": true,
+                    "href": "http://bitterjug.com/wp-json/wp/v2/comments?post=1220"
+                }
+            ],
+            "self": [
+                {
+                    "href": "http://bitterjug.com/wp-json/wp/v2/posts/1220"
+                }
+            ],
+            "version-history": [
+                {
+                    "href": "http://bitterjug.com/wp-json/wp/v2/posts/1220/revisions"
+                }
+            ],
+            "wp:attachment": [
+                {
+                    "href": "http://bitterjug.com/wp-json/wp/v2/media?parent=1220"
+                }
+            ],
+            "wp:term": [
+                {
+                    "embeddable": true,
+                    "href": "http://bitterjug.com/wp-json/wp/v2/categories?post=1220",
+                    "taxonomy": "category"
+                },
+                {
+                    "embeddable": true,
+                    "href": "http://bitterjug.com/wp-json/wp/v2/tags?post=1220",
+                    "taxonomy": "post_tag"
+                }
+            ]
+        },
+        "author": 2,
+        "categories": [
+            1
+        ],
+        "comment_status": "open",
+        "content": {
+            "protected": false,
+            "rendered": "<p>Thinking about how to tackle an up-coming open-data project, I found the impressive <a href=\"http://rethinkdb.com/\" title=\"RethinkDB Home Page\" target=\"_blank\">RethinkDB</a>. Rather than convert the data on-import into a relational database, I want to load the raw data into a NoSql database, and then map to a converted table with links back to the raw source-rows. RethinkDB <a href=\"http://rethinkdb.com/blog/1.7-release/\">imports csv</a> out of the box. And it&#8217;s <a href=\"http://rethinkdb.com/api/javascript/\" title=\"ReQL Api documentation\">ReQL</a> query language is expressive enough even to parse <a href=\"http://www.urbandictionary.com/define.php?term=arse%20about%20face\">arse-about-face</a> &#8216;dd/mm/yyyy&#8217; <a href=\"http://www.urbandictionary.com/define.php?term=arse%20about%20face\" title=\"Wikipedia on dates in the UK\">British dates</a> (though that turns out to be a bit of a mouthful):</p>\n<pre class=\"brush: jscript; title: ; notranslate\" title=\"\">\r\nr.table('raw').update({\r\n  newDate: r.time( \r\n    r.row('DATE').split('/').nth(2).coerceTo('NUMBER'),\r\n    r.row('DATE').split('/').nth(1).coerceTo('NUMBER'),\r\n    r.row('DATE').split('/').nth(0).coerceTo('NUMBER'),\r\n    'Z'\r\n  )\r\n}).run(...)\r\n</pre>\n"
+        },
+        "date": "2014-04-06T22:28:47",
+        "date_gmt": "2014-04-06T21:28:47",
+        "excerpt": {
+            "protected": false,
+            "rendered": "<p>Thinking about how to tackle an up-coming open-data project, I found the impressive RethinkDB. Rather than convert the data on-import into a relational database, I want to load the raw data into a NoSql database, and then map to a converted table with links back to the raw source-rows. RethinkDB imports csv out of the [&hellip;]</p>\n"
+        },
+        "featured_media": 0,
+        "format": "standard",
+        "guid": {
+            "rendered": "http://bitterjug.com/?p=1220"
+        },
+        "id": 1220,
+        "link": "http://bitterjug.com/blog/re-thinking-dates/",
+        "meta": [],
+        "modified": "2014-04-06T22:39:19",
+        "modified_gmt": "2014-04-06T21:39:19",
+        "ping_status": "open",
+        "slug": "re-thinking-dates",
+        "sticky": false,
+        "tags": [],
+        "template": "",
+        "title": {
+            "rendered": "Re-thinking dates"
+        },
+        "type": "post"
+    },
+    {
+        "_links": {
+            "about": [
+                {
+                    "href": "http://bitterjug.com/wp-json/wp/v2/types/post"
+                }
+            ],
+            "author": [
+                {
+                    "embeddable": true,
+                    "href": "http://bitterjug.com/wp-json/wp/v2/users/2"
+                }
+            ],
+            "collection": [
+                {
+                    "href": "http://bitterjug.com/wp-json/wp/v2/posts"
+                }
+            ],
+            "curies": [
+                {
+                    "href": "https://api.w.org/{rel}",
+                    "name": "wp",
+                    "templated": true
+                }
+            ],
+            "replies": [
+                {
+                    "embeddable": true,
+                    "href": "http://bitterjug.com/wp-json/wp/v2/comments?post=1210"
+                }
+            ],
+            "self": [
+                {
+                    "href": "http://bitterjug.com/wp-json/wp/v2/posts/1210"
+                }
+            ],
+            "version-history": [
+                {
+                    "href": "http://bitterjug.com/wp-json/wp/v2/posts/1210/revisions"
+                }
+            ],
+            "wp:attachment": [
+                {
+                    "href": "http://bitterjug.com/wp-json/wp/v2/media?parent=1210"
+                }
+            ],
+            "wp:term": [
+                {
+                    "embeddable": true,
+                    "href": "http://bitterjug.com/wp-json/wp/v2/categories?post=1210",
+                    "taxonomy": "category"
+                },
+                {
+                    "embeddable": true,
+                    "href": "http://bitterjug.com/wp-json/wp/v2/tags?post=1210",
+                    "taxonomy": "post_tag"
+                }
+            ]
+        },
+        "author": 2,
+        "categories": [
+            1
+        ],
+        "comment_status": "open",
+        "content": {
+            "protected": false,
+            "rendered": "<p>We use the Ubuntu biannual releases as reminder to do backups. Backup; upgrade; work through the bugs. Just upgraded to 13.10 Saucy Salamander without noticing much change. Played with Unity for an hour or so, to see if it had become amazing; then switched back to Xmonad, and back to work on my website project.</p>\n<p>Ah! Local websites not working. I just got the default page for my local apache instance.</p>\n<p>First off I tried to re-enable the site with &#8216;a2ensite&#8217;, which complained that my config file didn&#8217;t exist. But it was looking for the file with &#8216;.conf&#8217; extension. Easily fixed.</p>\n<p>Next I was told permission to access the site was denied by the server configuration. At this point I got derailed. I thought there was something wrong with my virtual host setup. Lots of websites told me I had to have a &#8216;NameVirtualHost&#8217; directive. So I added one. And was then told by apache that this had no effect and would be removed in future.</p>\n<p>Although this was a change, the conf files had been upgraded properly, as you&#8217;d hope. Problem was, of course, with my virtual host files. I have worked round the permission error by adding</p>\n<pre class=\"brush: xml; title: ; notranslate\" title=\"\">\r\n&lt;Directory &quot;&quot;&gt;;\r\nOptions\u00a0 All\r\nAllowOverride All\r\nRequire all granted\r\n&lt;/Directory&gt;\r\n</pre>\n"
+        },
+        "date": "2014-01-01T14:43:30",
+        "date_gmt": "2014-01-01T13:43:30",
+        "excerpt": {
+            "protected": false,
+            "rendered": "<p>We use the Ubuntu biannual releases as reminder to do backups. Backup; upgrade; work through the bugs. Just upgraded to 13.10 Saucy Salamander without noticing much change. Played with Unity for an hour or so, to see if it had become amazing; then switched back to Xmonad, and back to work on my website project. [&hellip;]</p>\n"
+        },
+        "featured_media": 0,
+        "format": "standard",
+        "guid": {
+            "rendered": "http://bitterjug.com/?p=1210"
+        },
+        "id": 1210,
+        "link": "http://bitterjug.com/blog/apache-upgrade/",
+        "meta": [],
+        "modified": "2014-01-01T14:44:24",
+        "modified_gmt": "2014-01-01T13:44:24",
+        "ping_status": "open",
+        "slug": "apache-upgrade",
+        "sticky": false,
+        "tags": [],
+        "template": "",
+        "title": {
+            "rendered": "Apache upgrade"
+        },
+        "type": "post"
+    }
+]

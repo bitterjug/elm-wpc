@@ -8,3 +8,6 @@ GET /wp-json/wp/v2/posts
 http://bitterjug.com
 GET /wp-json/wp/v2/posts/1381
 # vim: ft=rest
+
+http://127.0.0.1:8000
+GET /posts.json-page1

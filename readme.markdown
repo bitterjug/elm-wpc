@@ -45,13 +45,23 @@ To Doer
   page (s) of the json have been fetched and cached. So that we know when to go
   looking for more of it. 
 
-  A simple model assumes we're starting from the most recent first page
-  And we just extend back in time.
+  A simple model assumes we're starting from the most recent first page And we
+  just extend back in time.  But if we're starting from a single entry entered
+  in the url bar we probably need two queries, with different orderings,
+  heading forward and backward from that entry.
 
-  But if we're starting from a single entry entered in the url bar
-  we probably need two queries, with different orderings, heading
-  forward and backward from that entry.
+  So, when responding to a request for a specific slug, we will:
 
+  - fetch that entry using a post search by slug:
+
+      http://bitterjug.localhost
+      GET /wp-json/wp/v2/posts?slug=minimal-elm-program
+
+  - Find it's date and then fetch the following and previous entires
+  with requests like:
+
+      http://bitterjug.localhost
+      GET /wp-json/wp/v2/posts?before=2017-02-08T21:01:52
 
 - [ ] Do we need a way to know if we've reached the actual beginning or end of the 
   list of entries so as to avoid repeatedly requesting the next page at the end?

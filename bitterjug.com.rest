@@ -1,3 +1,5 @@
+# vim: ft=rest
+
 http://bitterjug.com
 GET /wp-json/wp/v2/posts?page=2
 
@@ -7,7 +9,18 @@ GET /wp-json/wp/v2/posts
 
 http://bitterjug.com
 GET /wp-json/wp/v2/posts/1381
-# vim: ft=rest
 
 http://127.0.0.1:8000
 GET /posts.json-page1
+
+http://bitterjug.localhost
+GET /wp-json/wp/v2/posts?page=2
+
+http://bitterjug.localhost
+GET /wp-json/wp/v2/posts?page=1
+
+http://bitterjug.localhost
+GET /wp-json/wp/v2/posts?slug=minimal-elm-program
+
+http://bitterjug.localhost
+GET /wp-json/wp/v2/posts?before=2017-02-08T21:01:52

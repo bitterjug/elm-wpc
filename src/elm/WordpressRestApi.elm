@@ -1,14 +1,21 @@
 module WordpressRestApi exposing (..)
 
-import Entry exposing (Entry)
+import Entry exposing (Entry, Entries)
 import Http
 
 
-getPostList : (Result Http.Error (List Entry) -> a) -> Int -> Cmd a
+baseUrl =
+    "http://bitterjug.localhost/wp-json/wp/v2"
+
+
+postUrl =
+    baseUrl ++ "/posts"
+
+
+getPostList : (Result Http.Error Entries -> a) -> Int -> Cmd a
 getPostList message page =
     let
         url =
-            -- "http://bitterjug.com/wp-json/wp/v2/posts/"
-            "posts.json" ++ "-page" ++ (toString page)
+            postUrl ++ "?page=" ++ (toString page)
     in
         Http.send message (Http.get url Entry.decodeEntries)

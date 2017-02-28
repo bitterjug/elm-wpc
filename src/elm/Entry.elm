@@ -1,11 +1,11 @@
 module Entry exposing (..)
 
+import Array exposing (Array)
 import Date
 import Date.Format exposing (format)
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Json.Decode as Decode exposing (Decoder)
-import ListLib
 import Markdown
 import Material.Card as Card
 import Material.Options as Options
@@ -24,10 +24,13 @@ type alias Entry =
     }
 
 
-type alias Neighbours =
-    { previous : Maybe Slug
-    , next : Maybe Slug
-    }
+type alias Entries =
+    Array Entry
+
+
+none : Entries
+none =
+    Array.empty
 
 
 decodeContent : Decoder String
@@ -73,9 +76,11 @@ decodeEntry =
         decodeDate
 
 
-decodeEntries : Decoder (List Entry)
+decodeEntries : Decoder Entries
 decodeEntries =
-    Decode.list decodeEntry
+    decodeEntry
+        |> Decode.list
+        |> Decode.map Array.fromList
 
 
 loading : Entry
@@ -114,28 +119,15 @@ borindDate =
     Date.fromTime 0
 
 
-findPost : (Entry -> Bool) -> List Entry -> Maybe Int
+findPost : (Entry -> Bool) -> Entries -> Maybe Int
 findPost predicate entries =
     entries
-        |> List.indexedMap (,)
-        |> List.filter (predicate << Tuple.second)
-        |> List.head
-        |> Maybe.map Tuple.first
+        |> Array.indexedMap (,)
+        |> Array.filter (predicate << Tuple.second)
+        |> Array.map Tuple.first
+        |> Array.get 1
 
 
 hasSlug : Slug -> Entry -> Bool
 hasSlug slug entry =
     entry.slug == slug
-
-
-neighboursFor : Slug -> List Entry -> Neighbours
-neighboursFor slug entries =
-    { previous =
-        hasSlug slug
-            |> ListLib.getNext entries
-            |> Maybe.map .slug
-    , next =
-        hasSlug slug
-            |> ListLib.getPrevious entries
-            |> Maybe.map .slug
-    }

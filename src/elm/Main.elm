@@ -1,6 +1,12 @@
 module Main exposing (..)
 
-import Entry exposing (Entry, Slug, Neighbours)
+import Array
+import Entry
+    exposing
+        ( Entry
+        , Entries
+        , Slug
+        )
 import Html exposing (..)
 import Html.Attributes exposing (src)
 import Http
@@ -39,48 +45,72 @@ delta2hash prevous current =
     if prevous.page == current.page then
         Nothing
     else
-        current.page
+        current
+            |> currentRoute
             |> toUrl
             |> RouteUrl.UrlChange RouteUrl.NewEntry
             |> Just
 
 
 type alias Model =
-    { entries : List Entry
-    , jsonPage : Int
+    { entries : Entries
     , page : Page
     , mdl : Material.Model
     , raised : Int
     }
 
 
-unknownNeighbours =
-    Neighbours Nothing Nothing
+type Route
+    = BlogList
+    | Blog Slug
+    | BadUrl
 
 
 type Page
     = EntryList
-    | SingleEntry Neighbours Slug
+    | SingleEntry Int
     | NotFound
+    | Loading Route
 
 
 type Msg
-    = PostList Int (Result Http.Error (List Entry))
-    | Show Page
+    = PostList (Result Http.Error Entries)
+    | Show Route
     | Mdl (Material.Msg Msg)
     | Raise Int
 
 
+model : Model
+model =
+    { entries = Entry.none
+    , page = Loading BlogList
+    , mdl = Material.model
+    , raised = -1
+    }
+
+
 init : ( Model, Cmd Msg )
 init =
-    ( { entries = [ Entry.loading ]
-      , jsonPage = 0
-      , page = EntryList
-      , mdl = Material.model
-      , raised = -1
-      }
-    , WP.getPostList (PostList 1) 1
-    )
+    ( model, WP.getPostList PostList 1 )
+
+
+currentRoute : Model -> Route
+currentRoute model =
+    case model.page of
+        Loading route ->
+            route
+
+        NotFound ->
+            BadUrl
+
+        EntryList ->
+            BlogList
+
+        SingleEntry index ->
+            model.entries
+                |> Array.get index
+                |> Maybe.map (Blog << .slug)
+                |> Maybe.withDefault BadUrl
 
 
 {-| Under what circumstances should this return NotFound?
@@ -90,129 +120,153 @@ init =
   | search for it and receive a negative answer before we know its
   | not found.
 -}
-findPage : Location -> Page
+findPage : Location -> Route
 findPage location =
     location
         |> Url.parseHash routeParser
-        |> Maybe.withDefault NotFound
+        |> Maybe.withDefault BadUrl
 
 
-routeParser : Url.Parser (Page -> Page) Page
+routeParser : Url.Parser (Route -> Route) Route
 routeParser =
     Url.oneOf
-        [ Url.map EntryList Url.top
-        , Url.map EntryList (Url.s "blog")
-        , Url.map (SingleEntry unknownNeighbours) (Url.s "blog" </> Url.string)
+        [ Url.map BlogList Url.top
+        , Url.map BlogList (Url.s "blog")
+        , Url.map Blog (Url.s "blog" </> Url.string)
         ]
 
 
-toUrl : Page -> String
+toUrl : Route -> String
 toUrl route =
     "#"
         ++ case route of
-            EntryList ->
+            BlogList ->
                 "blog"
 
-            SingleEntry _ slug ->
+            Blog slug ->
                 "blog/" ++ slug
 
-            NotFound ->
+            BadUrl ->
                 "404"
 
 
-currentSlug : Model -> Maybe Slug
-currentSlug model =
-    case model.page of
-        SingleEntry _ slug ->
-            Just slug
 
-        _ ->
-            Nothing
+{-
+   getPageNeighbours : Page -> List Entry -> Int -> ( Page, Cmd Msg )
+   getPageNeighbours page entries highestJsonPage =
+       case page of
+           SingleEntry slug ->
+               let
+                   neighbours =
+                       Entry.neighboursFor slug entries
 
+                   nextJsonPage =
+                       highestJsonPage + 1
 
-getPageNeighbours : Page -> List Entry -> Int -> ( Page, Cmd Msg )
-getPageNeighbours page entries highestJsonPage =
-    case page of
-        SingleEntry _ slug ->
-            let
-                neighbours =
-                    Entry.neighboursFor slug entries
+                   previousCommand =
+                       -- IF previous == Nothing then generate command to fetch earlier entries
+                       case neighbours.previous of
+                           Nothing ->
+                               WP.getPostList PostList nextJsonPage
 
-                nextJsonPage =
-                    highestJsonPage + 1
+                           Just _ ->
+                               Cmd.none
 
-                previousCommand =
-                    -- IF previous == Nothing then generate command to fetch earlier entries
-                    case neighbours.previous of
-                        Nothing ->
-                            WP.getPostList (PostList nextJsonPage) nextJsonPage
+                   _ =
+                       Debug.log "Looking for neighbours:" previousCommand
+               in
+                   SingleEntry neighbours slug
+                       ! [ previousCommand ]
 
-                        Just _ ->
-                            Cmd.none
+           -- If next == Nothing then generate command to fetch later entries
+           _ ->
+               page ! []
 
-                _ =
-                    Debug.log "Looking for neighbours:" previousCommand
-            in
-                SingleEntry neighbours slug
-                    ! [ previousCommand ]
-
-        -- If next == Nothing then generate command to fetch later entries
-        _ ->
-            page ! []
+-}
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
-        PostList jsonPageNo (Ok contents) ->
+        {-
+           let
+               updatedEntries =
+                   if model.jsonPage == 0 then
+                       -- replace "Loading..." with the first page
+                       contents
+                   else
+                       -- append new entries
+                       model.entries ++ contents
+
+               ( pageWithNeighbours, msg ) =
+                   getPageNeighbours model.page updatedEntries jsonPageNo
+           in
+               { model
+                   | entries = updatedEntries
+                   , jsonPage = jsonPageNo
+                   , page = pageWithNeighbours
+               }
+                   ! [ msg ]
+        -}
+        PostList (Ok entries) ->
             let
-                updatedEntries =
-                    if model.jsonPage == 0 then
-                        -- replace "Loading..." with the first page
-                        contents
-                    else
-                        -- append new entries
-                        model.entries ++ contents
-
-                ( pageWithNeighbours, msg ) =
-                    getPageNeighbours model.page updatedEntries jsonPageNo
+                newModel =
+                    { model
+                        | entries = entries
+                        , page =
+                            if model.page == Loading BlogList then
+                                EntryList
+                            else
+                                model.page
+                    }
             in
-                { model
-                    | entries = updatedEntries
-                    , jsonPage = jsonPageNo
-                    , page = pageWithNeighbours
-                }
-                    ! [ msg ]
+                newModel ! []
 
-        PostList _ (Err _) ->
+        PostList (Err _) ->
             model ! []
 
         Mdl msg_ ->
             Material.update Mdl msg_ model
 
-        Show page ->
+        Show route ->
             let
-                ( pageWithNeighbours, msg ) =
-                    getPageNeighbours page model.entries model.jsonPage
+                page =
+                    case route of
+                        BlogList ->
+                            EntryList
+
+                        Blog slug ->
+                            Entry.findPost (Entry.hasSlug slug) model.entries
+                                |> Maybe.map SingleEntry
+                                -- in the default case we also want to return commands to do the loading
+                                |>
+                                    Maybe.withDefault (Loading route)
+
+                        BadUrl ->
+                            NotFound
             in
-                { model | page = pageWithNeighbours } ! [ msg ]
+                { model | page = page } ! []
 
         Raise id ->
             { model | raised = id } ! []
 
 
-prevNextButton : Model -> Int -> String -> Maybe Slug -> Html Msg
-prevNextButton model id iconName neighbour =
-    Button.render Mdl
-        [ id ]
-        model.mdl
-        [ Button.icon
-        , Button.ripple
-        , neighbour
-            |> Maybe.map (Button.link << toUrl << SingleEntry unknownNeighbours)
-            |> Maybe.withDefault Button.disabled
-        ]
-        [ Icon.i iconName ]
+
+{-
+   prevNextButton : Model -> Int -> String -> Maybe Slug -> Html Msg
+   prevNextButton model id iconName neighbour =
+       Button.render Mdl
+           [ id ]
+           model.mdl
+           [ Button.icon
+           , Button.ripple
+           , neighbour
+               |> Maybe.map (Button.link << toUrl << SingleEntry unknownNeighbours)
+               |> Maybe.withDefault Button.disabled
+           ]
+           [ Icon.i iconName ]
+
+-}
 
 
 view : Model -> Html Msg
@@ -230,7 +284,7 @@ view model =
                         , Elevation.transition 250
                         , Options.onMouseEnter (Raise cardId)
                         , Options.onMouseLeave (Raise -1)
-                        , Options.onClick (Show <| SingleEntry unknownNeighbours entry.slug)
+                        , Options.onClick (Show <| Blog entry.slug)
                         ]
             in
                 cardView style entry
@@ -238,39 +292,50 @@ view model =
         notFound =
             div [] [ text "404 not found" ]
 
+        loading =
+            div [] [ text "Loading..." ]
+
         ( prevSlug, nextSlug, content ) =
             case model.page of
                 EntryList ->
                     let
                         entries =
-                            Options.div [ Options.cs "entry-list-container" ] <|
-                                List.indexedMap (viewEntry Entry.viewSummary) model.entries
+                            model.entries
+                                |> Array.indexedMap (viewEntry Entry.viewSummary)
+                                |> Array.toList
+                                |> Options.div [ Options.cs "entry-list-container" ]
                     in
                         ( Nothing, Nothing, entries )
 
-                SingleEntry { previous, next } slug ->
+                SingleEntry index ->
                     let
                         entries =
                             model.entries
-                                |> Entry.findPost (Entry.hasSlug slug)
-                                |> Maybe.map (flip List.drop model.entries >> List.take 1)
-                                |> Maybe.map (Options.div [] << List.indexedMap (viewEntry Entry.viewDetail))
+                                |> Array.get index
+                                |> Maybe.map
+                                    (List.singleton
+                                        >> List.indexedMap (viewEntry Entry.viewDetail)
+                                        >> Options.div []
+                                    )
                                 |> Maybe.withDefault notFound
                     in
-                        ( previous, next, entries )
+                        ( Nothing, Nothing, entries )
+
+                Loading route ->
+                    ( Nothing, Nothing, loading )
 
                 NotFound ->
                     ( Nothing, Nothing, notFound )
 
         header =
             [ Layout.row [ Options.cs "header-row" ]
-                [ Layout.navigation [] [ prevNextButton model 0 "arrow_back" prevSlug ]
+                [ Layout.navigation [] [{- prevNextButton model 0 "arrow_back" prevSlug -}]
                 , Layout.spacer
                 , Layout.title []
-                    [ Html.a [ Html.Attributes.href <| toUrl EntryList ] [ img [ src "images/bjlogo.png" ] [] ]
+                    [ Html.a [ Html.Attributes.href <| (model |> currentRoute |> toUrl) ] [ img [ src "images/bjlogo.png" ] [] ]
                     ]
                 , Layout.spacer
-                , Layout.navigation [] [ prevNextButton model 1 "arrow_forward" nextSlug ]
+                , Layout.navigation [] [{- prevNextButton model 1 "arrow_forward" nextSlug -}]
                 ]
             ]
     in

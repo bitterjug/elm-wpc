@@ -63,6 +63,49 @@ To Doer
       http://bitterjug.localhost
       GET /wp-json/wp/v2/posts?before=2017-02-08T21:01:52
 
+  Not sure yet how we mark the 'before' and 'after' payloads so we know whether
+  to prepend or append them to the cached list. To date, while using the page
+  number, I encoded it in the type of the message function. Now we _could_ get
+  that from the incoming data headers? Perhaps not. The only header that
+  identifies what query was used to generate this result is the Link:next one,
+  and if we're on the last page, I don't think we actually get that one.  So I
+  probably do need to encode the meaning of the request in the return message
+  somehow so that we know what to do with it when we get it.
+
+  So we will have options like:
+  - Selected post, 
+    - replace the current list with this as a singleton
+    - set the current index to 0
+    - Search for neighbours and set off requests for the next and previous
+      pages
+  - Previous / Next content
+    - Prepend / Append to the list and recalculate the appropriate neighbours
+
+  We can use the index as the neighbour. If current is [0] then we have
+  no next and the previous is [1]. 
+
+  I think we might actually use an array for the cache.
+
+  Now the route and model appear to be different for the first time. Or the
+  difference is finally meaningful:
+
+  - When we get a location we are going to parse the slug out of it.  Then the
+    Msg will be to view the corresponding page.  But, at first, we won't have
+    data for that so we will kick off a get request for it (do we need to keep
+    the slug in the model at this point, and make a note that we're awaiting
+    it?) We will be in a loading state and shoudl probably display a loading
+    message (as the page) during that state.
+
+ - Then once we get the data we can store it in the array, and set the current
+   page to be the index of the corresponding page in our array.
+
+ - We might get a response that says the slug can't be found in which case were
+   going to transition to a proper 404 page.
+
+ - We need a way to get a route from a Location, and a Location (url) from 
+   a page.
+
+
 - [ ] Do we need a way to know if we've reached the actual beginning or end of the 
   list of entries so as to avoid repeatedly requesting the next page at the end?
 

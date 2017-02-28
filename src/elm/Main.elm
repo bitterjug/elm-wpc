@@ -73,8 +73,14 @@ type Page
     | Loading Route
 
 
+type Role
+    = List
+    | Earlier
+    | Later
+
+
 type Msg
-    = PostList (Result Http.Error Entries)
+    = PostList Role (Result Http.Error Entries)
     | Show Route
     | Mdl (Material.Msg Msg)
     | Raise Int
@@ -91,7 +97,7 @@ model =
 
 init : ( Model, Cmd Msg )
 init =
-    ( model, WP.getPostList PostList 1 )
+    ( model, WP.getPostList (PostList List) 1 )
 
 
 currentRoute : Model -> Route
@@ -150,65 +156,62 @@ toUrl route =
                 "404"
 
 
-
-{-
-   getPageNeighbours : Page -> List Entry -> Int -> ( Page, Cmd Msg )
-   getPageNeighbours page entries highestJsonPage =
-       case page of
-           SingleEntry slug ->
-               let
-                   neighbours =
-                       Entry.neighboursFor slug entries
-
-                   nextJsonPage =
-                       highestJsonPage + 1
-
-                   previousCommand =
-                       -- IF previous == Nothing then generate command to fetch earlier entries
-                       case neighbours.previous of
-                           Nothing ->
-                               WP.getPostList PostList nextJsonPage
-
-                           Just _ ->
-                               Cmd.none
-
-                   _ =
-                       Debug.log "Looking for neighbours:" previousCommand
-               in
-                   SingleEntry neighbours slug
-                       ! [ previousCommand ]
-
-           -- If next == Nothing then generate command to fetch later entries
-           _ ->
-               page ! []
-
+{-| If we're showing a single entry and we don't have a Previous entry
+to link to, then issue a command to fetch a batch of entries that preceed
+the current one
 -}
+fetchPrevious : Model -> Cmd Msg
+fetchPrevious model =
+    case model.page of
+        SingleEntry index ->
+            case Array.get (index + 1) model.entries of
+                Nothing ->
+                    model.entries
+                        |> Array.get index
+                        |> Maybe.map (WP.getEarlierEntries (PostList Earlier) << .date)
+                        |> Maybe.withDefault Cmd.none
+
+                Just _ ->
+                    Cmd.none
+
+        _ ->
+            Cmd.none
+
+
+
+-- fetchNext -- similar to fetchPrevious
+-- fetchCurrent -- similar to fetchNext for the case where we are "loading" the current
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
-        {-
-           let
-               updatedEntries =
-                   if model.jsonPage == 0 then
-                       -- replace "Loading..." with the first page
-                       contents
-                   else
-                       -- append new entries
-                       model.entries ++ contents
+        PostList Later (Ok entries) ->
+            let
+                newPage =
+                    case model.page of
+                        SingleEntry index ->
+                            SingleEntry (index + Array.length entries)
 
-               ( pageWithNeighbours, msg ) =
-                   getPageNeighbours model.page updatedEntries jsonPageNo
-           in
-               { model
-                   | entries = updatedEntries
-                   , jsonPage = jsonPageNo
-                   , page = pageWithNeighbours
-               }
-                   ! [ msg ]
-        -}
-        PostList (Ok entries) ->
+                        _ ->
+                            model.page
+
+                newModel =
+                    { model
+                        | entries = Array.append entries model.entries
+                        , page = newPage
+                    }
+            in
+                newModel ! []
+
+        PostList Earlier (Ok entries) ->
+            let
+                newModel =
+                    { model | entries = Array.append model.entries entries }
+            in
+                newModel ! []
+
+        PostList List (Ok entries) ->
             let
                 newModel =
                     { model
@@ -222,7 +225,7 @@ update msg model =
             in
                 newModel ! []
 
-        PostList (Err _) ->
+        PostList _ (Err _) ->
             model ! []
 
         Mdl msg_ ->
@@ -244,29 +247,32 @@ update msg model =
 
                         BadUrl ->
                             NotFound
+
+                newModel =
+                    { model | page = page }
             in
-                { model | page = page } ! []
+                newModel
+                    ! [ fetchPrevious newModel
+                        -- fetchNext newModel
+                        -- fetchCurrent newModel
+                      ]
 
         Raise id ->
             { model | raised = id } ! []
 
 
-
-{-
-   prevNextButton : Model -> Int -> String -> Maybe Slug -> Html Msg
-   prevNextButton model id iconName neighbour =
-       Button.render Mdl
-           [ id ]
-           model.mdl
-           [ Button.icon
-           , Button.ripple
-           , neighbour
-               |> Maybe.map (Button.link << toUrl << SingleEntry unknownNeighbours)
-               |> Maybe.withDefault Button.disabled
-           ]
-           [ Icon.i iconName ]
-
--}
+prevNextButton : Model -> Int -> String -> Maybe Slug -> Html Msg
+prevNextButton model buttonId iconName neighbour =
+    Button.render Mdl
+        [ buttonId ]
+        model.mdl
+        [ Button.icon
+        , Button.ripple
+        , neighbour
+            |> Maybe.map (Button.link << toUrl << Blog)
+            |> Maybe.withDefault Button.disabled
+        ]
+        [ Icon.i iconName ]
 
 
 view : Model -> Html Msg
@@ -318,8 +324,18 @@ view model =
                                         >> Options.div []
                                     )
                                 |> Maybe.withDefault notFound
+
+                        previous =
+                            model.entries
+                                |> Array.get (index - 1)
+                                |> Maybe.map .slug
+
+                        next =
+                            model.entries
+                                |> Array.get (index + 1)
+                                |> Maybe.map .slug
                     in
-                        ( Nothing, Nothing, entries )
+                        ( previous, next, entries )
 
                 Loading route ->
                     ( Nothing, Nothing, loading )
@@ -329,13 +345,13 @@ view model =
 
         header =
             [ Layout.row [ Options.cs "header-row" ]
-                [ Layout.navigation [] [{- prevNextButton model 0 "arrow_back" prevSlug -}]
+                [ Layout.navigation [] [ prevNextButton model 0 "arrow_back" prevSlug ]
                 , Layout.spacer
                 , Layout.title []
                     [ Html.a [ Html.Attributes.href <| (model |> currentRoute |> toUrl) ] [ img [ src "images/bjlogo.png" ] [] ]
                     ]
                 , Layout.spacer
-                , Layout.navigation [] [{- prevNextButton model 1 "arrow_forward" nextSlug -}]
+                , Layout.navigation [] [ prevNextButton model 1 "arrow_forward" nextSlug ]
                 ]
             ]
     in

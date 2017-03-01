@@ -18,6 +18,7 @@ import Material.Grid as Grid
 import Material.Elevation as Elevation
 import Material.Layout as Layout
 import Material.Button as Button
+import Maybe.Extra exposing (filter)
 import Navigation exposing (Location)
 import RouteUrl exposing (UrlChange)
 import UrlParser as Url exposing ((</>))
@@ -77,6 +78,7 @@ type Role
     = List
     | Earlier
     | Later
+    | Current
 
 
 type Msg
@@ -178,14 +180,48 @@ fetchPrevious model =
             Cmd.none
 
 
+fetchCurrent : Model -> Cmd Msg
+fetchCurrent model =
+    case model.page of
+        Loading (Blog slug) ->
+            WP.getEntry (PostList Current) slug
+
+        _ ->
+            Cmd.none
+
+
 
 -- fetchNext -- similar to fetchPrevious
--- fetchCurrent -- similar to fetchNext for the case where we are "loading" the current
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
+        PostList Current (Ok entries) ->
+            let
+                _ =
+                    Debug.log "Current post arrived" ((Array.get 0 entries) |> Maybe.map .slug)
+
+                newPage =
+                    case model.page of
+                        Loading (Blog slug) ->
+                            entries
+                                |> Array.get 0
+                                |> filter (.slug >> (==) slug)
+                                |> Maybe.map (always <| SingleEntry 0)
+                                |> Maybe.withDefault model.page
+
+                        _ ->
+                            model.page
+
+                newModel =
+                    { model
+                        | entries = entries
+                        , page = newPage
+                    }
+            in
+                newModel ! []
+
         PostList Later (Ok entries) ->
             let
                 newPage =
@@ -213,6 +249,9 @@ update msg model =
 
         PostList List (Ok entries) ->
             let
+                _ =
+                    Debug.log "PostList List OK" model.page
+
                 newModel =
                     { model
                         | entries = entries
@@ -233,17 +272,27 @@ update msg model =
 
         Show route ->
             let
+                _ =
+                    Debug.log "show " route
+
                 page =
                     case route of
                         BlogList ->
                             EntryList
 
                         Blog slug ->
-                            Entry.findPost (Entry.hasSlug slug) model.entries
-                                |> Maybe.map SingleEntry
-                                -- in the default case we also want to return commands to do the loading
-                                |>
-                                    Maybe.withDefault (Loading route)
+                            let
+                                _ =
+                                    Debug.log ("finding slug: " ++ slug) <| Array.map .slug model.entries
+
+                                theEntry =
+                                    Debug.log "found" <| Entry.findPost (Entry.hasSlug slug) model.entries
+                            in
+                                theEntry
+                                    |> Maybe.map SingleEntry
+                                    -- in the default case we also want to return commands to do the loading
+                                    |>
+                                        Maybe.withDefault (Loading route)
 
                         BadUrl ->
                             NotFound
@@ -254,7 +303,7 @@ update msg model =
                 newModel
                     ! [ fetchPrevious newModel
                         -- fetchNext newModel
-                        -- fetchCurrent newModel
+                      , fetchCurrent newModel
                       ]
 
         Raise id ->
@@ -278,6 +327,9 @@ prevNextButton model buttonId iconName neighbour =
 view : Model -> Html Msg
 view model =
     let
+        _ =
+            Debug.log "view" model.page
+
         viewEntry : (Options.Style Msg -> Entry -> Html Msg) -> Int -> Entry -> Html Msg
         viewEntry cardView cardId entry =
             let
@@ -348,7 +400,7 @@ view model =
                 [ Layout.navigation [] [ prevNextButton model 0 "arrow_back" prevSlug ]
                 , Layout.spacer
                 , Layout.title []
-                    [ Html.a [ Html.Attributes.href <| (model |> currentRoute |> toUrl) ] [ img [ src "images/bjlogo.png" ] [] ]
+                    [ Html.a [ Html.Attributes.href <| (toUrl BlogList) ] [ img [ src "images/bjlogo.png" ] [] ]
                     ]
                 , Layout.spacer
                 , Layout.navigation [] [ prevNextButton model 1 "arrow_forward" nextSlug ]

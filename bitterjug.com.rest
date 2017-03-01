@@ -26,10 +26,10 @@ http://bitterjug.localhost
 GET /wp-json/wp/v2/posts?before=2017-02-08T21:01:52
 
 http://bitterjug.localhost
-GET /wp-json/wp/v2/posts?slug=silly-world
+GET /wp-json/wp/v2/posts?slug=waiting-on-the-platform
 
 http://bitterjug.localhost
-GET /wp-json/wp/v2/posts?before=2014-05-18T23:23:00
+GET /wp-json/wp/v2/posts?before=2015-10-10T20:34:17
 
 http://bitterjug.localhost
-GET /wp-json/wp/v2/posts?after=2014-05-18T23:23:00
+GET /wp-json/wp/v2/posts?after=2012-04-15T00:18:35

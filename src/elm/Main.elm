@@ -215,113 +215,125 @@ fetchNext =
     fetchNeighbour (flip (-) 1) (WP.getLaterEntries (PostList Later))
 
 
+fmt msg =
+    case msg of
+        PostList role result -> 
+            ("PostList " ++ (toString role), (Result.map (Array.map .title ) result) |> Result.withDefault Array.empty )
+
+        _ -> ( toString msg, Array.empty)
+
+
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
-    case msg of
-        PostList Current (Ok entries) ->
-            let
-                newPage =
-                    case model.page of
-                        Loading (Blog slug) ->
-                            entries
-                                |> Array.get 0
-                                |> filter (.slug >> (==) slug)
-                                |> Maybe.map (always <| SingleEntry 0)
-                                |> Maybe.withDefault model.page
+    let
+        _ =
+            Debug.log "Message:" (fmt msg)
+    in
+        case msg of
+            PostList Current (Ok entries) ->
+                let
+                    newPage =
+                        case model.page of
+                            Loading (Blog slug) ->
+                                entries
+                                    |> Array.get 0
+                                    |> filter (.slug >> (==) slug)
+                                    |> Maybe.map (always <| SingleEntry 0)
+                                    |> Maybe.withDefault model.page
 
-                        _ ->
-                            model.page
-
-                newModel =
-                    { model
-                        | entries = entries
-                        , page = newPage
-                    }
-            in
-                newModel
-                    ! [ fetchPrevious newModel
-                      , fetchNext newModel
-                      ]
-
-        PostList Later (Ok entries) ->
-            let
-                newPage =
-                    case model.page of
-                        SingleEntry index ->
-                            SingleEntry (index + Array.length entries)
-
-                        _ ->
-                            model.page
-
-                newModel =
-                    { model
-                        | entries = Array.append entries model.entries
-                        , page = newPage
-                    }
-            in
-                newModel ! []
-
-        PostList Earlier (Ok entries) ->
-            let
-                newModel =
-                    { model | entries = Array.append model.entries entries }
-            in
-                newModel ! []
-
-        PostList List (Ok entries) ->
-            let
-                newModel =
-                    { model
-                      -- always replace the current batch with this group
-                      -- is that the best thing to do ?
-                        | entries = entries
-                        , page =
-                            if model.page == Loading BlogList then
-                                EntryList
-                            else
+                            _ ->
                                 model.page
-                    }
-            in
-                newModel ! []
 
-        PostList _ (Err _) ->
-            model ! []
+                    newModel =
+                        { model
+                            | entries = entries
+                            , page = newPage
+                        }
+                in
+                    newModel
+                        ! [ fetchPrevious newModel
+                          , fetchNext newModel
+                          ]
 
-        Mdl msg_ ->
-            Material.update Mdl msg_ model
+            PostList Later (Ok entries) ->
+                let
+                    newPage =
+                        case model.page of
+                            SingleEntry index ->
+                                SingleEntry (index + Array.length entries)
 
-        Show route ->
-            let
-                _ =
-                    Debug.log "Show " route
+                            _ ->
+                                model.page
 
-                page =
-                    case route of
-                        BlogList ->
-                            EntryList
+                    newModel =
+                        { model
+                            | entries = Array.append entries model.entries
+                            , page = newPage
+                        }
+                in
+                    newModel ! []
 
-                        Blog slug ->
-                            locate (Entry.hasSlug slug) model.entries
-                                |> Maybe.map SingleEntry
-                                -- in the default case we also want to return commands to do the loading
-                                |>
-                                    Maybe.withDefault (Loading route)
+            PostList Earlier (Ok entries) ->
+                let
+                    newModel =
+                        { model | entries = Array.append model.entries entries }
+                in
+                    newModel ! []
 
-                        BadUrl ->
-                            NotFound
+            PostList List (Ok entries) ->
+                let
+                    newModel =
+                        { model
+                          -- always replace the current batch with this group
+                          -- is that the best thing to do ?
+                            | entries = entries
+                            , page =
+                                if model.page == Loading BlogList then
+                                    EntryList
+                                else
+                                    model.page
+                        }
+                in
+                    newModel ! []
 
-                newModel =
-                    { model | page = page }
-            in
-                newModel
-                    ! [ fetchPrevious newModel
-                      , fetchNext newModel
-                      , fetchCurrent newModel
-                      , fetchList newModel
-                      ]
+            PostList _ (Err _) ->
+                model ! []
 
-        Raise id ->
-            { model | raised = id } ! []
+            Mdl msg_ ->
+                Material.update Mdl msg_ model
+
+            Show route ->
+                let
+                    _ =
+                        Debug.log "Show " route
+
+                    page =
+                        case route of
+                            BlogList ->
+                                EntryList
+
+                            Blog slug ->
+                                locate (Entry.hasSlug slug) model.entries
+                                    |> Maybe.map SingleEntry
+                                    -- in the default case we also want to return commands to do the loading
+                                    |>
+                                        Maybe.withDefault (Loading route)
+
+                            BadUrl ->
+                                NotFound
+
+                    newModel =
+                        { model | page = page }
+                in
+                    newModel
+                        ! [ fetchPrevious newModel
+                          , fetchNext newModel
+                          , fetchCurrent newModel
+                          , fetchList newModel
+                          ]
+
+            Raise id ->
+                { model | raised = id } ! []
 
 
 prevNextButton : Model -> Int -> String -> Maybe Slug -> Html Msg

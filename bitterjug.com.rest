@@ -24,3 +24,12 @@ GET /wp-json/wp/v2/posts?slug=minimal-elm-program
 
 http://bitterjug.localhost
 GET /wp-json/wp/v2/posts?before=2017-02-08T21:01:52
+
+http://bitterjug.localhost
+GET /wp-json/wp/v2/posts?slug=silly-world
+
+http://bitterjug.localhost
+GET /wp-json/wp/v2/posts?before=2014-05-18T23:23:00
+
+http://bitterjug.localhost
+GET /wp-json/wp/v2/posts?after=2014-05-18T23:23:00

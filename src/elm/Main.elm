@@ -238,7 +238,10 @@ update msg model =
                         , page = newPage
                     }
             in
-                newModel ! []
+                newModel
+                    ! [ fetchPrevious newModel
+                      , fetchNext newModel
+                      ]
 
         PostList Later (Ok entries) ->
             let
@@ -387,12 +390,12 @@ view model =
 
                         previous =
                             model.entries
-                                |> Array.get (index - 1)
+                                |> Array.get (index + 1)
                                 |> Maybe.map .slug
 
                         next =
                             model.entries
-                                |> Array.get (index + 1)
+                                |> Array.get (index - 1)
                                 |> Maybe.map .slug
                     in
                         ( previous, next, entries )

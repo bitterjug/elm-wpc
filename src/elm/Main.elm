@@ -1,6 +1,8 @@
 module Main exposing (..)
 
 import Array
+import ArrayExtra exposing (locate)
+import Date exposing (Date)
 import Entry
     exposing
         ( Entry
@@ -158,28 +160,9 @@ toUrl route =
                 "404"
 
 
-{-| If we're showing a single entry and we don't have a Previous entry
-to link to, then issue a command to fetch a batch of entries that preceed
-the current one
+{-| If we're waiting for a single entry to load, issue a command
+to fetch the required entry by its slug
 -}
-fetchPrevious : Model -> Cmd Msg
-fetchPrevious model =
-    case model.page of
-        SingleEntry index ->
-            case Array.get (index + 1) model.entries of
-                Nothing ->
-                    model.entries
-                        |> Array.get index
-                        |> Maybe.map (WP.getEarlierEntries (PostList Earlier) << .date)
-                        |> Maybe.withDefault Cmd.none
-
-                Just _ ->
-                    Cmd.none
-
-        _ ->
-            Cmd.none
-
-
 fetchCurrent : Model -> Cmd Msg
 fetchCurrent model =
     case model.page of
@@ -190,8 +173,39 @@ fetchCurrent model =
             Cmd.none
 
 
+{-| If we're showing a single entry and we don't have a neighbour to link to,
+    then issue a command to fetch a batch of entries that preceed or succeed
+    the current one. indexOp modifies the index of the current entry to locate
+    where we think we the neighbour should be found. And fetcher fetches the
+    next or previous page of entries with dates adjacent to that of the current
+    entry
+-}
+fetchNeighbour : (Int -> Int) -> (Date -> Cmd Msg) -> Model -> Cmd Msg
+fetchNeighbour indexOp fetcher model =
+    case model.page of
+        SingleEntry index ->
+            case Array.get (indexOp index) model.entries of
+                Nothing ->
+                    model.entries
+                        |> Array.get index
+                        |> Maybe.map (fetcher << .date)
+                        |> Maybe.withDefault Cmd.none
 
--- fetchNext -- similar to fetchPrevious
+                Just _ ->
+                    Cmd.none
+
+        _ ->
+            Cmd.none
+
+
+fetchPrevious : Model -> Cmd Msg
+fetchPrevious =
+    fetchNeighbour ((+) 1) (WP.getEarlierEntries (PostList Earlier))
+
+
+fetchNext : Model -> Cmd Msg
+fetchNext =
+    fetchNeighbour (flip (-) 1) (WP.getLaterEntries (PostList Later))
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -199,9 +213,6 @@ update msg model =
     case msg of
         PostList Current (Ok entries) ->
             let
-                _ =
-                    Debug.log "Current post arrived" ((Array.get 0 entries) |> Maybe.map .slug)
-
                 newPage =
                     case model.page of
                         Loading (Blog slug) ->
@@ -249,9 +260,6 @@ update msg model =
 
         PostList List (Ok entries) ->
             let
-                _ =
-                    Debug.log "PostList List OK" model.page
-
                 newModel =
                     { model
                         | entries = entries
@@ -272,27 +280,17 @@ update msg model =
 
         Show route ->
             let
-                _ =
-                    Debug.log "show " route
-
                 page =
                     case route of
                         BlogList ->
                             EntryList
 
                         Blog slug ->
-                            let
-                                _ =
-                                    Debug.log ("finding slug: " ++ slug) <| Array.map .slug model.entries
-
-                                theEntry =
-                                    Debug.log "found" <| Entry.findPost (Entry.hasSlug slug) model.entries
-                            in
-                                theEntry
-                                    |> Maybe.map SingleEntry
-                                    -- in the default case we also want to return commands to do the loading
-                                    |>
-                                        Maybe.withDefault (Loading route)
+                            locate (Entry.hasSlug slug) model.entries
+                                |> Maybe.map SingleEntry
+                                -- in the default case we also want to return commands to do the loading
+                                |>
+                                    Maybe.withDefault (Loading route)
 
                         BadUrl ->
                             NotFound
@@ -327,9 +325,6 @@ prevNextButton model buttonId iconName neighbour =
 view : Model -> Html Msg
 view model =
     let
-        _ =
-            Debug.log "view" model.page
-
         viewEntry : (Options.Style Msg -> Entry -> Html Msg) -> Int -> Entry -> Html Msg
         viewEntry cardView cardId entry =
             let

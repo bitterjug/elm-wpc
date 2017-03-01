@@ -119,15 +119,6 @@ borindDate =
     Date.fromTime 0
 
 
-findPost : (Entry -> Bool) -> Entries -> Maybe Int
-findPost predicate entries =
-    entries
-        |> Array.indexedMap (,)
-        |> Array.filter (predicate << Tuple.second)
-        |> Array.map Tuple.first
-        |> Array.get 1
-
-
 hasSlug : Slug -> Entry -> Bool
 hasSlug slug entry =
     entry.slug == slug

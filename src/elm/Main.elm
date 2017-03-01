@@ -39,8 +39,9 @@ main =
 
 
 location2messages : Location -> List Msg
-location2messages =
-    Url.parseHash routeParser
+location2messages location =
+    location
+        |> Url.parseHash routeParser
         >> Maybe.withDefault BadUrl
         >> Show
         >> List.singleton
@@ -101,7 +102,8 @@ model =
 
 init : ( Model, Cmd Msg )
 init =
-    ( model, WP.getPostList (PostList List) 1 )
+    -- ( model, WP.getPostList (PostList List) 1 )
+    model ! []
 
 
 currentRoute : Model -> Route
@@ -144,6 +146,25 @@ toUrl route =
 
             BadUrl ->
                 "404"
+
+
+fetchList : Model -> Cmd Msg
+fetchList model =
+    case model.page of
+        EntryList ->
+            if Array.length model.entries < 10 then
+                WP.getPostList (PostList List) 1
+                -- until such time as we have routes that include details of
+                -- the list always fetch the first page, later we can maybe
+                -- have a list starting from zero or even a partial list with a
+                -- start and end.  theres space for some sort of combined
+                -- detail and summary view that shows the current entry in
+                -- context of its list but I haven't invented that yet.
+            else
+                Cmd.none
+
+        _ ->
+            Cmd.none
 
 
 {-| If we're waiting for a single entry to load, issue a command
@@ -248,6 +269,8 @@ update msg model =
             let
                 newModel =
                     { model
+                      -- always replace the current batch with this group
+                      -- is that the best thing to do ?
                         | entries = entries
                         , page =
                             if model.page == Loading BlogList then
@@ -266,6 +289,9 @@ update msg model =
 
         Show route ->
             let
+                _ =
+                    Debug.log "Show " route
+
                 page =
                     case route of
                         BlogList ->
@@ -286,8 +312,9 @@ update msg model =
             in
                 newModel
                     ! [ fetchPrevious newModel
-                        -- fetchNext newModel
+                      , fetchNext newModel
                       , fetchCurrent newModel
+                      , fetchList newModel
                       ]
 
         Raise id ->

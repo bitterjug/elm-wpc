@@ -6,11 +6,13 @@ module WordpressRestApi
         , getEntry
         )
 
+import Array exposing (Array)
 import Date exposing (Date)
 import Date.Extra exposing (toUtcIsoString)
 import Entry exposing (Entry, Slug, Entries)
 import Http
 import HttpBuilder exposing (..)
+import Json.Decode as Decode exposing (Decoder)
 
 
 baseUrl =
@@ -23,7 +25,18 @@ postUrl =
 
 expectEntries : Http.Expect Entries
 expectEntries =
-    Http.expectJson Entry.decodeEntries
+    Entry.decodeEntry
+        |> Decode.list
+        |> Decode.map Array.fromList
+        >> Http.expectJson
+
+
+expectReverseEntries : Http.Expect Entries
+expectReverseEntries =
+    Entry.decodeEntry
+        |> Decode.list
+        |> Decode.map (List.reverse >> Array.fromList)
+        >> Http.expectJson
 
 
 getPostList : (Result Http.Error Entries -> a) -> Int -> Cmd a
@@ -49,7 +62,7 @@ getLaterEntries message date =
             [ ( "after", (toUtcIsoString date) )
             , ( "order", "asc" )
             ]
-        |> withExpect expectEntries
+        |> withExpect expectReverseEntries
         |> send message
 
 

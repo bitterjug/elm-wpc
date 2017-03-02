@@ -5,7 +5,7 @@ import Date exposing (Date)
 import Date.Extra
     exposing
         ( fromIsoString
-        , toFormattedString
+        , toUtcFormattedString
         )
 import Html exposing (..)
 import Html.Attributes exposing (..)
@@ -123,7 +123,7 @@ viewSummary =
 
 formatDate : Date.Date -> Html msg
 formatDate =
-    toFormattedString "d MMMM y, HH:mm" >> text
+    toUtcFormattedString "d MMMM y, HH:mm" >> text
 
 
 borindDate =

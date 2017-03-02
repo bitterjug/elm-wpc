@@ -37,9 +37,16 @@ To Doer
   expectStringResponse and the only way to set that up is apparently to 
   build a custom request
 
-   We may chose to use
+- [x]  We may chose to use
    [HttpBuilder](http://package.elm-lang.org/packages/lukewestby/elm-http-builder/5.0.0/HttpBuilder)
    for this to make it easier to build up the request.
+- [x] Try using [elm-date-extra](http://package.elm-lang.org/packages/justinmimbs/elm-date-extra/2.0.1/Date-Extra#fromIsoString) to parse and format iso dates instead of Date.Format
+
+- [ ] Switching to the `date_gmt` -- and adding a Z to force UTC interpretation
+when decoding -- has solved, finally, the problem of fetching duplicate
+entries as neighbours. But now I notice that the time displayed in each
+post is an hour out, as if some time zone is being applied to it without
+my approval
 
   Then we're going to need to extend the model to include some notion of what
   page (s) of the json have been fetched and cached. So that we know when to go
@@ -112,6 +119,4 @@ To Doer
   The response headers give us that information 
 
 - [ ] Adding buttons to cards is going to entail giving each one an unique button id number
-
-- [x] Try using [elm-date-extra](http://package.elm-lang.org/packages/justinmimbs/elm-date-extra/2.0.1/Date-Extra#fromIsoString) to parse and format iso dates instead of Date.Format
 

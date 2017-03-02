@@ -26,7 +26,7 @@ http://bitterjug.localhost
 GET /wp-json/wp/v2/posts?before=2017-02-08T21:01:52
 
 http://bitterjug.localhost
-GET /wp-json/wp/v2/posts?slug=waiting-on-the-platform
+GET /wp-json/wp/v2/posts?slug=re-thinking-dates
 
 http://bitterjug.localhost
 GET /wp-json/wp/v2/posts?before=2015-10-10T20:34:17

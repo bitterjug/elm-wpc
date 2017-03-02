@@ -48,10 +48,17 @@ decodeDate =
         stringToDate =
             fromIsoString >> Maybe.withDefault borindDate
 
-        decodeDate =
-            Decode.map stringToDate Decode.string
+        ensureZulu dateString =
+            if dateString |> String.endsWith "Z" then
+                dateString
+            else
+                dateString ++ "Z"
+
+        decodeGmtDate =
+            Decode.string
+                |> Decode.map (ensureZulu >> stringToDate)
     in
-        Decode.field "date" decodeDate
+        Decode.field "date_gmt" decodeGmtDate
 
 
 decodeExcerpt : Decoder String

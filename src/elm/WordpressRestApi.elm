@@ -10,6 +10,7 @@ import Date exposing (Date)
 import Date.Extra exposing (toUtcIsoString)
 import Entry exposing (Entry, Slug, Entries)
 import Http
+import HttpBuilder exposing (..)
 
 
 baseUrl =
@@ -20,30 +21,41 @@ postUrl =
     baseUrl ++ "/posts"
 
 
-getEntries : String -> String -> (Result Http.Error Entries -> a) -> Cmd a
-getEntries param value message =
-    let
-        url =
-            postUrl ++ "?" ++ param ++ "=" ++ value
-    in
-        Http.send message (Http.get url Entry.decodeEntries)
+expectEntries : Http.Expect Entries
+expectEntries =
+    Http.expectJson Entry.decodeEntries
 
 
 getPostList : (Result Http.Error Entries -> a) -> Int -> Cmd a
 getPostList message page =
-    getEntries "page" (toString page) message
+    get postUrl
+        |> withQueryParams [ ( "page", toString page ) ]
+        |> withExpect expectEntries
+        |> send message
 
 
 getEarlierEntries : (Result Http.Error Entries -> a) -> Date.Date -> Cmd a
 getEarlierEntries message date =
-    getEntries "before" (toUtcIsoString date) message
+    get postUrl
+        |> withQueryParams [ ( "before", (toUtcIsoString date) ) ]
+        |> withExpect expectEntries
+        |> send message
 
 
 getLaterEntries : (Result Http.Error Entries -> a) -> Date.Date -> Cmd a
 getLaterEntries message date =
-    getEntries "after" (toUtcIsoString date) message
+    get postUrl
+        |> withQueryParams
+            [ ( "after", (toUtcIsoString date) )
+            , ( "order", "asc" )
+            ]
+        |> withExpect expectEntries
+        |> send message
 
 
 getEntry : (Result Http.Error Entries -> a) -> Slug -> Cmd a
 getEntry message slug =
-    getEntries "slug" slug message
+    get postUrl
+        |> withQueryParams [ ( "slug", slug ) ]
+        |> withExpect (Http.expectJson Entry.decodeEntries)
+        |> send message

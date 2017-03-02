@@ -7,7 +7,7 @@ module WordpressRestApi
         )
 
 import Date exposing (Date)
-import Date.Format exposing (formatISO8601)
+import Date.Extra exposing (toUtcIsoString)
 import Entry exposing (Entry, Slug, Entries)
 import Http
 
@@ -36,12 +36,12 @@ getPostList message page =
 
 getEarlierEntries : (Result Http.Error Entries -> a) -> Date.Date -> Cmd a
 getEarlierEntries message date =
-    getEntries "before" (formatISO8601 date) message
+    getEntries "before" (toUtcIsoString date) message
 
 
 getLaterEntries : (Result Http.Error Entries -> a) -> Date.Date -> Cmd a
 getLaterEntries message date =
-    getEntries "after" (formatISO8601 date) message
+    getEntries "after" (toUtcIsoString date) message
 
 
 getEntry : (Result Http.Error Entries -> a) -> Slug -> Cmd a

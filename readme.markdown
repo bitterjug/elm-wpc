@@ -113,3 +113,5 @@ To Doer
 
 - [ ] Adding buttons to cards is going to entail giving each one an unique button id number
 
+- [x] Try using [elm-date-extra](http://package.elm-lang.org/packages/justinmimbs/elm-date-extra/2.0.1/Date-Extra#fromIsoString) to parse and format iso dates instead of Date.Format
+

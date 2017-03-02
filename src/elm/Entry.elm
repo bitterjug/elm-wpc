@@ -1,8 +1,12 @@
 module Entry exposing (..)
 
 import Array exposing (Array)
-import Date
-import Date.Format exposing (format)
+import Date exposing (Date)
+import Date.Extra
+    exposing
+        ( fromIsoString
+        , toFormattedString
+        )
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Json.Decode as Decode exposing (Decoder)
@@ -20,7 +24,7 @@ type alias Entry =
     , content : String
     , excerpt : String
     , slug : String
-    , date : Date.Date
+    , date : Date
     }
 
 
@@ -42,7 +46,7 @@ decodeDate : Decoder Date.Date
 decodeDate =
     let
         stringToDate =
-            Date.fromString >> Result.withDefault borindDate
+            fromIsoString >> Maybe.withDefault borindDate
 
         decodeDate =
             Decode.map stringToDate Decode.string
@@ -112,7 +116,7 @@ viewSummary =
 
 formatDate : Date.Date -> Html msg
 formatDate =
-    format "%e %B %Y" >> String.trim >> text
+    toFormattedString "d MMMM y, HH:mm" >> text
 
 
 borindDate =

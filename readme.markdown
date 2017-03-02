@@ -42,11 +42,15 @@ To Doer
    for this to make it easier to build up the request.
 - [x] Try using [elm-date-extra](http://package.elm-lang.org/packages/justinmimbs/elm-date-extra/2.0.1/Date-Extra#fromIsoString) to parse and format iso dates instead of Date.Format
 
-- [ ] Switching to the `date_gmt` -- and adding a Z to force UTC interpretation
+- [x] Switching to the `date_gmt` -- and adding a Z to force UTC interpretation
 when decoding -- has solved, finally, the problem of fetching duplicate
 entries as neighbours. But now I notice that the time displayed in each
 post is an hour out, as if some time zone is being applied to it without
 my approval
+
+- [ ] We need a way to trigger fetching more entries when navigating the 
+list view. Ideally that would be triggered by scrolling. Have to look into 
+infinite scroll.
 
   Then we're going to need to extend the model to include some notion of what
   page (s) of the json have been fetched and cached. So that we know when to go

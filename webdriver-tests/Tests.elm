@@ -18,12 +18,16 @@ baseUrl =
     "http://localhost:8000/"
 
 
+blogUrl =
+    baseUrl ++ "#blog"
+
+
 testBlog : Run
 testBlog =
     let
         listExpectations =
             [ title <| Expect.equal "Bitterjug.com"
-            , url <| Expect.equal (baseUrl ++ "#blog")
+            , url <| Expect.equal blogUrl
             , elementCount "div.entry-summary" <| Expect.atLeast 10
             ]
     in
@@ -32,31 +36,33 @@ testBlog =
                 [ visit baseUrl ]
                     ++ listExpectations
             , describe "Blog hash url leads to list of summaries" <|
-                [ visit <| baseUrl ++ "#blog" ]
+                [ visit blogUrl ]
                     ++ listExpectations
             ]
-
-
-navigateToEntryPage : Run
-navigateToEntryPage =
-    describe "Navigate from list to single entry"
-        [ visit <| baseUrl ++ "#blog"
-        , click ".entry-summary:nth-child(2)"
-        , url <| Expect.equal (baseUrl ++ "#blog/minimal-elm-program")
-        , elementCount "div.entry-summary" <| Expect.equal 1
-        ]
 
 
 testEntry : Run
 testEntry =
     let
         goDirectlyToEntry slug =
-            [ visit <| baseUrl ++ "#blog/" ++ slug ]
+            [ visit <| blogUrl ++ "/" ++ slug
+            , url <| Expect.equal (blogUrl ++ "/" ++ slug)
+            ]
+
+        clickThroughToEntry slug =
+            [ visit <| blogUrl
+            , click <| "." ++ slug
+            , url <| Expect.equal (blogUrl ++ "/" ++ slug)
+            ]
     in
         group "Tests of blog single entries"
-            [ describe "Next of previous of next take you back to the same page" <|
+            [ describe "Navigate from list to single entry" <|
+                clickThroughToEntry "minimal-elm-program"
+                    ++ [ elementCount "div.entry-detail" <| Expect.equal 1 ]
+            , describe "Go directly to entry" <|
                 goDirectlyToEntry "minimal-elm-program"
-                    ++ [ url <| Expect.equal (baseUrl ++ "#blog/minimal-elm-program")
-                       , elementCount "div.entry-summary" <| Expect.equal 1
-                       ]
+                    ++ [ elementCount "div.entry-detail" <| Expect.equal 1 ]
+            , describe "Next of previous of next take you back to the same page" <|
+                goDirectlyToEntry "minimal-elm-program"
+                    ++ [ elementCount "div.entry-summary" <| Expect.equal 1 ]
             ]

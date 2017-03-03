@@ -395,13 +395,11 @@ view model =
                                 |> Maybe.withDefault notFound
 
                         previous =
-                            model.entries
-                                |> Array.get (index + 1)
+                            Array.get (index + 1) model.entries
                                 |> Maybe.map .slug
 
                         next =
-                            model.entries
-                                |> Array.get (index - 1)
+                            Array.get (index - 1) model.entries
                                 |> Maybe.map .slug
                     in
                         ( previous, next, entries )

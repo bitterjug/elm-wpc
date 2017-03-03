@@ -102,7 +102,7 @@ loading =
 viewEntry : String -> (Entry -> String) -> Options.Style msg -> Entry -> Html msg
 viewEntry typeClass getContent style entry =
     Card.view
-        [ style, Options.cs <| "entry " ++ typeClass ]
+        [ style, Options.cs <| entry.slug ++ " entry " ++ typeClass ]
         [ Card.title []
             [ Card.head [] [ text entry.title ]
             , Card.subhead [] [ formatDate entry.date ]

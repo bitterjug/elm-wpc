@@ -48,6 +48,8 @@ entries as neighbours. But now I notice that the time displayed in each
 post is an hour out, as if some time zone is being applied to it without
 my approval
 
+- [ ] Add classes or ids on summary cards in list view to help testing
+
 - [ ] We need a way to trigger fetching more entries when navigating the 
 list view. Ideally that would be triggered by scrolling. Have to look into 
 infinite scroll.

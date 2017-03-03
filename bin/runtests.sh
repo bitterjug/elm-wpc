@@ -12,4 +12,4 @@ $TEST_SERVER > /dev/null || ($START_SERVER &)
 
 cd $DIR/webdriver-tests
 
-$DIR/node_modules/.bin/elm-webdriver
+$DIR/node_modules/.bin/elm-webdriver $*

@@ -31,7 +31,7 @@ testBlog =
             , elementCount "div.entry-summary" <| Expect.atLeast 10
             ]
     in
-        group "Tests of blog list"
+        group "Entry list"
             [ describe "Base url redirects to blog with list of summaries" <|
                 [ visit baseUrl ]
                     ++ listExpectations
@@ -44,25 +44,58 @@ testBlog =
 testEntry : Run
 testEntry =
     let
+        expectEntry slug =
+            [ url <| Expect.equal (blogUrl ++ "/" ++ slug)
+            , elementCount "div.entry-detail" <| Expect.equal 1
+            ]
+
         goDirectlyToEntry slug =
             [ visit <| blogUrl ++ "/" ++ slug
-            , url <| Expect.equal (blogUrl ++ "/" ++ slug)
             ]
 
         clickThroughToEntry slug =
             [ visit <| blogUrl
             , click <| "." ++ slug
-            , url <| Expect.equal (blogUrl ++ "/" ++ slug)
             ]
+
+        clickPrevious =
+            click ".header-row >nav:nth-of-type(1) > a"
+
+        clickNext =
+            click ".header-row >nav:nth-of-type(2) > a"
+
+        clickLastEntry =
+            click ".entry-summary:nth-last-of-type(1)"
     in
-        group "Tests of blog single entries"
+        group "Single entry pages"
             [ describe "Navigate from list to single entry" <|
                 clickThroughToEntry "minimal-elm-program"
-                    ++ [ elementCount "div.entry-detail" <| Expect.equal 1 ]
+                    ++ expectEntry "minimal-elm-program"
             , describe "Go directly to entry" <|
                 goDirectlyToEntry "minimal-elm-program"
-                    ++ [ elementCount "div.entry-detail" <| Expect.equal 1 ]
-            , describe "Next of previous of next take you back to the same page" <|
+                    ++ expectEntry "minimal-elm-program"
+            , describe "Next of previous of direct takes you back to the same page" <|
                 goDirectlyToEntry "minimal-elm-program"
-                    ++ [ elementCount "div.entry-summary" <| Expect.equal 1 ]
+                    ++ [ clickPrevious, clickNext ]
+                    ++ expectEntry "minimal-elm-program"
+            , describe "Next of previous of click through takes you back to the same page" <|
+                goDirectlyToEntry "minimal-elm-program"
+                    ++ [ clickPrevious, clickNext ]
+                    ++ expectEntry "minimal-elm-program"
+            , describe "previous of next  of direct takes you back to the same page" <|
+                goDirectlyToEntry "minimal-elm-program"
+                    ++ [ clickNext, clickPrevious ]
+                    ++ expectEntry "minimal-elm-program"
+            , describe "previous of next of click through takes you back to the same page" <|
+                goDirectlyToEntry "minimal-elm-program"
+                    ++ [ clickNext, clickPrevious ]
+                    ++ expectEntry "minimal-elm-program"
+            , describe "next of last adds to the list" <|
+                [ visit <| blogUrl
+                , elementCount "div.entry-summary" <| Expect.equal 10
+                , clickLastEntry
+                , clickNext
+                , click ".mdl-layout__title>a"
+                , elementCount "div.entry-summary" <| Expect.atLeast 20
+                ]
             ]

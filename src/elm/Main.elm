@@ -167,19 +167,6 @@ fetchList model =
             Cmd.none
 
 
-{-| If we're waiting for a single entry to load, issue a command
-to fetch the required entry by its slug
--}
-fetchCurrent : Model -> Cmd Msg
-fetchCurrent model =
-    case model.page of
-        Loading (Blog slug) ->
-            WP.getEntry (PostList Current) slug
-
-        _ ->
-            Cmd.none
-
-
 {-| If we're showing a single entry and we don't have a neighbour to link to,
     then issue a command to fetch a batch of entries that preceed or succeed
     the current one. indexOp modifies the index of the current entry to locate
@@ -190,6 +177,9 @@ fetchCurrent model =
 fetchNeighbours : Model -> Cmd Msg
 fetchNeighbours model =
     case model.page of
+        Loading (Blog slug) ->
+            WP.getEntry (PostList Current) slug
+
         SingleEntry index ->
             let
                 entry =
@@ -310,7 +300,6 @@ update msg model =
             in
                 newModel
                     ! [ fetchNeighbours newModel
-                      , fetchCurrent newModel
                       , fetchList newModel
                       ]
 

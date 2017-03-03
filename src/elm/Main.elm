@@ -167,20 +167,15 @@ fetchList model =
             Cmd.none
 
 
-{-| If we're showing a single entry and we don't have a neighbour to link to,
-    then issue a command to fetch a batch of entries that preceed or succeed
-    the current one. indexOp modifies the index of the current entry to locate
-    where we think we the neighbour should be found. And fetcher fetches the
-    next or previous page of entries with dates adjacent to that of the current
-    entry
--}
-fetchNeighbours : Model -> Cmd Msg
-fetchNeighbours model =
+fetchForSingleEntry : Model -> Cmd Msg
+fetchForSingleEntry model =
     case model.page of
         Loading (Blog slug) ->
+            -- If we're awaiting the single page, fetch it
             WP.getEntry (PostList Current) slug
 
         SingleEntry index ->
+            -- If we've got the current entry but any of the neighbours are missing, fetch those
             let
                 entry =
                     Array.get index model.entries
@@ -229,7 +224,7 @@ update msg model =
                     }
             in
                 newModel
-                    ! [ fetchNeighbours newModel ]
+                    ! [ fetchForSingleEntry newModel ]
 
         PostList Later (Ok entries) ->
             let
@@ -299,7 +294,7 @@ update msg model =
                     { model | page = page }
             in
                 newModel
-                    ! [ fetchNeighbours newModel
+                    ! [ fetchForSingleEntry newModel
                       , fetchList newModel
                       ]
 

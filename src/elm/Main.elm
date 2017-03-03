@@ -187,41 +187,32 @@ fetchCurrent model =
     next or previous page of entries with dates adjacent to that of the current
     entry
 -}
-fetchNeighbour : (Int -> Int) -> (Date -> Cmd Msg) -> Model -> Cmd Msg
-fetchNeighbour indexOp fetcher model =
+fetchNeighbours : Model -> Cmd Msg
+fetchNeighbours model =
     case model.page of
         SingleEntry index ->
-            case Array.get (indexOp index) model.entries of
-                Nothing ->
-                    model.entries
-                        |> Array.get index
-                        |> Maybe.map (fetcher << .date)
-                        |> Maybe.withDefault Cmd.none
-
-                Just _ ->
-                    Cmd.none
+            let
+                entry =
+                    Array.get index model.entries
+            in
+                Cmd.batch
+                    [ Array.get (index + 1) model.entries
+                        |> fetchNeighbour entry (WP.getEarlierEntries (PostList Earlier))
+                    , Array.get (index - 1) model.entries
+                        |> fetchNeighbour entry (WP.getLaterEntries (PostList Later))
+                    ]
 
         _ ->
             Cmd.none
 
 
-fetchPrevious : Model -> Cmd Msg
-fetchPrevious =
-    fetchNeighbour ((+) 1) (WP.getEarlierEntries (PostList Earlier))
-
-
-fetchNext : Model -> Cmd Msg
-fetchNext =
-    fetchNeighbour (flip (-) 1) (WP.getLaterEntries (PostList Later))
-
-
-fmt msg =
-    case msg of
-        PostList role result ->
-            ( "PostList " ++ (toString role), (Result.map (Array.map .title) result) |> Result.withDefault Array.empty )
-
-        _ ->
-            ( toString msg, Array.empty )
+fetchNeighbour : Maybe Entry -> (Date -> Cmd Msg) -> Maybe Entry -> Cmd Msg
+fetchNeighbour entry fetcher neighbour =
+    if neighbour == Nothing then
+        Maybe.map (fetcher << .date) entry
+            |> Maybe.withDefault Cmd.none
+    else
+        Cmd.none
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -248,9 +239,7 @@ update msg model =
                     }
             in
                 newModel
-                    ! [ fetchPrevious newModel
-                      , fetchNext newModel
-                      ]
+                    ! [ fetchNeighbours newModel ]
 
         PostList Later (Ok entries) ->
             let
@@ -320,8 +309,7 @@ update msg model =
                     { model | page = page }
             in
                 newModel
-                    ! [ fetchPrevious newModel
-                      , fetchNext newModel
+                    ! [ fetchNeighbours newModel
                       , fetchCurrent newModel
                       , fetchList newModel
                       ]

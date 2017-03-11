@@ -6,8 +6,8 @@ Currently I'm building and running with this:
 ```
 elm-live --open --pushstate --dir=src/static src/elm/Main.elm --output src/static/Main.js
 ```
-To Doer
-=======
+To Do
+=====
 
 - [x] Make list entries click through to their corresponding pages
 
@@ -40,67 +40,37 @@ To Doer
 - [x]  We may chose to use
    [HttpBuilder](http://package.elm-lang.org/packages/lukewestby/elm-http-builder/5.0.0/HttpBuilder)
    for this to make it easier to build up the request.
-- [x] Try using [elm-date-extra](http://package.elm-lang.org/packages/justinmimbs/elm-date-extra/2.0.1/Date-Extra#fromIsoString) to parse and format iso dates instead of Date.Format
+
+- [x] Try using
+  [elm-date-extra](http://package.elm-lang.org/packages/justinmimbs/elm-date-extra/2.0.1/Date-Extra#fromIsoString)
+  to parse and format iso dates instead of Date.Format
 
 - [x] Switching to the `date_gmt` -- and adding a Z to force UTC interpretation
-when decoding -- has solved, finally, the problem of fetching duplicate
-entries as neighbours. But now I notice that the time displayed in each
-post is an hour out, as if some time zone is being applied to it without
-my approval
+  when decoding -- has solved, finally, the problem of fetching duplicate
+  entries as neighbours. But now I notice that the time displayed in each post
+  is an hour out, as if some time zone is being applied to it without my
+  approval
+
+- [ ] Make the single page view just expand one entry in the list flow
+
+- [ ] Get rid of the arrow navigation buttons and use continuous scroll
+
+- [ ] We need a way to trigger fetching more entries when navigating the list
+  view. Ideally that would be triggered by scrolling. 
+  
+  - [x] Have to look into infinite scroll.
+
+  In fact the whole thing could work like this and we can get rid of those
+  pesky prev and next arrows. Which means we don't need to always be showing
+  the header bar!
+
+- [ ] Do we need a way to know if we've reached the actual beginning or end of the 
+  list of entries so as to avoid repeatedly requesting the next page at the end?
+
+  The response headers give us that information, or maybe just getting back
+  fewer than the expected page number.
 
 - [ ] Add classes or ids on summary cards in list view to help testing
-
-- [ ] We need a way to trigger fetching more entries when navigating the 
-list view. Ideally that would be triggered by scrolling. Have to look into 
-infinite scroll.
-
-  Then we're going to need to extend the model to include some notion of what
-  page (s) of the json have been fetched and cached. So that we know when to go
-  looking for more of it. 
-
-  A simple model assumes we're starting from the most recent first page And we
-  just extend back in time.  But if we're starting from a single entry entered
-  in the url bar we probably need two queries, with different orderings,
-  heading forward and backward from that entry.
-
-  So, when responding to a request for a specific slug, we will:
-
-  - fetch that entry using a post search by slug:
-
-      http://bitterjug.localhost
-      GET /wp-json/wp/v2/posts?slug=minimal-elm-program
-
-  - Find it's date and then fetch the following and previous entires
-  with requests like:
-
-      http://bitterjug.localhost
-      GET /wp-json/wp/v2/posts?before=2017-02-08T21:01:52
-
-  Not sure yet how we mark the 'before' and 'after' payloads so we know whether
-  to prepend or append them to the cached list. To date, while using the page
-  number, I encoded it in the type of the message function. Now we _could_ get
-  that from the incoming data headers? Perhaps not. The only header that
-  identifies what query was used to generate this result is the Link:next one,
-  and if we're on the last page, I don't think we actually get that one.  So I
-  probably do need to encode the meaning of the request in the return message
-  somehow so that we know what to do with it when we get it.
-
-  So we will have options like:
-  - Selected post, 
-    - replace the current list with this as a singleton
-    - set the current index to 0
-    - Search for neighbours and set off requests for the next and previous
-      pages
-  - Previous / Next content
-    - Prepend / Append to the list and recalculate the appropriate neighbours
-
-  We can use the index as the neighbour. If current is [0] then we have
-  no next and the previous is [1]. 
-
-  I think we might actually use an array for the cache.
-
-  Now the route and model appear to be different for the first time. Or the
-  difference is finally meaningful:
 
   - When we get a location we are going to parse the slug out of it.  Then the
     Msg will be to view the corresponding page.  But, at first, we won't have
@@ -118,11 +88,6 @@ infinite scroll.
  - We need a way to get a route from a Location, and a Location (url) from 
    a page.
 
-
-- [ ] Do we need a way to know if we've reached the actual beginning or end of the 
-  list of entries so as to avoid repeatedly requesting the next page at the end?
-
-  The response headers give us that information 
 
 - [ ] Adding buttons to cards is going to entail giving each one an unique button id number
 

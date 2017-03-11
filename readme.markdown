@@ -51,16 +51,23 @@ To Do
   is an hour out, as if some time zone is being applied to it without my
   approval
 
-- [ ] Make the single page view just expand one entry in the list flow
+- [x] Make the single page view just expand one entry in the list flow
 
-- [ ] Get rid of the arrow navigation buttons and use continuous scroll
+- [ ] Clicking on an open card should maybe close it -- return to the list view?
+
+- [ ] Should scrolling off an open entry also close it?
+
+- [ ] Going straight to the url of a single page view needs to scroll us to the
+relevant entry otherwise we cant see it.
+
+- [ ] use continuous scroll
 
 - [ ] We need a way to trigger fetching more entries when navigating the list
   view. Ideally that would be triggered by scrolling. 
   
   - [x] Have to look into infinite scroll.
 
-  In fact the whole thing could work like this and we can 
+  In fact the whole thing could work like this and we can:
 
 - [x] get rid of those pesky prev and next arrows. Which means we don't need to
   always be showing the header bar!
@@ -71,7 +78,7 @@ To Do
   The response headers give us that information, or maybe just getting back
   fewer than the expected page number.
 
-- [ ] Add classes or ids on summary cards in list view to help testing
+- [x] Add classes or ids on summary cards in list view to help testing
 
   - When we get a location we are going to parse the slug out of it.  Then the
     Msg will be to view the corresponding page.  But, at first, we won't have

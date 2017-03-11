@@ -13,6 +13,7 @@ import Json.Decode as Decode exposing (Decoder)
 import Markdown
 import Material.Card as Card
 import Material.Options as Options
+import Maybe.Extra exposing (filter, unwrap)
 
 
 type alias Slug =
@@ -99,26 +100,26 @@ loading =
     Entry "..." "Loading..." "" "" borindDate
 
 
-viewEntry : String -> (Entry -> String) -> Options.Style msg -> Entry -> Html msg
-viewEntry typeClass getContent style entry =
-    Card.view
-        [ style, Options.cs <| entry.slug ++ " entry " ++ typeClass ]
-        [ Card.title []
-            [ Card.head [] [ text entry.title ]
-            , Card.subhead [] [ formatDate entry.date ]
+{-| If we have Just slug and it matches the entry slug then 
+    render the entry details, otherwise render its summary
+-}
+viewEntry : Maybe Slug -> Options.Style msg -> Entry -> Html msg
+viewEntry slug style entry =
+    let
+        ( typeClass, content ) =
+            slug
+                |> filter ((==) entry.slug)
+                |> unwrap ( "entry-summary", entry.excerpt )
+                    (always ( "entry-detail", entry.content ))
+    in
+        Card.view
+            [ style, Options.cs <| entry.slug ++ " entry " ++ typeClass ]
+            [ Card.title []
+                [ Card.head [] [ text entry.title ]
+                , Card.subhead [] [ formatDate entry.date ]
+                ]
+            , Card.text [] [ Markdown.toHtml [] content ]
             ]
-        , Card.text [] [ Markdown.toHtml [] (getContent entry) ]
-        ]
-
-
-viewDetail : Options.Style msg -> Entry -> Html msg
-viewDetail =
-    viewEntry "entry-detail" .content
-
-
-viewSummary : Options.Style msg -> Entry -> Html msg
-viewSummary =
-    viewEntry "entry-summary" .excerpt
 
 
 formatDate : Date.Date -> Html msg

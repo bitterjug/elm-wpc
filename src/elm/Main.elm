@@ -312,36 +312,32 @@ view model =
                 , Options.onClick (Show <| Blog entry.slug)
                 ]
 
-        notFound =
-            div [] [ text "404 not found" ]
+        entryList slugM =
+            model.entries
+                |> Array.indexedMap
+                    (\id entry -> Entry.viewEntry slugM (cardStyle id entry) entry)
+                |> Array.toList
+                |> Options.div [ Options.cs "entry-list-container" ]
 
         content =
             case model.page of
                 EntryList ->
-                    let
-                        entries =
-                            model.entries
-                                |> Array.indexedMap (\id entry -> Entry.viewSummary (cardStyle id entry) entry)
-                                |> Array.toList
-                                |> Options.div [ Options.cs "entry-list-container" ]
-                    in
-                        entries
+                    entryList Nothing
 
                 SingleEntry index ->
+                    -- TODO if slugM is Nothing, we should be saying something different here?
+                    -- should we have fetched the right entry by slug? At what point
+                    -- do we decide that the slug is invalid?
                     model.entries
                         |> Array.get index
-                        |> Maybe.map
-                            (List.singleton
-                                >> List.indexedMap (\id entry -> Entry.viewDetail (cardStyle id entry) entry)
-                                >> Options.div []
-                            )
-                        |> Maybe.withDefault notFound
+                        |> Maybe.map .slug
+                        |> entryList
 
                 Loading route ->
                     div [] [ text "Loading..." ]
 
                 NotFound ->
-                    notFound
+                    div [] [ text "404 not found" ]
 
         header =
             [ Layout.row [ Options.cs "header-row" ]
@@ -361,6 +357,11 @@ view model =
             , tabs = ( [], [] )
             , main =
                 [ Grid.grid []
-                    [ Grid.cell [ Grid.offset Grid.Desktop 1, Grid.size Grid.Desktop 10 ] [ content ] ]
+                    [ Grid.cell [ Grid.offset Grid.Desktop 1, Grid.size Grid.Desktop 10 ]
+                        [ text "more"
+                        , content
+                        , text "more"
+                        ]
+                    ]
                 ]
             }

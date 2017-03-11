@@ -100,7 +100,7 @@ loading =
     Entry "..." "Loading..." "" "" borindDate
 
 
-{-| If we have Just slug and it matches the entry slug then 
+{-| If we have Just slug and it matches the entry slug then
     render the entry details, otherwise render its summary
 -}
 viewEntry : Maybe Slug -> Options.Style msg -> Entry -> Html msg
@@ -113,7 +113,10 @@ viewEntry slug style entry =
                     (always ( "entry-detail", entry.content ))
     in
         Card.view
-            [ style, Options.cs <| entry.slug ++ " entry " ++ typeClass ]
+            [ style
+            , Options.id entry.slug
+            , Options.cs <| " entry " ++ typeClass
+            ]
             [ Card.title []
                 [ Card.head [] [ text entry.title ]
                 , Card.subhead [] [ formatDate entry.date ]

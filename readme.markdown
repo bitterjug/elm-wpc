@@ -60,9 +60,10 @@ To Do
   
   - [x] Have to look into infinite scroll.
 
-  In fact the whole thing could work like this and we can get rid of those
-  pesky prev and next arrows. Which means we don't need to always be showing
-  the header bar!
+  In fact the whole thing could work like this and we can 
+
+- [x] get rid of those pesky prev and next arrows. Which means we don't need to
+  always be showing the header bar!
 
 - [ ] Do we need a way to know if we've reached the actual beginning or end of the 
   list of entries so as to avoid repeatedly requesting the next page at the end?

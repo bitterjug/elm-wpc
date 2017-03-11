@@ -9,7 +9,6 @@ import Entry
         , Entries
         , Slug
         )
-import Function exposing ((<<<), (>>>))
 import Html exposing (..)
 import Html.Attributes exposing (src)
 import Http
@@ -297,20 +296,6 @@ update msg model =
             { model | raised = id } ! []
 
 
-prevNextButton : Model -> Int -> String -> Maybe Slug -> Html Msg
-prevNextButton model buttonId iconName neighbour =
-    Button.render Mdl
-        [ buttonId ]
-        model.mdl
-        [ Button.icon
-        , Button.ripple
-        , neighbour
-            |> Maybe.map (Button.link << toUrl << Blog)
-            |> Maybe.withDefault Button.disabled
-        ]
-        [ Icon.i iconName ]
-
-
 view : Model -> Html Msg
 view model =
     let
@@ -330,10 +315,7 @@ view model =
         notFound =
             div [] [ text "404 not found" ]
 
-        loading =
-            div [] [ text "Loading..." ]
-
-        ( prevSlug, nextSlug, content ) =
+        content =
             case model.page of
                 EntryList ->
                     let
@@ -343,45 +325,31 @@ view model =
                                 |> Array.toList
                                 |> Options.div [ Options.cs "entry-list-container" ]
                     in
-                        ( Nothing, Nothing, entries )
+                        entries
 
                 SingleEntry index ->
-                    let
-                        entries =
-                            model.entries
-                                |> Array.get index
-                                |> Maybe.map
-                                    (List.singleton
-                                        >> List.indexedMap (\id entry -> Entry.viewDetail (cardStyle id entry) entry)
-                                        >> Options.div []
-                                    )
-                                |> Maybe.withDefault notFound
-
-                        previous =
-                            Array.get (index + 1) model.entries
-                                |> Maybe.map .slug
-
-                        next =
-                            Array.get (index - 1) model.entries
-                                |> Maybe.map .slug
-                    in
-                        ( previous, next, entries )
+                    model.entries
+                        |> Array.get index
+                        |> Maybe.map
+                            (List.singleton
+                                >> List.indexedMap (\id entry -> Entry.viewDetail (cardStyle id entry) entry)
+                                >> Options.div []
+                            )
+                        |> Maybe.withDefault notFound
 
                 Loading route ->
-                    ( Nothing, Nothing, loading )
+                    div [] [ text "Loading..." ]
 
                 NotFound ->
-                    ( Nothing, Nothing, notFound )
+                    notFound
 
         header =
             [ Layout.row [ Options.cs "header-row" ]
-                [ Layout.navigation [] [ prevNextButton model 0 "arrow_back" prevSlug ]
-                , Layout.spacer
+                [ Layout.spacer
                 , Layout.title []
                     [ Html.a [ Html.Attributes.href <| (toUrl BlogList) ] [ img [ src "images/bjlogo.png" ] [] ]
                     ]
                 , Layout.spacer
-                , Layout.navigation [] [ prevNextButton model 1 "arrow_forward" nextSlug ]
                 ]
             ]
     in

@@ -9,6 +9,7 @@ import Entry
         , Entries
         , Slug
         )
+import Function exposing ((<<<), (>>>))
 import Html exposing (..)
 import Html.Attributes exposing (src)
 import Http
@@ -313,22 +314,18 @@ prevNextButton model buttonId iconName neighbour =
 view : Model -> Html Msg
 view model =
     let
-        viewEntry : (Options.Style Msg -> Entry -> Html Msg) -> Int -> Entry -> Html Msg
-        viewEntry cardView cardId entry =
-            let
-                style =
-                    Options.many
-                        [ if model.raised == cardId then
-                            Elevation.e8
-                          else
-                            Elevation.e2
-                        , Elevation.transition 250
-                        , Options.onMouseEnter (Raise cardId)
-                        , Options.onMouseLeave (Raise -1)
-                        , Options.onClick (Show <| Blog entry.slug)
-                        ]
-            in
-                cardView style entry
+        cardStyle : Int -> Entry -> Options.Style Msg
+        cardStyle cardId entry =
+            Options.many
+                [ if model.raised == cardId then
+                    Elevation.e8
+                  else
+                    Elevation.e2
+                , Elevation.transition 250
+                , Options.onMouseEnter (Raise cardId)
+                , Options.onMouseLeave (Raise -1)
+                , Options.onClick (Show <| Blog entry.slug)
+                ]
 
         notFound =
             div [] [ text "404 not found" ]
@@ -342,7 +339,7 @@ view model =
                     let
                         entries =
                             model.entries
-                                |> Array.indexedMap (viewEntry Entry.viewSummary)
+                                |> Array.indexedMap (\id entry -> Entry.viewSummary (cardStyle id entry) entry)
                                 |> Array.toList
                                 |> Options.div [ Options.cs "entry-list-container" ]
                     in
@@ -355,7 +352,7 @@ view model =
                                 |> Array.get index
                                 |> Maybe.map
                                     (List.singleton
-                                        >> List.indexedMap (viewEntry Entry.viewDetail)
+                                        >> List.indexedMap (\id entry -> Entry.viewDetail (cardStyle id entry) entry)
                                         >> Options.div []
                                     )
                                 |> Maybe.withDefault notFound

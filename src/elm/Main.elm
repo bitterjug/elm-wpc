@@ -154,12 +154,6 @@ fetchList model =
         EntryList ->
             if Array.length model.entries < 10 then
                 WP.getPostList (PostList List) 1
-                -- until such time as we have routes that include details of
-                -- the list always fetch the first page, later we can maybe
-                -- have a list starting from zero or even a partial list with a
-                -- start and end.  theres space for some sort of combined
-                -- detail and summary view that shows the current entry in
-                -- context of its list but I haven't invented that yet.
             else
                 Cmd.none
 

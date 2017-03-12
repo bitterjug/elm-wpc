@@ -53,6 +53,21 @@ To Do
 
 - [x] Make the single page view just expand one entry in the list flow
 
+- [ ] When we click a card to view the details, that card's `offsetTop`
+  should be stored and we should scroll to that position.
+   
+   At the moment this still isn't working, we get a value from the click but
+   those are way too small. What I think is happening is that the target of the
+   click event is the element we click on which might not be the card itself.
+   Only the card has a meaningful offset within the scrolling element (Though I
+   Realise there are divs between the cards and the one that is actually being
+   scrolled).
+
+   There are some functions in
+   [DOM](http://package.elm-lang.org/packages/debois/elm-dom/1.2.3/DOM) to
+   navigate the Dom hierarchy so maybe we need to traverse up until we get to
+   the card and then take its `offsetTop`.
+
 - [ ] Clicking on an open card should maybe close it -- return to the list view?
 
 - [ ] Should scrolling off an open entry also close it?

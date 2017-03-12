@@ -4,6 +4,7 @@ import Array
 import ArrayExtra exposing (locate)
 import Date exposing (Date)
 import DOM exposing (target, offsetTop)
+import Dom.Scroll as Scroll
 import Entry
     exposing
         ( Entry
@@ -25,6 +26,7 @@ import Material.Button as Button
 import Maybe.Extra exposing (filter)
 import Navigation exposing (Location)
 import RouteUrl exposing (UrlChange)
+import Task
 import UrlParser as Url exposing ((</>))
 import WordpressRestApi as WP
 
@@ -87,7 +89,8 @@ type Role
 
 
 type Msg
-    = PostList Role (Result Http.Error Entries)
+    = Noop
+    | PostList Role (Result Http.Error Entries)
     | Show Float Route
     | Mdl (Material.Msg Msg)
     | Raise Int
@@ -199,6 +202,9 @@ fetchNeighbour entry fetcher neighbour =
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
+        Noop ->
+            model ! []
+
         PostList Current (Ok entries) ->
             let
                 newPage =
@@ -279,7 +285,7 @@ update msg model =
                         Blog slug ->
                             locate (Entry.hasSlug slug) model.entries
                                 |> Maybe.map SingleEntry
-                                -- in the default case we also want to return commands to do the loading
+                                -- TODO: in the default case we also want to return commands to do the loading
                                 |>
                                     Maybe.withDefault (Loading route)
 
@@ -292,6 +298,7 @@ update msg model =
                 newModel
                     ! [ fetchForSingleEntry newModel
                       , fetchList newModel
+                      , Task.attempt (always Noop) (Scroll.toY "elm-mdl-layout-main" scrollY)
                       ]
 
         Raise id ->

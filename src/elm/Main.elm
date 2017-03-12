@@ -3,6 +3,7 @@ module Main exposing (..)
 import Array
 import ArrayExtra exposing (locate)
 import Date exposing (Date)
+import DOM exposing (target, offsetTop)
 import Entry
     exposing
         ( Entry
@@ -12,6 +13,7 @@ import Entry
 import Html exposing (..)
 import Html.Attributes exposing (src)
 import Http
+import Json.Decode as Decode
 import Material
 import Material.Icon as Icon
 import Material.Options as Options
@@ -43,7 +45,7 @@ location2messages location =
     location
         |> Url.parseHash routeParser
         >> Maybe.withDefault BadUrl
-        >> Show
+        >> Show 0
         >> List.singleton
 
 
@@ -86,7 +88,7 @@ type Role
 
 type Msg
     = PostList Role (Result Http.Error Entries)
-    | Show Route
+    | Show Float Route
     | Mdl (Material.Msg Msg)
     | Raise Int
 
@@ -267,7 +269,7 @@ update msg model =
         Mdl msg_ ->
             Material.update Mdl msg_ model
 
-        Show route ->
+        Show scrollY route ->
             let
                 page =
                     case route of
@@ -309,7 +311,10 @@ view model =
                 , Elevation.transition 250
                 , Options.onMouseEnter (Raise cardId)
                 , Options.onMouseLeave (Raise -1)
-                , Options.onClick (Show <| Blog entry.slug)
+                  -- , Options.onClick (Show 0<| Blog entry.slug)
+                , Options.on "click" <|
+                    Decode.map (\scrollY -> Show scrollY <| Blog entry.slug) (target offsetTop)
+                  -- TODO swap arg order for Show so we donn't need his lambda
                 ]
 
         entryList slugM =

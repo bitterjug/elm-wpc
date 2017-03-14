@@ -53,20 +53,21 @@ To Do
 
 - [x] Make the single page view just expand one entry in the list flow
 
-- [ ] When we click a card to view the details, that card's `offsetTop`
+- [x] When we click a card to view the details, that card's `offsetTop`
   should be stored and we should scroll to that position.
    
-   At the moment this still isn't working, we get a value from the click but
-   those are way too small. What I think is happening is that the target of the
-   click event is the element we click on which might not be the card itself.
-   Only the card has a meaningful offset within the scrolling element (Though I
-   Realise there are divs between the cards and the one that is actually being
-   scrolled).
+  We get the new scroll distance from a card when we click it which is of
+  course before we render the new page.  There are problems with this. If there
+  is an expanded card above the one you click the scroll height we move to
+  includes the height of that expanded card which won't be there after we
+  redraw. So the new height isn't right.  And if we go to a card directly via
+  the url we don't have a scroll distance for it. 
 
-   There are some functions in
-   [DOM](http://package.elm-lang.org/packages/debois/elm-dom/1.2.3/DOM) to
-   navigate the Dom hierarchy so maybe we need to traverse up until we get to
-   the card and then take its `offsetTop`.
+  So we need to calculate the appropriate new scroll height either from 
+  first principles about the height and number of cards in the stack (which
+  might lay the groundwork for reverse infinite scroll) or after we have
+  rendered the new page, when things are in their correct final positions.
+
 
 - [ ] Clicking on an open card should maybe close it -- return to the list view?
 

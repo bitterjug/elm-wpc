@@ -68,6 +68,14 @@ To Do
   might lay the groundwork for reverse infinite scroll) or after we have
   rendered the new page, when things are in their correct final positions.
 
+  - So what if we knew the width of the containing div, and of the cards?
+  Cards could have fixed width, and probably should. And we can get the 
+  size of the div using DOM library in a task. Kick off a task when we
+  start the program (do we need to have rendered a frame yet?) and 
+  have a subscription for window resize events and check it again. 
+  As we have to reflow anyway. Then we know how the cards stack in the
+  grid and we should be able to calculate the position that the
+  top of a given expanded card *should* be.
 
 - [ ] Clicking on an open card should maybe close it -- return to the list view?
 

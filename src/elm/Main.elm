@@ -28,6 +28,7 @@ import Navigation exposing (Location)
 import RouteUrl exposing (UrlChange)
 import Task
 import UrlParser as Url exposing ((</>))
+import Window
 import WordpressRestApi as WP
 
 
@@ -38,7 +39,7 @@ main =
         , init = init
         , update = update
         , view = view
-        , subscriptions = \model -> Layout.subs Mdl model.mdl
+        , subscriptions = subs
         }
 
 
@@ -65,6 +66,7 @@ type alias Model =
     , page : Page
     , mdl : Material.Model
     , raised : Int
+    , size : Maybe Window.Size
     }
 
 
@@ -94,6 +96,7 @@ type Msg
     | Show Float Route
     | Mdl (Material.Msg Msg)
     | Raise Int
+    | Resize Window.Size
 
 
 model : Model
@@ -102,13 +105,13 @@ model =
     , page = Loading BlogList
     , mdl = Material.model
     , raised = -1
+    , size = Nothing
     }
 
 
 init : ( Model, Cmd Msg )
 init =
-    -- ( model, WP.getPostList (PostList List) 1 )
-    model ! []
+    model ! [ Task.perform Resize Window.size ]
 
 
 currentRoute : Model -> Route
@@ -304,6 +307,13 @@ update msg model =
         Raise id ->
             { model | raised = id } ! []
 
+        Resize size ->
+            let
+                _ =
+                    Debug.log "size:" size
+            in
+                { model | size = Just size } ! []
+
 
 view : Model -> Html Msg
 view model =
@@ -375,3 +385,11 @@ view model =
                     ]
                 ]
             }
+
+
+subs : Model -> Sub Msg
+subs model =
+    Sub.batch
+        [ Layout.subs Mdl model.mdl
+        , Window.resizes Resize
+        ]

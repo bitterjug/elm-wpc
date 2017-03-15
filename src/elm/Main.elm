@@ -318,10 +318,8 @@ view model =
                 , Elevation.transition 250
                 , Options.onMouseEnter (Raise cardId)
                 , Options.onMouseLeave (Raise -1)
-                  -- , Options.onClick (Show 0<| Blog entry.slug)
                 , Options.on "click" <|
                     Decode.map (\scrollY -> Show scrollY <| Blog entry.slug) ((Decode.field "currentTarget") offsetTop)
-                  -- TODO swap arg order for Show so we donn't need his lambda
                 ]
 
         entryList slugM =

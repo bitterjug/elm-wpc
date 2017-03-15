@@ -6,6 +6,7 @@ Currently I'm building and running with this:
 ```
 elm-live --open --pushstate --dir=src/static src/elm/Main.elm --output src/static/Main.js
 ```
+
 To Do
 =====
 
@@ -68,14 +69,38 @@ To Do
   might lay the groundwork for reverse infinite scroll) or after we have
   rendered the new page, when things are in their correct final positions.
 
-  - So what if we knew the width of the containing div, and of the cards?
-  Cards could have fixed width, and probably should. And we can get the 
-  size of the div using DOM library in a task. Kick off a task when we
-  start the program (do we need to have rendered a frame yet?) and 
-  have a subscription for window resize events and check it again. 
-  As we have to reflow anyway. Then we know how the cards stack in the
-  grid and we should be able to calculate the position that the
-  top of a given expanded card *should* be.
+- So what if we knew the width of the containing div, and of the cards?  Cards
+  could have fixed width, and probably should. And we can get the size of the
+  div using DOM library in a task. Kick off a task when we start the program
+  (do we need to have rendered a frame yet?) and have a subscription for window
+  resize events and check it again.  As we have to reflow anyway.  Then we know
+  how the cards stack in the grid and we should be able to calculate the
+  position that the top of a given expanded card *should* be.
+
+- Turns out to be harder than I expected to get the size of the containing
+   div. The DOM module only works inside an event handler and uses the event
+   object to start decoding the values of the DOM. But I cannot find a suitable
+   event. And without the event object parameter, there's nothing to talk to.
+   `elm-lang/dom` doesn't give tasks for getting values which would be super
+   helpful. You could give it an element id and a decoder and it would return a
+   value off the dom element. *sigh*.
+
+- So instead I have the size of the window in pixels. It's going to take some
+  work to calculate the size of the main column from this because the MDL grid
+  system calculates proportional columns and I'm going to have to do the same
+  calculation.
+
+   There are:
+
+   - `div.mdl-grid` with 8px border which looks to be fixed
+
+   - `mdl-cell`: has another 8px border
+   `mdl-cell--10-col-desktop` 
+   `mdl-cell--1-offset-desktop`  says width is 83.33333333% - 16px
+
+   e.g. for browser width 1000 its inner width is 796.5
+
+
 
 - [ ] Clicking on an open card should maybe close it -- return to the list view?
 

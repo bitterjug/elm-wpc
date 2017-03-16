@@ -66,7 +66,7 @@ type alias Model =
     , page : Page
     , mdl : Material.Model
     , raised : Int
-    , size : Maybe Window.Size
+    , width : Maybe Float
     }
 
 
@@ -96,7 +96,7 @@ type Msg
     | Show Float Route
     | Mdl (Material.Msg Msg)
     | Raise Int
-    | Resize Window.Size
+    | Resize Float
 
 
 model : Model
@@ -105,13 +105,17 @@ model =
     , page = Loading BlogList
     , mdl = Material.model
     , raised = -1
-    , size = Nothing
+    , width = Nothing
     }
 
 
 init : ( Model, Cmd Msg )
 init =
-    model ! [ Task.perform Resize Window.size ]
+    model ! []
+
+
+
+--[ Task.perform Resize Window.size ]
 
 
 currentRoute : Model -> Route
@@ -307,12 +311,8 @@ update msg model =
         Raise id ->
             { model | raised = id } ! []
 
-        Resize size ->
-            let
-                _ =
-                    Debug.log "size:" size
-            in
-                { model | size = Just size } ! []
+        Resize width ->
+            { model | width = Just (Debug.log "width:" width) } ! []
 
 
 view : Model -> Html Msg
@@ -337,7 +337,19 @@ view model =
                 |> Array.indexedMap
                     (\id entry -> Entry.viewEntry slugM (cardStyle id entry) entry)
                 |> Array.toList
-                |> Options.div [ Options.cs "entry-list-container" ]
+                |> Options.div
+                    [ Options.cs "entry-list-container"
+                    , Options.on "resize" <|
+                        Decode.map
+                            (\v ->
+                                let
+                                    _ =
+                                        Debug.log "value:" v
+                                in
+                                    Resize 0
+                            )
+                            Decode.value
+                    ]
 
         content =
             case model.page of
@@ -390,6 +402,4 @@ view model =
 subs : Model -> Sub Msg
 subs model =
     Sub.batch
-        [ Layout.subs Mdl model.mdl
-        , Window.resizes Resize
-        ]
+        [ Layout.subs Mdl model.mdl ]

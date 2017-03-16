@@ -101,6 +101,11 @@ To Do
    e.g. for browser width 1000 its inner width is 796.5
 
 
+  The problem appears to be the scroll bar.
+
+- Maybe I can use [`Element.onRsize`](https://www.w3schools.com/jsref/event_onresize.asp)
+  as the event do DOM `getClientWidth`.
+
 
 - [ ] Clicking on an open card should maybe close it -- return to the list view?
 

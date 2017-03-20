@@ -80,6 +80,22 @@ To Do
    calculated column widths and set the main column size to something we 
    know is an exact multiple of the card width.
 
+- [ ] Calculate exact widths for 1, 2 and 3 columns of cards. 
+
+- [ ] Find out the breakpoints MDL uses, or chose breakpoints for column
+  counts. (Maybe switch to mobile first and just use one column while we get
+  the maths sorted?
+
+- [ ] Hard code the style attribute on the main column to allow exactly 1 2 or
+  3 card columns withing it and keep the number of card columns in the model
+  (or calculable from the current screen size in the model).
+
+- [ ] When we open a card we calculate the scroll distance to its top not from
+  the position where we clicked (because of the problem above with expanded
+  cards above) but from the number of cards before it in the column and the
+  current column width and known height of compact cards.
+
+
 - [ ] Clicking on an open card should maybe close it -- return to the list view?
 
 - [ ] Should scrolling off an open entry also close it?

@@ -315,6 +315,10 @@ update msg model =
                 { model | size = Just size } ! []
 
 
+cardWidth =
+    552
+
+
 view : Model -> Html Msg
 view model =
     let
@@ -354,10 +358,10 @@ view model =
                         |> entryList
 
                 Loading route ->
-                    div [] [ text "Loading..." ]
+                    Options.div [] [ text "Loading..." ]
 
                 NotFound ->
-                    div [] [ text "404 not found" ]
+                    Options.div [] [ text "404 not found" ]
 
         header =
             [ Layout.row [ Options.cs "header-row" ]
@@ -376,14 +380,7 @@ view model =
             , drawer = []
             , tabs = ( [], [] )
             , main =
-                [ Grid.grid []
-                    [ Grid.cell [ Grid.offset Grid.Desktop 1, Grid.size Grid.Desktop 10 ]
-                        [ text "more"
-                        , content
-                        , text "more"
-                        ]
-                    ]
-                ]
+                [ Options.div [] [ content ] ]
             }
 
 

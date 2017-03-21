@@ -66,7 +66,7 @@ type alias Model =
     , page : Page
     , mdl : Material.Model
     , raised : Int
-    , size : Maybe Window.Size
+    , cols : Int
     }
 
 
@@ -105,7 +105,7 @@ model =
     , page = Loading BlogList
     , mdl = Material.model
     , raised = -1
-    , size = Nothing
+    , cols = 1
     }
 
 
@@ -278,22 +278,30 @@ update msg model =
         Mdl msg_ ->
             Material.update Mdl msg_ model
 
-        Show scrollY route ->
+        Show _ route ->
             let
-                page =
+                ( page, index ) =
                     case route of
                         BlogList ->
-                            EntryList
+                            ( EntryList, 0 )
 
                         Blog slug ->
-                            locate (Entry.hasSlug slug) model.entries
-                                |> Maybe.map SingleEntry
-                                -- TODO: in the default case we also want to return commands to do the loading
-                                |>
-                                    Maybe.withDefault (Loading route)
+                            let
+                                maybeIndex =
+                                    locate (Entry.hasSlug slug) model.entries
+
+                                entryIndex =
+                                    Maybe.withDefault 0 maybeIndex
+
+                                blog =
+                                    maybeIndex
+                                        |> Maybe.map SingleEntry
+                                        |> Maybe.withDefault (Loading route)
+                            in
+                                ( blog, entryIndex )
 
                         BadUrl ->
-                            NotFound
+                            ( NotFound, 0 )
 
                 newModel =
                     { model | page = page }
@@ -301,7 +309,10 @@ update msg model =
                 newModel
                     ! [ fetchForSingleEntry newModel
                       , fetchList newModel
-                      , Task.attempt (always Noop) (Scroll.toY "elm-mdl-layout-main" scrollY)
+                      , Task.attempt
+                            (always Noop)
+                            (Scroll.toY "elm-mdl-layout-main" (cardTopY model.cols index))
+                        -- This has no value for a list?
                       ]
 
         Raise id ->
@@ -312,25 +323,39 @@ update msg model =
                 _ =
                     Debug.log "size:" size
             in
-                { model | size = Just size } ! []
+                { model | cols = cardColumns size } ! []
 
 
-{-| 1, 2 or 3 times card width, in pixels
+card =
+    { height = 340
+    , width = 552
+    }
+
+
+{-| 1, 2 or 3 columns of cards for the current window size
 -}
-cardColumnWidth : Maybe Window.Size -> String
-cardColumnWidth size =
-    let
-        cardWidth =
-            552
-    in
-        size
-            |> Maybe.map .width
-            |> Maybe.withDefault cardWidth
-            |> flip (//) cardWidth
-            |> min 3
-            |> (*) cardWidth
-            |> toString
-            |> flip (++) "px"
+cardColumns : Window.Size -> Int
+cardColumns size =
+    min 3 <| size.width // card.width
+
+
+{-| pixed width of the card column for current # columns
+-}
+cardColWidth : Int -> String
+cardColWidth cols =
+    cols
+        |> (*) card.width
+        |> toString
+        |> flip (++) "px"
+
+
+{-| scrollY of the top of the given card in the column
+-}
+cardTopY : Int -> Int -> Float
+cardTopY cols index =
+    (card.height * (index // cols))
+        |> toFloat
+        |> Debug.log "scroll-y:"
 
 
 view : Model -> Html Msg
@@ -366,16 +391,28 @@ view model =
                     -- TODO if slugM is Nothing, we should be saying something different here?
                     -- should we have fetched the right entry by slug? At what point
                     -- do we decide that the slug is invalid?
-                    model.entries
-                        |> Array.get index
-                        |> Maybe.map .slug
-                        |> entryList
+                    let
+                        content =
+                            model.entries
+                                |> Array.get index
+                                |> Maybe.map .slug
+                                |> entryList
+                    in
+                        content
 
                 Loading route ->
-                    Options.div [] [ text "Loading..." ]
+                    let
+                        content =
+                            Options.div [] [ text "Loading..." ]
+                    in
+                        content
 
                 NotFound ->
-                    Options.div [] [ text "404 not found" ]
+                    let
+                        content =
+                            Options.div [] [ text "404 not found" ]
+                    in
+                        content
 
         header =
             [ Layout.row [ Options.cs "header-row" ]
@@ -395,7 +432,7 @@ view model =
             , tabs = ( [], [] )
             , main =
                 [ Options.div
-                    [ Options.cs "main-column", Options.css "width" <| cardColumnWidth model.size ]
+                    [ Options.cs "main-column", Options.css "width" <| cardColWidth model.cols ]
                     [ content ]
                 ]
             }

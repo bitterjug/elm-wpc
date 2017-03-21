@@ -19,6 +19,10 @@ body>div {
     max-width: 532px;
 }
 
+.entry-summary {
+    height: 320px;
+}
+
 .header-row {
     height: 133px;
     background-color: #eee;

@@ -315,8 +315,22 @@ update msg model =
                 { model | size = Just size } ! []
 
 
-cardWidth =
-    552
+{-| 1, 2 or 3 times card width, in pixels
+-}
+cardColumnWidth : Maybe Window.Size -> String
+cardColumnWidth size =
+    let
+        cardWidth =
+            552
+    in
+        size
+            |> Maybe.map .width
+            |> Maybe.withDefault cardWidth
+            |> (//) cardWidth
+            |> min 3
+            |> (*) cardWidth
+            |> toString
+            |> (++) "px"
 
 
 view : Model -> Html Msg
@@ -380,7 +394,10 @@ view model =
             , drawer = []
             , tabs = ( [], [] )
             , main =
-                [ Options.div [] [ content ] ]
+                [ Options.div
+                    [ Options.css "width" <| cardColumnWidth model.size ]
+                    [ content ]
+                ]
             }
 
 

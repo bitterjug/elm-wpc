@@ -326,11 +326,11 @@ cardColumnWidth size =
         size
             |> Maybe.map .width
             |> Maybe.withDefault cardWidth
-            |> (//) cardWidth
+            |> flip (//) cardWidth
             |> min 3
             |> (*) cardWidth
             |> toString
-            |> (++) "px"
+            |> flip (++) "px"
 
 
 view : Model -> Html Msg
@@ -381,7 +381,7 @@ view model =
             [ Layout.row [ Options.cs "header-row" ]
                 [ Layout.spacer
                 , Layout.title []
-                    [ Html.a [ Html.Attributes.href <| (toUrl BlogList) ] [ img [ src "images/bjlogo.png" ] [] ]
+                    [ Html.a [ Html.Attributes.href <| toUrl BlogList ] [ img [ src "images/bjlogo.png" ] [] ]
                     ]
                 , Layout.spacer
                 ]
@@ -395,7 +395,7 @@ view model =
             , tabs = ( [], [] )
             , main =
                 [ Options.div
-                    [ Options.css "width" <| cardColumnWidth model.size ]
+                    [ Options.cs "main-column", Options.css "width" <| cardColumnWidth model.size ]
                     [ content ]
                 ]
             }

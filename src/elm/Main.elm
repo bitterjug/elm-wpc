@@ -233,13 +233,17 @@ update msg model =
 
         PostList Later (Ok entries) ->
             let
-                newPage =
+                ( newPage, cmd ) =
                     case model.page of
                         SingleEntry index ->
                             SingleEntry (index + Array.length entries)
+                                ! [ Task.attempt
+                                        (always Noop)
+                                        (Scroll.toY "elm-mdl-layout-main" (cardTopY model.cols <| index + Array.length entries))
+                                  ]
 
                         _ ->
-                            model.page
+                            model.page ! []
 
                 newModel =
                     { model
@@ -247,7 +251,7 @@ update msg model =
                         , page = newPage
                     }
             in
-                newModel ! []
+                newModel ! [ cmd ]
 
         PostList Earlier (Ok entries) ->
             let

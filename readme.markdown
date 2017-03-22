@@ -114,6 +114,32 @@ To Do
   Interestingly this looks pretty much like the solution to the reverse infinite
   scroll problem of adding predecessors. 
 
+  1. When you're looking at a single entry, receiving later entries can still
+     scroll to the current item (there is a case where we have scrolled off
+     since the initial display, which we might want to catch later by watching
+     the on scroll event, in which case, 2. below applies).
+
+  2. When you're looking at a list of entries and you receive later ones (later
+     ones are higher up the page, so this is the reverse scroll case) you need
+     to work out how far you are currently scrolled, then how much height the
+     additional previous entries will account for and then ask to scroll to
+     that amount. 
+
+  [ ] Interestingly the variable column version of this is going to create some
+  interesting maths for this because sometimes the number of cards arriving
+  will not be equivalent to a whole number of additional rows. 
+
+- [ ] looks like the timezone bug is back. When you go directly to the
+  [Steps](http://localhost:8000/#blog/steps) entry, you get two copies of the
+  entry. Similarly for [fallout](http://localhost:8000/#blog/fallout): The date
+  displayed on the card says 22:08, but the date in the model says 23:08.
+  The `date_gmt` returned from the API is: 
+  
+    "date_gmt": "2012-10-13T22:08:28",
+
+- [ ] Tidy up all the update logic using
+  [Return](http://package.elm-lang.org/packages/Fresheyeball/elm-return/6.0.3/Return)
+
 - [ ] Clicking on an open card should maybe close it -- return to the list view?
 
 - [ ] Should scrolling off an open entry also close it?

@@ -20,7 +20,7 @@ http://bitterjug.localhost
 GET /wp-json/wp/v2/posts?page=1
 
 http://bitterjug.localhost
-GET /wp-json/wp/v2/posts?slug=minimal-elm-program
+GET /wp-json/wp/v2/posts?slug=fallout
 
 http://bitterjug.localhost
 GET /wp-json/wp/v2/posts?before=2017-02-08T21:01:52

@@ -94,15 +94,25 @@ To Do
   3 card columns withing it and keep the number of card columns in the model
   (or calculable from the current screen size in the model).
 
-- [ ] Calculate and cache the main column width when the window resizes, not
+- [x] Calculate and cache the main column width when the window resizes, not
   every time we render. I expect us to render lots more times than the window
   resizes. Probably don't need to store the actual window width at all.
 
-- [ ] When we open a card we calculate the scroll distance to its top not from
+  Actually cache the number of columns as a compromise as it makes it easier
+  to calculate the scrollY distance.
+
+- [x] When we open a card we calculate the scroll distance to its top not from
   the position where we clicked (because of the problem above with expanded
   cards above) but from the number of cards before it in the column and the
   current column width and known height of compact cards.
 
+- [ ] Now, when we visit a card in the middle of a run it probably calculates
+  the scroll distance correctly initially, but when the predecessors arrive we
+  dont re-calculate or re-adjust the scrollY to account for inserting them so
+  we end up in the wrong place.
+
+  Interestingly this looks pretty much like the solution to the reverse infinite
+  scroll problem of adding predecessors. 
 
 - [ ] Clicking on an open card should maybe close it -- return to the list view?
 

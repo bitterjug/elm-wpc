@@ -99,17 +99,17 @@ To Do
   resizes. Probably don't need to store the actual window width at all.
 
   Actually cache the number of columns as a compromise as it makes it easier
-  to calculate the scrollY distance.
+  to calculate the `scrollY` distance.
 
 - [x] When we open a card we calculate the scroll distance to its top not from
   the position where we clicked (because of the problem above with expanded
   cards above) but from the number of cards before it in the column and the
   current column width and known height of compact cards.
 
-- [ ] Now, when we visit a card in the middle of a run it probably calculates
+- [x] Now, when we visit a card in the middle of a run it probably calculates
   the scroll distance correctly initially, but when the predecessors arrive we
-  dont re-calculate or re-adjust the scrollY to account for inserting them so
-  we end up in the wrong place.
+  don't re-calculate or re-adjust the `scrollY` to account for inserting them
+  so we end up in the wrong place.
 
   Interestingly this looks pretty much like the solution to the reverse infinite
   scroll problem of adding predecessors. 
@@ -128,6 +128,16 @@ To Do
   [ ] Interestingly the variable column version of this is going to create some
   interesting maths for this because sometimes the number of cards arriving
   will not be equivalent to a whole number of additional rows. 
+
+- [ ] Now I can't add an `onScroll` handler to the element that is scrolling in
+  the page because that is the `<main>` element which is created behind the
+  scenes by `elm-mdl` and it adds its own event handlers to it, but doesn't
+  give me a chance. 
+
+  Thinking of switching over to [Elm
+  Bootstrap](http://elm-bootstrap.info/getting-started) especially as there is
+  talk on the `elm-mdl` issues of Google switching to polymer like components
+  for the future of Material Design for the web.
 
 - [ ] looks like the timezone bug is back. When you go directly to the
   [Steps](http://localhost:8000/#blog/steps) entry, you get two copies of the

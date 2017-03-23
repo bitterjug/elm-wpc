@@ -1,6 +1,7 @@
 module Entry exposing (..)
 
 import Array exposing (Array)
+import Bootstrap.Card as Card
 import Date exposing (Date)
 import Date.Extra
     exposing
@@ -9,10 +10,9 @@ import Date.Extra
         )
 import Html exposing (..)
 import Html.Attributes exposing (..)
+import Html.Events exposing (onClick)
 import Json.Decode as Decode exposing (Decoder)
 import Markdown
-import Material.Card as Card
-import Material.Options as Options
 import Maybe.Extra exposing (filter, unwrap)
 
 
@@ -47,7 +47,7 @@ decodeDate : Decoder Date.Date
 decodeDate =
     let
         stringToDate =
-            fromIsoString >> Maybe.withDefault borindDate
+            fromIsoString >> Maybe.withDefault boringdDate
 
         ensureZulu dateString =
             if dateString |> String.endsWith "Z" then
@@ -97,14 +97,14 @@ decodeEntries =
 
 loading : Entry
 loading =
-    Entry "..." "Loading..." "" "" borindDate
+    Entry "..." "Loading..." "" "" boringdDate
 
 
 {-| If we have Just slug and it matches the entry slug then
     render the entry details, otherwise render its summary
 -}
-viewEntry : Maybe Slug -> Options.Style msg -> Entry -> Html msg
-viewEntry slug style entry =
+viewEntry : (Slug -> msg) -> Maybe Slug -> Entry -> Html msg
+viewEntry msg slug entry =
     let
         ( typeClass, content ) =
             slug
@@ -112,17 +112,19 @@ viewEntry slug style entry =
                 |> unwrap ( "entry-summary", entry.excerpt )
                     (always ( "entry-detail", entry.content ))
     in
-        Card.view
-            [ style
-            , Options.id entry.slug
-            , Options.cs <| " entry " ++ typeClass
-            ]
-            [ Card.title []
-                [ Card.head [] [ text entry.title ]
-                , Card.subhead [] [ formatDate entry.date ]
+        Card.config
+            [ Card.attrs
+                [ id entry.slug
+                , class <| " entry " ++ typeClass
+                , onClick <| msg entry.slug
                 ]
-            , Card.text [] [ Markdown.toHtml [] content ]
             ]
+            |> Card.block []
+                [ Card.titleH4 [] [ text entry.title ]
+                , Card.text [] [ Markdown.toHtml [] content ]
+                ]
+            |> Card.footer [] [ formatDate entry.date ]
+            |> Card.view
 
 
 formatDate : Date.Date -> Html msg
@@ -130,7 +132,7 @@ formatDate =
     toUtcFormattedString "d MMMM y, HH:mm" >> text
 
 
-borindDate =
+boringdDate =
     Date.fromTime 0
 
 

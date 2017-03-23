@@ -2,8 +2,14 @@ module Main exposing (..)
 
 import Array
 import ArrayExtra exposing (locate)
+import Bootstrap.Navbar as Navbar
+import Bootstrap.Grid as Grid
 import Date exposing (Date)
-import DOM exposing (target, offsetTop)
+import DOM
+    exposing
+        ( target
+        , offsetTop
+        )
 import Dom.Scroll as Scroll
 import Entry
     exposing
@@ -12,17 +18,16 @@ import Entry
         , Slug
         )
 import Html exposing (..)
-import Html.Attributes exposing (src)
+import Html.Attributes
+    exposing
+        ( src
+        , href
+        , class
+        , style
+        , id
+        )
 import Http
 import Json.Decode as Decode
-import Material
-import Material.Icon as Icon
-import Material.Options as Options
-import Material.Color as Color
-import Material.Grid as Grid
-import Material.Elevation as Elevation
-import Material.Layout as Layout
-import Material.Button as Button
 import Maybe.Extra exposing (filter)
 import Navigation exposing (Location)
 import RouteUrl exposing (UrlChange)
@@ -48,7 +53,7 @@ location2messages location =
     location
         |> Url.parseHash routeParser
         >> Maybe.withDefault BadUrl
-        >> Show 0
+        >> Show
         >> List.singleton
 
 
@@ -64,8 +69,7 @@ delta2hash prevous current =
 type alias Model =
     { entries : Entries
     , page : Page
-    , mdl : Material.Model
-    , raised : Int
+    , navbar : Navbar.State
     , cols : Int
     }
 
@@ -93,25 +97,30 @@ type Role
 type Msg
     = Noop
     | PostList Role (Result Http.Error Entries)
-    | Show Float Route
-    | Mdl (Material.Msg Msg)
-    | Raise Int
+    | Show Route
+    | NavbarMsg Navbar.State
     | Resize Window.Size
 
 
-model : Model
-model =
+model : Navbar.State -> Model
+model navbarState =
     { entries = Entry.none
     , page = Loading BlogList
-    , mdl = Material.model
-    , raised = -1
+    , navbar = navbarState
     , cols = 1
     }
 
 
 init : ( Model, Cmd Msg )
 init =
-    model ! [ Task.perform Resize Window.size ]
+    let
+        ( navbarState, navbarMsg ) =
+            Navbar.initialState NavbarMsg
+
+        getWindowSize =
+            Task.perform Resize Window.size
+    in
+        model navbarState ! [ getWindowSize, navbarMsg ]
 
 
 currentRoute : Model -> Route
@@ -279,10 +288,7 @@ update msg model =
         PostList _ (Err _) ->
             model ! []
 
-        Mdl msg_ ->
-            Material.update Mdl msg_ model
-
-        Show _ route ->
+        Show route ->
             let
                 ( page, index ) =
                     case route of
@@ -319,15 +325,15 @@ update msg model =
                         -- This has no value for a list?
                       ]
 
-        Raise id ->
-            { model | raised = id } ! []
-
         Resize size ->
             let
                 _ =
                     Debug.log "size:" size
             in
                 { model | cols = cardColumns size } ! []
+
+        NavbarMsg state ->
+            { model | navbar = state } ! []
 
 
 card =
@@ -365,26 +371,12 @@ cardTopY cols index =
 view : Model -> Html Msg
 view model =
     let
-        cardStyle : Int -> Entry -> Options.Style Msg
-        cardStyle cardId entry =
-            Options.many
-                [ if model.raised == cardId then
-                    Elevation.e8
-                  else
-                    Elevation.e2
-                , Elevation.transition 250
-                , Options.onMouseEnter (Raise cardId)
-                , Options.onMouseLeave (Raise -1)
-                , Options.on "click" <|
-                    Decode.map (\scrollY -> Show scrollY <| Blog entry.slug) ((Decode.field "currentTarget") offsetTop)
-                ]
-
         entryList slugM =
             model.entries
-                |> Array.indexedMap
-                    (\id entry -> Entry.viewEntry slugM (cardStyle id entry) entry)
+                |> Array.map (Entry.viewEntry (Show << Blog) slugM)
                 |> Array.toList
-                |> Options.div [ Options.cs "entry-list-container" ]
+                |> div
+                    [ class "entry-list-container" ]
 
         content =
             case model.page of
@@ -407,44 +399,38 @@ view model =
                 Loading route ->
                     let
                         content =
-                            Options.div [] [ text "Loading..." ]
+                            div [] [ text "Loading..." ]
                     in
                         content
 
                 NotFound ->
                     let
                         content =
-                            Options.div [] [ text "404 not found" ]
+                            div [] [ text "404 not found" ]
                     in
                         content
-
-        header =
-            [ Layout.row [ Options.cs "header-row" ]
-                [ Layout.spacer
-                , Layout.title []
-                    [ Html.a [ Html.Attributes.href <| toUrl BlogList ] [ img [ src "images/bjlogo.png" ] [] ]
-                    ]
-                , Layout.spacer
-                ]
-            ]
     in
-        Layout.render Mdl
-            model.mdl
-            [ Layout.fixedHeader ]
-            { header = header
-            , drawer = []
-            , tabs = ( [], [] )
-            , main =
-                [ Options.div
-                    [ Options.cs "main-column", Options.css "width" <| cardColWidth model.cols ]
-                    [ content ]
+        div [ id "main" ]
+            [ header model
+            , div
+                [ class "main-column"
+                , style [ ( "width", cardColWidth model.cols ) ]
                 ]
-            }
+                [ content ]
+            , text "hello"
+            ]
+
+
+header : Model -> Html Msg
+header model =
+    Navbar.config NavbarMsg
+        |> Navbar.brand
+            [ href <| toUrl BlogList ]
+            [ img [ src "images/bjlogo.png" ] [ text "Bitterjug.com" ] ]
+        |> Navbar.view model.navbar
 
 
 subs : Model -> Sub Msg
 subs model =
     Sub.batch
-        [ Layout.subs Mdl model.mdl
-        , Window.resizes Resize
-        ]
+        [ Window.resizes Resize ]

@@ -211,6 +211,17 @@ fetchNeighbour entry fetcher neighbour =
         Cmd.none
 
 
+scrollToEntry : Model -> Int -> Cmd Msg
+scrollToEntry model index =
+    Task.attempt (always Noop) <|
+        Scroll.toY "this-has-to-be-an-id" <|
+            -- TODO
+            toFloat
+            <|
+                Debug.log "scroll-to"
+                    (card.height * index // model.cols)
+
+
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
@@ -246,10 +257,7 @@ update msg model =
                     case model.page of
                         SingleEntry index ->
                             SingleEntry (index + Array.length entries)
-                                ! [ Task.attempt
-                                        (always Noop)
-                                        (Scroll.toY "elm-mdl-layout-main" (cardTopY model.cols <| index + Array.length entries))
-                                  ]
+                                ! [ scrollToEntry model (index + Array.length entries) ]
 
                         _ ->
                             model.page ! []
@@ -319,10 +327,8 @@ update msg model =
                 newModel
                     ! [ fetchForSingleEntry newModel
                       , fetchList newModel
-                      , Task.attempt
-                            (always Noop)
-                            (Scroll.toY "elm-mdl-layout-main" (cardTopY model.cols index))
-                        -- This has no value for a list?
+                      , scrollToEntry newModel index
+                        --  TODO: Do this only if ther is a single entry view??
                       ]
 
         Resize size ->
@@ -337,7 +343,7 @@ update msg model =
 
 
 card =
-    { height = 340
+    { height = 420
     , width = 552
     }
 
@@ -357,15 +363,6 @@ cardColWidth cols =
         |> (*) card.width
         |> toString
         |> flip (++) "px"
-
-
-{-| scrollY of the top of the given card in the column
--}
-cardTopY : Int -> Int -> Float
-cardTopY cols index =
-    (card.height * (index // cols))
-        |> toFloat
-        |> Debug.log "scroll-y:"
 
 
 view : Model -> Html Msg
@@ -417,13 +414,14 @@ view model =
                 , style [ ( "width", cardColWidth model.cols ) ]
                 ]
                 [ content ]
-            , text "hello"
             ]
 
 
 header : Model -> Html Msg
 header model =
     Navbar.config NavbarMsg
+        |> Navbar.fixTop
+        |> Navbar.attrs [ class "header-row" ]
         |> Navbar.brand
             [ href <| toUrl BlogList ]
             [ img [ src "images/bjlogo.png" ] [ text "Bitterjug.com" ] ]

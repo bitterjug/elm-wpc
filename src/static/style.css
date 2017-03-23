@@ -5,6 +5,7 @@
 .main-column {
     margin-left: auto;
     margin-right: auto;
+    padding-top: 150px;
 }
 
 .entry-list-container {
@@ -20,10 +21,10 @@
 }
 
 .entry-summary {
-    height: 320px;
+    height: 400px;
 }
 
 .header-row {
-    height: 133px;
+    height: 140px;
     background-color: #eee;
 }

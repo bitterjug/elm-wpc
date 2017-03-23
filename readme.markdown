@@ -129,15 +129,22 @@ To Do
   interesting maths for this because sometimes the number of cards arriving
   will not be equivalent to a whole number of additional rows. 
 
-- [ ] Now I can't add an `onScroll` handler to the element that is scrolling in
+- Now I can't add an `onScroll` handler to the element that is scrolling in
   the page because that is the `<main>` element which is created behind the
   scenes by `elm-mdl` and it adds its own event handlers to it, but doesn't
   give me a chance. 
 
-  Thinking of switching over to [Elm
+  [x] Thinking of switching over to [Elm
   Bootstrap](http://elm-bootstrap.info/getting-started) especially as there is
   talk on the `elm-mdl` issues of Google switching to polymer like components
   for the future of Material Design for the web.
+
+  - [ ] That didn't actually work yet because now the `<body>` element is
+    scrolling not the div. It doesn't have an id. I could give it one in the
+    html I guess but I need the scrolling element to be one I'm generating so I
+    can add an `onScroll` event handler to it. So I want to look at the css for
+    the top level of MDL and see how come the body wasn't the scrolling element
+    there.
 
 - [ ] looks like the timezone bug is back. When you go directly to the
   [Steps](http://localhost:8000/#blog/steps) entry, you get two copies of the

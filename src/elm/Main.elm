@@ -27,10 +27,10 @@ import Html.Attributes
         , id
         )
 import Http
-import Json.Decode as Decode
 import Maybe.Extra exposing (filter)
 import Navigation exposing (Location)
 import RouteUrl exposing (UrlChange)
+import Scrolling
 import Task
 import UrlParser as Url exposing ((</>))
 import Window
@@ -100,6 +100,7 @@ type Msg
     | Show Route
     | NavbarMsg Navbar.State
     | Resize Window.Size
+    | Scroll Scrolling.Info
 
 
 model : Navbar.State -> Model
@@ -338,6 +339,13 @@ update msg model =
             in
                 { model | cols = cardColumns size } ! []
 
+        Scroll info ->
+            let
+                _ =
+                    Debug.log "Scroll:" info
+            in
+                model ! []
+
         NavbarMsg state ->
             { model | navbar = state } ! []
 
@@ -407,7 +415,10 @@ view model =
                     in
                         content
     in
-        div [ id "main" ]
+        div
+            [ id "main"
+            , Scrolling.onScroll Scroll
+            ]
             [ header model
             , div
                 [ class "main-column"

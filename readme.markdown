@@ -139,12 +139,18 @@ To Do
   talk on the `elm-mdl` issues of Google switching to polymer like components
   for the future of Material Design for the web.
 
-  - [ ] That didn't actually work yet because now the `<body>` element is
+  - [x] That didn't actually work yet because now the `<body>` element is
     scrolling not the div. It doesn't have an id. I could give it one in the
     html I guess but I need the scrolling element to be one I'm generating so I
     can add an `onScroll` event handler to it. So I want to look at the css for
     the top level of MDL and see how come the body wasn't the scrolling element
     there.
+
+    Here's an outline of how to fix it.
+    http://dabblet.com/gist/3a79af10b5e4588ec48f468cdf177e72
+
+- [ ] Fix the layout so #main is only as big as what remains after the header
+  is drawn so that the scroll bars are the right size.
 
 - [ ] looks like the timezone bug is back. When you go directly to the
   [Steps](http://localhost:8000/#blog/steps) entry, you get two copies of the

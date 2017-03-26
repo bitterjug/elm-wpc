@@ -26,6 +26,7 @@ import Html.Attributes
         , style
         , id
         )
+import Html.Events exposing (onClick)
 import Http
 import Maybe.Extra exposing (filter)
 import Navigation exposing (Location)
@@ -101,6 +102,7 @@ type Msg
     | NavbarMsg Navbar.State
     | Resize Window.Size
     | Scroll Scrolling.Info
+    | Fetch Role
 
 
 model : Navbar.State -> Model
@@ -212,15 +214,21 @@ fetchNeighbour entry fetcher neighbour =
         Cmd.none
 
 
+fetchEarlier : Model -> Cmd Msg
+fetchEarlier model =
+    -- returns a comand to fetch a page that preceed the entries in the model in date order
+    model.entries
+        |> Array.get (Array.length model.entries - 1)
+        |> Maybe.map (WP.getEarlierEntries (PostList Earlier) << .date)
+        |> Maybe.withDefault Cmd.none
+
+
 scrollToEntry : Model -> Int -> Cmd Msg
 scrollToEntry model index =
     Task.attempt (always Noop) <|
-        Scroll.toY "this-has-to-be-an-id" <|
-            -- TODO
-            toFloat
-            <|
-                Debug.log "scroll-to"
-                    (card.height * index // model.cols)
+        Scroll.toY "main" <|
+            -- TODO adjust for header, e.g. - 140
+            toFloat (card.height * index // model.cols)
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -339,15 +347,27 @@ update msg model =
             in
                 { model | cols = cardColumns size } ! []
 
-        Scroll info ->
+        Scroll { scrollHeight, scrollTop, offsetHeight } ->
             let
                 _ =
-                    Debug.log "Scroll:" info
+                    Debug.log "Scroll" ( (scrollHeight - scrollTop), offsetHeight )
+
+                cmd =
+                    if (scrollHeight - scrollTop - 1) <= offsetHeight then
+                        fetchEarlier model
+                    else
+                        Cmd.none
             in
-                model ! []
+                ( model, cmd )
 
         NavbarMsg state ->
             { model | navbar = state } ! []
+
+        Fetch Earlier ->
+            model ! [ fetchEarlier model ]
+
+        Fetch _ ->
+            model ! []
 
 
 card =
@@ -380,8 +400,7 @@ view model =
             model.entries
                 |> Array.map (Entry.viewEntry (Show << Blog) slugM)
                 |> Array.toList
-                |> div
-                    [ class "entry-list-container" ]
+                |> div [ class "entry-list-container" ]
 
         content =
             case model.page of
@@ -424,7 +443,11 @@ view model =
                 [ class "main-column"
                 , style [ ( "width", cardColWidth model.cols ) ]
                 ]
-                [ content ]
+                [ content
+                , div
+                    [ class "more-button" ]
+                    [ a [ onClick <| Fetch Earlier ] [ text "more" ] ]
+                ]
             ]
 
 

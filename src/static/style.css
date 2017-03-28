@@ -25,6 +25,10 @@ body {
     padding: 10px;
 }
 
+.loading {
+    background: yellow;
+}
+
 .entry-list-container {
     display: flex;
     flex-flow: row wrap;

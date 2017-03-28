@@ -125,6 +125,11 @@ To Do
      additional previous entries will account for and then ask to scroll to
      that amount. 
 
+- [ ] Now we have a bug where its fetching the same next batch more than once. 
+Is there atomicity in scroll events? I should be able to set 
+- [ ] Do the same for Fetch Later as we have done for Fetch Earlier and make
+  upward scrolling work.
+
   [ ] Interestingly the variable column version of this is going to create some
   interesting maths for this because sometimes the number of cards arriving
   will not be equivalent to a whole number of additional rows. 

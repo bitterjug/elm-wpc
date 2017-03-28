@@ -22,6 +22,7 @@ import Html.Attributes
     exposing
         ( src
         , href
+        , classList
         , class
         , style
         , id
@@ -69,6 +70,7 @@ delta2hash prevous current =
 
 type alias Model =
     { entries : Entries
+    , earlierRequested : Bool
     , page : Page
     , navbar : Navbar.State
     , cols : Int
@@ -108,6 +110,7 @@ type Msg
 model : Navbar.State -> Model
 model navbarState =
     { entries = Entry.none
+    , earlierRequested = False
     , page = Loading BlogList
     , navbar = navbarState
     , cols = 1
@@ -280,11 +283,11 @@ update msg model =
                 newModel ! [ cmd ]
 
         PostList Earlier (Ok entries) ->
-            let
-                newModel =
-                    { model | entries = Array.append model.entries entries }
-            in
-                newModel ! []
+            { model
+                | entries = Array.append model.entries entries
+                , earlierRequested = False
+            }
+                ! []
 
         PostList List (Ok entries) ->
             let
@@ -348,23 +351,22 @@ update msg model =
                 { model | cols = cardColumns size } ! []
 
         Scroll { scrollHeight, scrollTop, offsetHeight } ->
-            let
-                _ =
-                    Debug.log "Scroll" ( (scrollHeight - scrollTop), offsetHeight )
-
-                cmd =
-                    if (scrollHeight - scrollTop - 1) <= offsetHeight then
-                        fetchEarlier model
-                    else
-                        Cmd.none
-            in
-                ( model, cmd )
+            if
+                (scrollHeight - scrollTop - card.height <= offsetHeight)
+                    && not model.earlierRequested
+            then
+                { model | earlierRequested = True } ! [ fetchEarlier model ]
+            else
+                model ! [ Cmd.none ]
 
         NavbarMsg state ->
             { model | navbar = state } ! []
 
         Fetch Earlier ->
-            model ! [ fetchEarlier model ]
+            if model.earlierRequested then
+                model ! [ Cmd.none ]
+            else
+                { model | earlierRequested = True } ! [ fetchEarlier model ]
 
         Fetch _ ->
             model ! []
@@ -445,7 +447,11 @@ view model =
                 ]
                 [ content
                 , div
-                    [ class "more-button" ]
+                    [ classList
+                        [ ( "more-button", True )
+                        , ( "loading", model.earlierRequested )
+                        ]
+                    ]
                     [ a [ onClick <| Fetch Earlier ] [ text "more" ] ]
                 ]
             ]

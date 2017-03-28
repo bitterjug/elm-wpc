@@ -125,8 +125,12 @@ To Do
      additional previous entries will account for and then ask to scroll to
      that amount. 
 
-- [ ] Now we have a bug where its fetching the same next batch more than once. 
-Is there atomicity in scroll events? I should be able to set 
+- [ ] Now we appear to have a bug where you can scroll quick down past the last
+  `card-height` pixels and arrive at the bottom without being spotted by an
+  `onScroll` event, and then it doesn't scroll. Not sure how to approach that as
+  I need the target of the `onScroll` event to get the scroll top from. So 
+  its not so easy to get it with, say, a timer.
+
 - [ ] Do the same for Fetch Later as we have done for Fetch Earlier and make
   upward scrolling work.
 

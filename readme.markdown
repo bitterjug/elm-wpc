@@ -125,14 +125,51 @@ To Do
      additional previous entries will account for and then ask to scroll to
      that amount. 
 
+- [ ] WIP: Do the same for Fetch Later as we have done for Fetch Earlier and make
+  upward scrolling work.
+
+  This is kinda working: the more button gets displayed and you can click on it
+  to trigger a fetch. But:
+
+  - The action isn't yet triggered by a scroll event
+
+  - The `PostList Later` branch of `update` does a `scrollToEntry` to position
+    the selected entry in the right place, which has the effect of zipping us
+    back to the focussed item rather than letting us scroll up. 
+
+  Now this is correct behaviour when we're viewing a single item and we just
+  fetched the single page of entries that precede it: we didn't get triggered
+  by a scroll event, or a click on he button, we were triggered automatically
+  because only one entry was fetched and we need its neighbours to have a
+  proper up to date display. Because rebuilding the page with entries above
+  changes the layout and the result is that the focussed entry effectively 
+  moves down the page, so we need to move to it.  
+
+  But its not the right behaviour when we were triggered by a scroll event (or
+  click on the more button). In this case we assume the user is no longer
+  looking at the current entry (although the URL/route hasn't yet been updated
+  to suggest that his is no longer the case) but at, for example, whatever item
+  is the first one after that button. So maybe we should in this case do
+  `scrollToEntry` to refocus that one?
+
+  [ ] The proper handling of this case is actually more subtle because once we
+  have scrolled off the single entry we ought to change the route.  But in a
+  three column layout, we have no way of knowing what entry is being looked at.
+  In a sense maybe we should lose the query parameter and return to '#blog'
+  because although there is an expanded card, its no being looked at any more.
+
+
 - [ ] Now we appear to have a bug where you can scroll quick down past the last
   `card-height` pixels and arrive at the bottom without being spotted by an
-  `onScroll` event, and then it doesn't scroll. Not sure how to approach that as
-  I need the target of the `onScroll` event to get the scroll top from. So 
+  `onScroll` event, and then it doesn't scroll. Not sure how to approach that
+  as I need the target of the `onScroll` event to get the scroll top from. So
   its not so easy to get it with, say, a timer.
 
-- [ ] Do the same for Fetch Later as we have done for Fetch Earlier and make
-  upward scrolling work.
+- [ ] Here's another interesting looking bug: if you click an entry (like
+  'tools' on April 9th) and then reload the resulting url, there are 2 copies
+  of the tools entry shown (both expanded). So it looks like the date parsing
+  still isn't working properly for some set of dates.
+
 
   [ ] Interestingly the variable column version of this is going to create some
   interesting maths for this because sometimes the number of cards arriving

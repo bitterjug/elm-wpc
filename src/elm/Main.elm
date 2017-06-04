@@ -71,6 +71,7 @@ delta2hash prevous current =
 type alias Model =
     { entries : Entries
     , earlierRequested : Bool
+    , laterRequested : Bool
     , page : Page
     , navbar : Navbar.State
     , cols : Int
@@ -111,6 +112,7 @@ model : Navbar.State -> Model
 model navbarState =
     { entries = Entry.none
     , earlierRequested = False
+    , laterRequested = False
     , page = Loading BlogList
     , navbar = navbarState
     , cols = 1
@@ -226,6 +228,15 @@ fetchEarlier model =
         |> Maybe.withDefault Cmd.none
 
 
+fetchLater : Model -> Cmd Msg
+fetchLater model =
+    -- returns a comand to fetch a page that follow the entries in the model in date order
+    model.entries
+        |> Array.get 0
+        |> Maybe.map (WP.getLaterEntries (PostList Later) << .date)
+        |> Maybe.withDefault Cmd.none
+
+
 scrollToEntry : Model -> Int -> Cmd Msg
 scrollToEntry model index =
     Task.attempt (always Noop) <|
@@ -277,6 +288,7 @@ update msg model =
                 newModel =
                     { model
                         | entries = Array.append entries model.entries
+                        , laterRequested = False
                         , page = newPage
                     }
             in
@@ -368,6 +380,12 @@ update msg model =
             else
                 { model | earlierRequested = True } ! [ fetchEarlier model ]
 
+        Fetch Later ->
+            if model.laterRequested then
+                model ! [ Cmd.none ]
+            else
+                { model | laterRequested = True } ! [ fetchLater model ]
+
         Fetch _ ->
             model ! []
 
@@ -385,7 +403,7 @@ cardColumns size =
     min 3 <| size.width // card.width
 
 
-{-| pixed width of the card column for current # columns
+{-| fixed width of the card column for current # columns
 -}
 cardColWidth : Int -> String
 cardColWidth cols =
@@ -445,16 +463,22 @@ view model =
                 [ class "main-column"
                 , style [ ( "width", cardColWidth model.cols ) ]
                 ]
-                [ content
-                , div
-                    [ classList
-                        [ ( "more-button", True )
-                        , ( "loading", model.earlierRequested )
-                        ]
-                    ]
-                    [ a [ onClick <| Fetch Earlier ] [ text "more" ] ]
+                [ moreButton Later "Later" model.laterRequested
+                , content
+                , moreButton Earlier "Earlier" model.earlierRequested
                 ]
             ]
+
+
+moreButton : Role -> String -> Bool -> Html Msg
+moreButton role label loading =
+    div
+        [ classList
+            [ ( "more-button", True )
+            , ( "loading", loading )
+            ]
+        ]
+        [ a [ onClick <| Fetch role ] [ text label ] ]
 
 
 header : Model -> Html Msg

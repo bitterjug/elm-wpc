@@ -33,3 +33,6 @@ GET /wp-json/wp/v2/posts?before=2015-10-10T20:34:17
 
 http://bitterjug.localhost
 GET /wp-json/wp/v2/posts?order=asc&after=2015-10-10T20:34:17
+
+http://bitterjug.localhost
+GET /wp-json/wp/v2/posts?order=asc&after=2016-10-10T20:34:17

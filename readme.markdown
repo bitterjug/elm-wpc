@@ -138,6 +138,23 @@ To Do
   interesting maths for this because sometimes the number of cards arriving
   will not be equivalent to a whole number of additional rows. 
 
+- [ ] Don't show the 'more' (and don't handle scroll up events) when we are at
+  the genuine top.
+
+  So, how do you find out if you're on the first one?
+
+  I think it's in the headings returned from the API:
+
+    X-WP-Total: 4
+    X-WP-TotalPages: 1
+
+  If `TotalPages` is 1, there's nothing more to get.
+
+  Getting at those is going to entail using [elm-http-extra](http://package.elm-lang.org/packages/lukewestby/elm-http-extra/5.2.0/Http-Extra#Response)
+
+  Alternatively, you try and get the next page, and it it returns an empty
+  list, we have reached the end.
+
 - Now I can't add an `onScroll` handler to the element that is scrolling in
   the page because that is the `<main>` element which is created behind the
   scenes by `elm-mdl` and it adds its own event handlers to it, but doesn't

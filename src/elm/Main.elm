@@ -75,6 +75,7 @@ type alias Model =
     , page : Page
     , navbar : Navbar.State
     , cols : Int
+    , scrollInfo : Scrolling.Info
     }
 
 
@@ -116,6 +117,7 @@ model navbarState =
     , page = Loading BlogList
     , navbar = navbarState
     , cols = 1
+    , scrollInfo = Scrolling.noInfo
     }
 
 
@@ -362,14 +364,18 @@ update msg model =
             in
                 { model | cols = cardColumns size } ! []
 
-        Scroll { scrollHeight, scrollTop, offsetHeight } ->
-            if
-                (scrollHeight - scrollTop - card.height <= offsetHeight)
-                    && not model.earlierRequested
-            then
-                { model | earlierRequested = True } ! [ fetchEarlier model ]
-            else
-                model ! [ Cmd.none ]
+        Scroll ({ scrollHeight, scrollTop, offsetHeight } as info) ->
+            let
+                newModel =
+                    { model | scrollInfo = info }
+            in
+                if
+                    (scrollHeight - scrollTop - card.height <= offsetHeight)
+                        && not model.earlierRequested
+                then
+                    { newModel | earlierRequested = True } ! [ fetchEarlier model ]
+                else
+                    newModel ! [ Cmd.none ]
 
         NavbarMsg state ->
             { model | navbar = state } ! []

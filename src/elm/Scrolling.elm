@@ -18,6 +18,10 @@ type alias Info =
     }
 
 
+noInfo =
+    Info 0 0 0
+
+
 infoDecoder =
     map3 Info
         (at [ "target", "scrollHeight" ] int)

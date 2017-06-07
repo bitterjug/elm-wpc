@@ -20,7 +20,7 @@ To Do
   and next as part of the update. Either we set them there or we just check for
   them there. That seems wasteful to calculate the neighbours twice.
 
-- [ ] Now when rendering a blog, if the previous link isn't available, we should
+- [x] Now when rendering a blog, if the previous link isn't available, we should
   kick off a request for the next page of entries, and when those arrive we should
   redraw and recalculate whether the previous is available
 
@@ -131,7 +131,7 @@ To Do
   This is kinda working: the more button gets displayed and you can click on it
   to trigger a fetch. But:
 
-  - The action isn't yet triggered by a scroll event
+  - [ ] The action isn't yet triggered by a scroll event
 
   - The `PostList Later` branch of `update` does a `scrollToEntry` to position
     the selected entry in the right place, which has the effect of zipping us
@@ -152,12 +152,30 @@ To Do
   is the first one after that button. So maybe we should in this case do
   `scrollToEntry` to refocus that one?
 
-  [ ] The proper handling of this case is actually more subtle because once we
-  have scrolled off the single entry we ought to change the route.  But in a
-  three column layout, we have no way of knowing what entry is being looked at.
-  In a sense maybe we should lose the query parameter and return to '#blog'
-  because although there is an expanded card, its no being looked at any more.
+  - [ ] The proper handling of this case is actually more subtle because once
+    we have scrolled off the single entry we ought to change the route.  But in
+    a three column layout, we have no way of knowing what entry is being looked
+    at.  In a sense maybe we should lose the query parameter and return to
+    '#blog' because although there is an expanded card, its no being looked at
+    any more.
 
+  I wonder if there is a more general solution?
+  
+  - When we are scrolling up the page we do want to scroll to somewhere to
+    prevent the jitter of inserting new entries above the current scroll
+    position.
+
+  - And when I'm filling in the predecessors of a single page entry, my intent
+    is similar: I want to keep the current item on the screen. But maybe
+    what I want to do is scroll not to the entry but to a new offsett
+    that keeps the top fo the screen in the same place. So if we can know what
+    the current scroll offset is, and we can get the amoutn of vertical space
+    introduced by the incoming items, we coulid try and scroll to there.
+    But it starts not from the current card as defined by the model but 
+    by the current scroll position which we're not currently keeping 
+    in the model -- but we ought to according to TEA.
+
+    So what if we store the current scroll info in the model?
 
 - [ ] Now we appear to have a bug where you can scroll quick down past the last
   `card-height` pixels and arrive at the bottom without being spotted by an

@@ -464,7 +464,7 @@ view model =
             [ id "main"
             , Scrolling.onScroll Scroll
             ]
-            [ header model
+            [ header model.navbar
             , div
                 [ class "main-column"
                 , style [ ( "width", cardColWidth model.cols ) ]
@@ -487,15 +487,15 @@ moreButton role label loading =
         [ a [ onClick <| Fetch role ] [ text label ] ]
 
 
-header : Model -> Html Msg
-header model =
+header : Navbar.State -> Html Msg
+header navbar =
     Navbar.config NavbarMsg
         |> Navbar.fixTop
         |> Navbar.attrs [ class "header-row" ]
         |> Navbar.brand
             [ href <| toUrl BlogList ]
             [ img [ src "images/bjlogo.png" ] [ text "Bitterjug.com" ] ]
-        |> Navbar.view model.navbar
+        |> Navbar.view navbar
 
 
 subs : Model -> Sub Msg

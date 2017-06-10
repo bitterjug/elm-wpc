@@ -133,6 +133,9 @@ To Do
 
   - [ ] The action isn't yet triggered by a scroll event
 
+    On a scroll message, if the offset is zero (is it reduntant to say "and if
+    we're scrolling upwarsd?) we trigger the command to fetch earlier.
+
   - The `PostList Later` branch of `update` does a `scrollToEntry` to position
     the selected entry in the right place, which has the effect of zipping us
     back to the focussed item rather than letting us scroll up. 
@@ -176,6 +179,16 @@ To Do
     in the model -- but we ought to according to TEA.
 
     So what if we store the current scroll info in the model?
+
+    Then we can use it if the load is triggered by a click. IF the load is 
+    triggered by a scroll event, we actually have the current scroll top.
+    
+    When loading a new url, and backfilling earlier etnries, we dont know what
+    the scroll offset and height are. But since no scrolling has happened yet,
+    `scrollTop` is 0.
+
+    `scrollToEntry` tries to calculate the hight of a given item in the stack
+    after scrolling.
 
 - [ ] Now we appear to have a bug where you can scroll quick down past the last
   `card-height` pixels and arrive at the bottom without being spotted by an

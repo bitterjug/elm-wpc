@@ -201,6 +201,7 @@ To Do
   of the tools entry shown (both expanded). So it looks like the date parsing
   still isn't working properly for some set of dates.
 
+- [ ] Check how we handle an invalid slug in url
 
   [ ] Interestingly the variable column version of this is going to create some
   interesting maths for this because sometimes the number of cards arriving

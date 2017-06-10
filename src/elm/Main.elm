@@ -16,6 +16,7 @@ import Entry
         ( Entry
         , Entries
         , Slug
+        , entryList
         )
 import Html exposing (..)
 import Html.Attributes
@@ -422,43 +423,23 @@ cardColWidth cols =
 view : Model -> Html Msg
 view model =
     let
-        entryList slugM =
-            model.entries
-                |> Array.map (Entry.viewEntry (Show << Blog) slugM)
-                |> Array.toList
-                |> div [ class "entry-list-container" ]
-
         content =
             case model.page of
                 EntryList ->
-                    entryList Nothing
+                    Nothing
+                        |> entryList (Show << Blog) model.entries
 
                 SingleEntry index ->
-                    -- TODO if slugM is Nothing, we should be saying something different here?
-                    -- should we have fetched the right entry by slug? At what point
-                    -- do we decide that the slug is invalid?
-                    let
-                        content =
-                            model.entries
-                                |> Array.get index
-                                |> Maybe.map .slug
-                                |> entryList
-                    in
-                        content
+                    model.entries
+                        |> Array.get index
+                        |> Maybe.map .slug
+                        |> entryList (Show << Blog) model.entries
 
                 Loading route ->
-                    let
-                        content =
-                            div [] [ text "Loading..." ]
-                    in
-                        content
+                    div [] [ text "Loading..." ]
 
                 NotFound ->
-                    let
-                        content =
-                            div [] [ text "404 not found" ]
-                    in
-                        content
+                    div [] [ text "404 not found" ]
     in
         div
             [ id "main"

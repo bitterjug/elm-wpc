@@ -127,6 +127,14 @@ viewEntry msg slug entry =
             |> Card.view
 
 
+entryList : (Slug -> msg) -> Entries -> Maybe Slug -> Html msg
+entryList msg entries slug =
+    entries
+        |> Array.map (viewEntry msg slug)
+        |> Array.toList
+        |> div [ class "entry-list-container" ]
+
+
 formatDate : Date.Date -> Html msg
 formatDate =
     toUtcFormattedString "d MMMM y, HH:mm" >> text

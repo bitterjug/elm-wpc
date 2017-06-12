@@ -190,11 +190,19 @@ To Do
     `scrollToEntry` tries to calculate the hight of a given item in the stack
     after scrolling.
 
-- [ ] Now we appear to have a bug where you can scroll quick down past the last
-  `card-height` pixels and arrive at the bottom without being spotted by an
-  `onScroll` event, and then it doesn't scroll. Not sure how to approach that
-  as I need the target of the `onScroll` event to get the scroll top from. So
-  its not so easy to get it with, say, a timer.
+- [ ] There's probably an error case arising from the fact that when we decide
+  whether to fetch earlier (or later) we only check whether **some** later
+  batch is currently being fetched. But instead we need to check if the batch
+  we're about to fetch is being fetched. I think it's the reason for the bug
+  below. 
+
+  It is here to sort of de-bounce the requests. Since when scrolling down (earlier) we might have several scroll positions where the condition to fetch more is satisfied so if we did a very small scroll within that region we would try and 
+
+  - [ ] Now we appear to have a bug where you can scroll quick down past the
+    last `card-height` pixels and arrive at the bottom without being spotted by
+    an `onScroll` event, and then it doesn't scroll. Not sure how to approach
+    that as I need the target of the `onScroll` event to get the scroll top
+    from. So its not so easy to get it with, say, a timer.
 
 - [ ] Here's another interesting looking bug: if you click an entry (like
   'tools' on April 9th) and then reload the resulting url, there are 2 copies

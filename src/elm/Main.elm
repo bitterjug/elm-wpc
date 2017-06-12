@@ -369,14 +369,20 @@ update msg model =
             let
                 newModel =
                     { model | scrollInfo = info }
-            in
-                if
+
+                earlierNeeded =
                     (scrollHeight - scrollTop - card.height <= offsetHeight)
                         && not model.earlierRequested
-                then
+
+                laterNeeded =
+                    (scrollTop == 0) && not model.laterRequested
+            in
+                if earlierNeeded then
                     { newModel | earlierRequested = True } ! [ fetchEarlier model ]
+                else if laterNeeded then
+                    { newModel | laterRequested = True } ! [ fetchLater model ]
                 else
-                    newModel ! [ Cmd.none ]
+                    newModel ! []
 
         NavbarMsg state ->
             { model | navbar = state } ! []

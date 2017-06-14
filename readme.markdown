@@ -33,9 +33,6 @@ To Do
 
 - [x] Create separate module for Wordpress REST API
 
-- we're going to need to get at the response headers which means we'll need
-  expectStringResponse and the only way to set that up is apparently to 
-  build a custom request
 
 - [x]  We may chose to use
    [HttpBuilder](http://package.elm-lang.org/packages/lukewestby/elm-http-builder/5.0.0/HttpBuilder)
@@ -125,27 +122,27 @@ To Do
      additional previous entries will account for and then ask to scroll to
      that amount. 
 
-- [ ] WIP: Do the same for Fetch Later as we have done for Fetch Earlier and make
+- [x]: Do the same for Fetch Later as we have done for Fetch Earlier and make
   upward scrolling work.
 
   This is kinda working: the more button gets displayed and you can click on it
   to trigger a fetch. But:
 
-  - [ ] The action isn't yet triggered by a scroll event
+  - [x] The action isn't yet triggered by a scroll event
 
     On a scroll message, if the offset is zero (is it reduntant to say "and if
     we're scrolling upwarsd?) we trigger the command to fetch earlier.
 
-  - The `PostList Later` branch of `update` does a `scrollToEntry` to position
-    the selected entry in the right place, which has the effect of zipping us
-    back to the focussed item rather than letting us scroll up. 
+- [ ] The `PostList Later` branch of `update` does a `scrollToEntry` to
+  position the selected entry in the right place, which has the effect of
+  zipping us back to the focussed item rather than letting us scroll up. 
 
   Now this is correct behaviour when we're viewing a single item and we just
   fetched the single page of entries that precede it: we didn't get triggered
   by a scroll event, or a click on he button, we were triggered automatically
   because only one entry was fetched and we need its neighbours to have a
   proper up to date display. Because rebuilding the page with entries above
-  changes the layout and the result is that the focussed entry effectively 
+  changes the layout and the result is that the focussed entry effectively
   moves down the page, so we need to move to it.  
 
   But its not the right behaviour when we were triggered by a scroll event (or
@@ -190,13 +187,113 @@ To Do
     `scrollToEntry` tries to calculate the hight of a given item in the stack
     after scrolling.
 
-- [ ] There's probably an error case arising from the fact that when we decide
+- [ ] The more button, and scroll activation both happen whether or not we are
+  at the start of the list. 
+
+  To detect the start of the list we need to access Wordpress headers.
+  Specifically:
+
+    X-WP-Total: 528
+    X-WP-TotalPages: 53
+
+  - To access these the http request must have a custom expect built on top of
+    `exopectStringResponse`:
+
+       expectStringResponse
+           :  (Response String -> Result String a)
+               -> Expect a
+
+    Then, when we have constructed a function: `Response String -> Result String a`
+    we can use it to make an expect and add it to the reponse using `withExpect`
+    in http-builder.
+
+    For reference the response looks like this:
+
+        type alias Response String = 
+            { url : String
+            , status : { code : Int, message : String }
+            , headers : Dict String String
+            , body : String
+            }
+
+    - body is JSON -- decode as before:
+
+
+    - headers is a dict from strings to strings; get the total number out with
+      dictionary lookup.  This gives `Maybe String`, for the `Nothing` case,
+      either use a default (say zero, as we don't expect Wordpress to give us
+      no header) or an error. Default is simplest:
+
+        Dict.get "X-WP-Total" header |> Maybe.withDefault 0
+
+      - [ ] Do proper error handling for this and return an error in the
+        `Result`
+
+    Say the function is
+
+        type alias Payload = (Entries, Int)
+
+        expectEntriesAndTotal : (Response String -> Result String Payload)
+        expectEntriesAndTotal response = 
+          let
+            total = 
+              Dict.get "X-WP-Total" response.header 
+              |> Maybe.withDefault 0
+
+            decodeEntries =
+              Entry.decodeEntry
+                  |> Decode.list
+                  -- |> Decode.map (List.reverse >> Array.fromList)
+                  |> Decode.map Array.fromList
+
+            entryResult =
+              Json.Decode.decodeString decodeEntries response.body
+            
+          in
+            case entryResult of 
+              Ok entires -> 
+                Ok (entries, total)
+
+              err -> 
+                err
+
+    Then we say something like:
+
+        get postUrl
+            |> withQueryParams [ ( "before", (toUtcIsoString date) ) ]
+            |> withExpect (expectStringResponse expectEntriesAndTotal)
+            |> send message
+
+  But unlike just pulling out all the entries in the list, we want some
+  additional information now: whether we are at the end or not. So the expected
+  type parameter isn't `Expect Entries` (where `Entries` is an array of
+  `Entry`) but something like `Expect (Entries, Bool)` or `(Entries, Int)`
+  where the Int is total number of entries in the current query. I the total
+  number of entries is equal to the size of the entry array, we're at the end.
+
+  - [ ] So the handler for the incoming data is going to have to change to
+    handle the total entries count as well as the entries itself. For which
+    there must be somewhere to store it. Do we want the total numner of entries
+    or just inforation about whether there are any more before the earliest or
+    after the latest in the current view?
+
+    Perhaps we subtract the number in the array from the total number of
+    entries, and store it along witht the direction (earlier or later) as the
+    number remaining. Then we can show the more button only if that number
+    is greater than zero. (and optionally show some feedback on how many 
+    are remaining).
+  
+
+ -[ ] There's probably an error case arising from the fact that when we decide
   whether to fetch earlier (or later) we only check whether **some** later
   batch is currently being fetched. But instead we need to check if the batch
   we're about to fetch is being fetched. I think it's the reason for the bug
   below. 
 
-  It is here to sort of de-bounce the requests. Since when scrolling down (earlier) we might have several scroll positions where the condition to fetch more is satisfied so if we did a very small scroll within that region we would try and 
+  It is here to sort of de-bounce the requests. Since when scrolling down
+  (earlier) we might have several scroll positions where the condition to fetch
+  more is satisfied so if we did a very small scroll within that region we
+  would try and 
 
   - [ ] Now we appear to have a bug where you can scroll quick down past the
     last `card-height` pixels and arrive at the bottom without being spotted by
@@ -268,29 +365,16 @@ To Do
 
 - [ ] Clicking on an open card should maybe close it -- return to the list view?
 
-- [ ] Should scrolling off an open entry also close it?
+- [ ]  We're not using the WP API native paging, so we don't actually care how
+  many pages there are.  Instead we're taking page-sized chunks earlier than a
+  given date.  What would it mean to switch to using internal paging? Would
+  that help at all?
 
-- [ ] Going straight to the url of a single page view needs to scroll us to the
-relevant entry otherwise we cant see it.
-
-- [ ] use continuous scroll
+- [ ] Show feedback on how many entries are remaining when scrolling?
 
 - [ ] We need a way to trigger fetching more entries when navigating the list
   view. Ideally that would be triggered by scrolling. 
   
-  - [x] Have to look into infinite scroll.
-
-  In fact the whole thing could work like this and we can:
-
-- [x] get rid of those pesky prev and next arrows. Which means we don't need to
-  always be showing the header bar!
-
-- [ ] Do we need a way to know if we've reached the actual beginning or end of the 
-  list of entries so as to avoid repeatedly requesting the next page at the end?
-
-  The response headers give us that information, or maybe just getting back
-  fewer than the expected page number.
-
 - [x] Add classes or ids on summary cards in list view to help testing
 
   - When we get a location we are going to parse the slug out of it.  Then the

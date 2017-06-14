@@ -284,11 +284,16 @@ To Do
     are remaining).
   
 
+- [ ] Do we even need `getPostList`? Isn't it the same as 
+
+    `getEarlier <curent date>`?
+
+  Uh! But to get the current date we need to run a task.
+
  -[ ] There's probably an error case arising from the fact that when we decide
-  whether to fetch earlier (or later) we only check whether **some** later
-  batch is currently being fetched. But instead we need to check if the batch
-  we're about to fetch is being fetched. I think it's the reason for the bug
-  below. 
+ whether to fetch earlier (or later) we only check whether **some** later batch
+ is currently being fetched. But instead we need to check if the batch we're
+ about to fetch is being fetched. I think it's the reason for the bug below. 
 
   It is here to sort of de-bounce the requests. Since when scrolling down
   (earlier) we might have several scroll positions where the condition to fetch

@@ -102,7 +102,7 @@ type Role
 
 type Msg
     = Noop
-    | PostList Role (Result Http.Error Entries)
+    | PostList Role (Result Http.Error WP.Payload)
     | Show Route
     | NavbarMsg Navbar.State
     | Resize Window.Size
@@ -176,12 +176,19 @@ toUrl route =
                 "404"
 
 
+
+-- TODO:Can we do away with fetchList an use earlier instead with the current date?
+-- TODO: make this return a payload
+
+
 fetchList : Model -> Cmd Msg
 fetchList model =
     case model.page of
         EntryList ->
             if Array.length model.entries < 10 then
-                WP.getPostList (PostList List) 1
+                -- WIP: what was the logic of this?
+                -- why less than 10? Wy not = 0?
+                WP.getPostList (PostList List)
             else
                 Cmd.none
 
@@ -254,12 +261,12 @@ update msg model =
         Noop ->
             model ! []
 
-        PostList Current (Ok entries) ->
+        PostList Current (Ok payload) ->
             let
                 newPage =
                     case model.page of
                         Loading (Blog slug) ->
-                            entries
+                            payload.entries
                                 |> Array.get 0
                                 |> filter (.slug >> (==) slug)
                                 |> Maybe.map (always <| SingleEntry 0)
@@ -270,47 +277,47 @@ update msg model =
 
                 newModel =
                     { model
-                        | entries = entries
+                        | entries = payload.entries
                         , page = newPage
                     }
             in
                 newModel
                     ! [ fetchForSingleEntry newModel ]
 
-        PostList Later (Ok entries) ->
+        PostList Later (Ok payload) ->
             let
                 ( newPage, cmd ) =
                     case model.page of
                         SingleEntry index ->
-                            SingleEntry (index + Array.length entries)
-                                ! [ scrollToEntry model (index + Array.length entries) ]
+                            SingleEntry (index + Array.length payload.entries)
+                                ! [ scrollToEntry model (index + Array.length payload.entries) ]
 
                         _ ->
                             model.page ! []
 
                 newModel =
                     { model
-                        | entries = Array.append entries model.entries
+                        | entries = Array.append payload.entries model.entries
                         , laterRequested = False
                         , page = newPage
                     }
             in
                 newModel ! [ cmd ]
 
-        PostList Earlier (Ok entries) ->
+        PostList Earlier (Ok payload) ->
             { model
-                | entries = Array.append model.entries entries
+                | entries = Array.append model.entries payload.entries
                 , earlierRequested = False
             }
                 ! []
 
-        PostList List (Ok entries) ->
+        PostList List (Ok payload) ->
             let
                 newModel =
                     { model
                       -- always replace the current batch with this group
                       -- is that the best thing to do ?
-                        | entries = entries
+                        | entries = payload.entries
                         , page =
                             if model.page == Loading BlogList then
                                 EntryList

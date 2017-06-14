@@ -4,11 +4,13 @@ module WordpressRestApi
         , getEarlierEntries
         , getLaterEntries
         , getEntry
+        , Payload
         )
 
 import Array exposing (Array)
 import Date exposing (Date)
 import Date.Extra exposing (toUtcIsoString)
+import Dict
 import Entry exposing (Entry, Slug, Entries)
 import Http
 import HttpBuilder exposing (..)
@@ -23,52 +25,84 @@ postUrl =
     baseUrl ++ "/posts"
 
 
-expectEntries : Http.Expect Entries
-expectEntries =
+type alias Payload =
+    { total : Int
+    , entries : Entries
+    }
+
+
+type alias Preprocessor =
+    List Entry -> List Entry
+
+
+{-| Entry list to Array decoder with preprocessing
+ (decodeEntries id) preserves order
+ (decodeEntries List.reverse) reverses it
+-}
+decodeEntries : Preprocessor -> Decoder Entries
+decodeEntries preprocessList =
     Entry.decodeEntry
         |> Decode.list
-        |> Decode.map Array.fromList
-        >> Http.expectJson
+        |> Decode.map (preprocessList >> Array.fromList)
 
 
-expectReverseEntries : Http.Expect Entries
-expectReverseEntries =
-    Entry.decodeEntry
-        |> Decode.list
-        |> Decode.map (List.reverse >> Array.fromList)
-        >> Http.expectJson
+expectEntriesAndTotal : Preprocessor -> Http.Response String -> Result String Payload
+expectEntriesAndTotal preprocessList response =
+    let
+        total =
+            Dict.get "X-WP-Total" response.headers
+                |> Maybe.map String.toInt
+                |> Maybe.andThen (Result.toMaybe)
+                |> Maybe.withDefault 0
+
+        entryResult =
+            Decode.decodeString (decodeEntries preprocessList) response.body
+    in
+        Result.map (Payload total) entryResult
 
 
-getPostList : (Result Http.Error Entries -> a) -> Int -> Cmd a
-getPostList message page =
+getPostList : (Result Http.Error Payload -> a) -> Cmd a
+getPostList message =
     get postUrl
-        |> withQueryParams [ ( "page", toString page ) ]
-        |> withExpect expectEntries
+        |> withExpect
+            (Http.expectStringResponse
+                (expectEntriesAndTotal List.reverse)
+            )
         |> send message
 
 
-getEarlierEntries : (Result Http.Error Entries -> a) -> Date.Date -> Cmd a
+getEarlierEntries : (Result Http.Error Payload -> a) -> Date.Date -> Cmd a
 getEarlierEntries message date =
     get postUrl
-        |> withQueryParams [ ( "before", (toUtcIsoString date) ) ]
-        |> withExpect expectEntries
+        |> withQueryParams
+            [ ( "before", (toUtcIsoString date) ) ]
+        |> withExpect
+            (Http.expectStringResponse
+                (expectEntriesAndTotal (\a -> a))
+            )
         |> send message
 
 
-getLaterEntries : (Result Http.Error Entries -> a) -> Date.Date -> Cmd a
+getLaterEntries : (Result Http.Error Payload -> a) -> Date.Date -> Cmd a
 getLaterEntries message date =
     get postUrl
         |> withQueryParams
             [ ( "after", (toUtcIsoString date) )
             , ( "order", "asc" )
             ]
-        |> withExpect expectReverseEntries
+        |> withExpect
+            (Http.expectStringResponse
+                (expectEntriesAndTotal List.reverse)
+            )
         |> send message
 
 
-getEntry : (Result Http.Error Entries -> a) -> Slug -> Cmd a
+getEntry : (Result Http.Error Payload -> a) -> Slug -> Cmd a
 getEntry message slug =
     get postUrl
         |> withQueryParams [ ( "slug", slug ) ]
-        |> withExpect (Http.expectJson Entry.decodeEntries)
+        |> withExpect
+            (Http.expectStringResponse
+                (expectEntriesAndTotal (\a -> a))
+            )
         |> send message

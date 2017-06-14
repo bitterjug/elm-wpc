@@ -187,7 +187,8 @@ To Do
     `scrollToEntry` tries to calculate the hight of a given item in the stack
     after scrolling.
 
-- [ ] The more button, and scroll activation both happen whether or not we are
+
+- [x] The more button, (and scroll activation) both happen whether or not we are
   at the start of the list. 
 
   To detect the start of the list we need to access Wordpress headers.
@@ -271,7 +272,7 @@ To Do
   where the Int is total number of entries in the current query. I the total
   number of entries is equal to the size of the entry array, we're at the end.
 
-  - [ ] So the handler for the incoming data is going to have to change to
+  - [x] So the handler for the incoming data is going to have to change to
     handle the total entries count as well as the entries itself. For which
     there must be somewhere to store it. Do we want the total numner of entries
     or just inforation about whether there are any more before the earliest or
@@ -283,6 +284,12 @@ To Do
     is greater than zero. (and optionally show some feedback on how many 
     are remaining).
   
+- [ ] We still fetch earlier or later when we scroll to the top or bottom
+  whether or not the button is shown. Check the moreRemaining count before
+  requesting on scroll
+
+- [ ] Refactor: move the remaining calculation into the Wp api module so it is
+  not repeated in Main.
 
 - [ ] Do we even need `getPostList`? Isn't it the same as 
 

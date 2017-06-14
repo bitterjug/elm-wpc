@@ -69,10 +69,16 @@ delta2hash prevous current =
         |> Just
 
 
+unknown =
+    -1
+
+
 type alias Model =
     { entries : Entries
     , earlierRequested : Bool
+    , earlierRemaining : Int
     , laterRequested : Bool
+    , laterRemaining : Int
     , page : Page
     , navbar : Navbar.State
     , cols : Int
@@ -114,7 +120,9 @@ model : Navbar.State -> Model
 model navbarState =
     { entries = Entry.none
     , earlierRequested = False
+    , earlierRemaining = unknown
     , laterRequested = False
+    , laterRemaining = unknown
     , page = Loading BlogList
     , navbar = navbarState
     , cols = 1
@@ -299,6 +307,7 @@ update msg model =
                     { model
                         | entries = Array.append payload.entries model.entries
                         , laterRequested = False
+                        , laterRemaining = payload.total - Array.length payload.entries
                         , page = newPage
                     }
             in
@@ -308,25 +317,34 @@ update msg model =
             { model
                 | entries = Array.append model.entries payload.entries
                 , earlierRequested = False
+                , earlierRemaining = payload.total - Array.length payload.entries
             }
                 ! []
 
+        -- This should only be used for the initial page load, so it loads the first page
+        -- Thus we can safely replace the existing entries with these (there might be timing
+        -- cases to worry about here but I don't think so) and there are no later entries
+        -- but as many later ones as the total minus the payload count
         PostList List (Ok payload) ->
             let
+                newPage =
+                    if model.page == Loading BlogList then
+                        EntryList
+                    else
+                        -- actualy, if we werent awaiting the bloglist, what are we doing here?
+                        model.page
+
                 newModel =
                     { model
-                      -- always replace the current batch with this group
-                      -- is that the best thing to do ?
                         | entries = payload.entries
-                        , page =
-                            if model.page == Loading BlogList then
-                                EntryList
-                            else
-                                model.page
+                        , earlierRemaining = payload.total - Array.length payload.entries
+                        , laterRemaining = 0
+                        , page = newPage
                     }
             in
                 newModel ! []
 
+        -- I'm not currently handling errors
         PostList _ (Err _) ->
             model ! []
 
@@ -396,13 +414,13 @@ update msg model =
 
         Fetch Earlier ->
             if model.earlierRequested then
-                model ! [ Cmd.none ]
+                model ! []
             else
                 { model | earlierRequested = True } ! [ fetchEarlier model ]
 
         Fetch Later ->
             if model.laterRequested then
-                model ! [ Cmd.none ]
+                model ! []
             else
                 { model | laterRequested = True } ! [ fetchLater model ]
 
@@ -453,6 +471,18 @@ view model =
 
                 NotFound ->
                     div [] [ text "404 not found" ]
+
+        earlierButton =
+            if model.earlierRemaining == 0 then
+                []
+            else
+                [ moreButton Earlier "Earlier" model.earlierRequested ]
+
+        laterButton =
+            if model.laterRemaining == 0 then
+                []
+            else
+                [ moreButton Later "Later" model.laterRequested ]
     in
         div
             [ id "main"
@@ -463,10 +493,10 @@ view model =
                 [ class "main-column"
                 , style [ ( "width", cardColWidth model.cols ) ]
                 ]
-                [ moreButton Later "Later" model.laterRequested
-                , content
-                , moreButton Earlier "Earlier" model.earlierRequested
-                ]
+              <|
+                laterButton
+                    ++ [ content ]
+                    ++ earlierButton
             ]
 
 

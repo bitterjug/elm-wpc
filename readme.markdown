@@ -288,7 +288,7 @@ To Do
   whether or not the button is shown. Check the moreRemaining count before
   requesting on scroll
 
-- [ ] Refactor: move the remaining calculation into the Wp api module so it is
+- [x] Refactor: move the remaining calculation into the Wp api module so it is
   not repeated in Main.
 
 - [ ] Do we even need `getPostList`? Isn't it the same as 

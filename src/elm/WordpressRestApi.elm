@@ -26,7 +26,7 @@ postUrl =
 
 
 type alias Payload =
-    { total : Int
+    { remaining : Int
     , entries : Entries
     }
 
@@ -57,8 +57,11 @@ expectEntriesAndTotal preprocessList response =
 
         entryResult =
             Decode.decodeString (decodeEntries preprocessList) response.body
+
+        buildResult entries =
+            Payload (total - Array.length entries) entries
     in
-        Result.map (Payload total) entryResult
+        Result.map buildResult entryResult
 
 
 getPostList : (Result Http.Error Payload -> a) -> Cmd a

@@ -307,7 +307,7 @@ update msg model =
                     { model
                         | entries = Array.append payload.entries model.entries
                         , laterRequested = False
-                        , laterRemaining = payload.total - Array.length payload.entries
+                        , laterRemaining = payload.remaining
                         , page = newPage
                     }
             in
@@ -317,7 +317,7 @@ update msg model =
             { model
                 | entries = Array.append model.entries payload.entries
                 , earlierRequested = False
-                , earlierRemaining = payload.total - Array.length payload.entries
+                , earlierRemaining = payload.remaining
             }
                 ! []
 
@@ -337,7 +337,7 @@ update msg model =
                 newModel =
                     { model
                         | entries = payload.entries
-                        , earlierRemaining = payload.total - Array.length payload.entries
+                        , earlierRemaining = payload.remaining
                         , laterRemaining = 0
                         , page = newPage
                     }

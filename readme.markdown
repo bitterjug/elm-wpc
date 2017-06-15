@@ -15,6 +15,21 @@ To Do
 
   Uh! But to get the current date we need to run a task.
 
+  We do this when we start the app or when we visit the top level url.  If this
+  is at start up we could request the current time as one of the commands
+  sent by `init`.
+
+  Technically, if I published a blog while I was in a session with this client, 
+  Id want the now date updated in order to include it in the main list. 
+  So when do we update the now date? On app start would miss this case.
+  Unless we had to hit reload to refresh... is that acceptable? 
+
+  If not we have to refresh it each time he main list is requested which means
+  we would want to defer the load for the content until after receiving the 
+  new current time. It's quick, sure, but there would need to be another
+  internal state where the now date was "unknown" until it arrived. 
+  Maybe we need a `Maybe Date` for `Model.now`?
+
 - [ ] The `PostList Later` branch of `update` does a `scrollToEntry` to
   position the selected entry in the right place, which has the effect of
   zipping us back to the focussed item rather than letting us scroll up. 

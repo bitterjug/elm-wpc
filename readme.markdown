@@ -284,7 +284,7 @@ To Do
     is greater than zero. (and optionally show some feedback on how many 
     are remaining).
   
-- [ ] We still fetch earlier or later when we scroll to the top or bottom
+- [x] We still fetch earlier or later when we scroll to the top or bottom
   whether or not the button is shown. Check the moreRemaining count before
   requesting on scroll
 

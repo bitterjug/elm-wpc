@@ -398,9 +398,12 @@ update msg model =
                 earlierNeeded =
                     (scrollHeight - scrollTop - card.height <= offsetHeight)
                         && not model.earlierRequested
+                        && (model.earlierRemaining > 0)
 
                 laterNeeded =
-                    (scrollTop == 0) && not model.laterRequested
+                    (scrollTop == 0)
+                        && not model.laterRequested
+                        && (model.laterRemaining > 0)
             in
                 if earlierNeeded then
                     { newModel | earlierRequested = True } ! [ fetchEarlier model ]

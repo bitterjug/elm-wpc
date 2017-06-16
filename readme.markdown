@@ -49,42 +49,28 @@ To Do
   is the first one after that button. So maybe we should in this case do
   `scrollToEntry` to refocus that one?
 
-  - [ ] The proper handling of this case is actually more subtle because once
-    we have scrolled off the single entry we ought to change the route.  But in
-    a three column layout, we have no way of knowing what entry is being looked
-    at.  In a sense maybe we should lose the query parameter and return to
-    '#blog' because although there is an expanded card, its no being looked at
-    any more.
 
   I wonder if there is a more general solution?
-  
-  - When we are scrolling up the page we do want to scroll to somewhere to
-    prevent the jitter of inserting new entries above the current scroll
-    position.
 
-  - And when I'm filling in the predecessors of a single page entry, my intent
-    is similar: I want to keep the current item on the screen. But maybe
-    what I want to do is scroll not to the entry but to a new offsett
-    that keeps the top fo the screen in the same place. So if we can know what
-    the current scroll offset is, and we can get the amoutn of vertical space
-    introduced by the incoming items, we coulid try and scroll to there.
-    But it starts not from the current card as defined by the model but 
-    by the current scroll position which we're not currently keeping 
-    in the model -- but we ought to according to TEA.
+ - If we know what the current scroll offset is, and the size of content being
+   added above. But we don't always know the current scroll top. We get it only
+   when we receive the `scrollInfo` from a scroll event. But prior to any
+   scroll event, the scrolltop is 0. And after we insert something at top it's
+   the size of that.
 
     So what if we store the current scroll info in the model?
 
-    Then we can use it if the load is triggered by a click. IF the load is 
-    triggered by a scroll event, we actually have the current scroll top.
-    
+    If the load is triggered by a scroll-up event, we actually have the current
+    scroll top.
+
     When loading a new url, and backfilling earlier etnries, we dont know what
     the scroll offset and height are. But since no scrolling has happened yet,
     `scrollTop` is 0.
 
-    `scrollToEntry` tries to calculate the hight of a given item in the stack
-    after scrolling.
 
-
+- [ ] Once we have scrolled off the single entry we ought to change the route.
+  Maybe we should lose the query parameter and return to '#blog' because
+  although there is an expanded card, its no being looked at any more.
 
 
  -[ ] There's probably an error case arising from the fact that when we decide
@@ -142,30 +128,15 @@ To Do
 - [ ] We need a way to trigger fetching more entries when navigating the list
   view. Ideally that would be triggered by scrolling. 
   
-- [x] Add classes or ids on summary cards in list view to help testing
-
-  - When we get a location we are going to parse the slug out of it.  Then the
-    Msg will be to view the corresponding page.  But, at first, we won't have
-    data for that so we will kick off a get request for it (do we need to keep
-    the slug in the model at this point, and make a note that we're awaiting
-    it?) We will be in a loading state and shoudl probably display a loading
-    message (as the page) during that state.
-
- - Then once we get the data we can store it in the array, and set the current
-   page to be the index of the corresponding page in our array.
-
- - We might get a response that says the slug can't be found in which case were
-   going to transition to a proper 404 page.
-
- - We need a way to get a route from a Location, and a Location (url) from 
-   a page.
-
+ - [ ] We might get a response that says the slug can't be found in which case
+   were going to transition to a proper 404 page.
 
 - [ ] Adding buttons to cards is going to entail giving each one an unique button id number
 
+
 Done
 ====
-
+- [x] Add classes or ids on summary cards in list view to help testing
 
 - [x] Make list entries click through to their corresponding pages
 

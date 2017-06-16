@@ -255,12 +255,11 @@ fetchLater model =
         |> Maybe.withDefault Cmd.none
 
 
-scrollToEntry : Model -> Int -> Cmd Msg
-scrollToEntry model index =
+scrollToOffset : Int -> Cmd Msg
+scrollToOffset pixelOffset =
     Task.attempt (always Noop) <|
         Scroll.toY "main" <|
-            -- TODO adjust for header, e.g. - 140
-            toFloat (card.height * index // model.cols)
+            toFloat pixelOffset
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -292,22 +291,27 @@ update msg model =
                 newModel
                     ! [ fetchForSingleEntry newModel ]
 
-        PostList Later (Ok payload) ->
+        PostList Later (Ok { remaining, entries }) ->
             let
                 ( newPage, cmd ) =
                     case model.page of
                         SingleEntry index ->
-                            SingleEntry (index + Array.length payload.entries)
-                                ! [ scrollToEntry model (index + Array.length payload.entries) ]
+                            SingleEntry (index + Array.length entries)
+                                ! [ scrollToOffset
+                                        (card.height
+                                            * (index + Array.length entries)
+                                            // model.cols
+                                        )
+                                  ]
 
                         _ ->
                             model.page ! []
 
                 newModel =
                     { model
-                        | entries = Array.append payload.entries model.entries
+                        | entries = Array.append entries model.entries
                         , laterRequested = False
-                        , laterRemaining = payload.remaining
+                        , laterRemaining = remaining
                         , page = newPage
                     }
             in
@@ -375,11 +379,14 @@ update msg model =
 
                 newModel =
                     { model | page = page }
+
+                newScrollTop =
+                    (card.height * index // newModel.cols)
             in
                 newModel
                     ! [ fetchForSingleEntry newModel
                       , fetchList newModel
-                      , scrollToEntry newModel index
+                      , scrollToOffset newScrollTop
                         --  TODO: Do this only if ther is a single entry view??
                       ]
 

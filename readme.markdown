@@ -52,20 +52,65 @@ To Do
 
   I wonder if there is a more general solution?
 
- - If we know what the current scroll offset is, and the size of content being
-   added above. But we don't always know the current scroll top. We get it only
-   when we receive the `scrollInfo` from a scroll event. But prior to any
-   scroll event, the scrolltop is 0. And after we insert something at top it's
-   the size of that.
+  - If we know what the current scroll offset is, and the size of content being
+    added above. But we don't always know the current scroll top. We get it
+    only when we receive the `scrollInfo` from a scroll event. But prior to any
+    scroll event, the `scrolltop` is 0. And after we insert something at top
+    it's the size of that.
 
-    So what if we store the current scroll info in the model?
+  -  We have the current scroll info stored in the model.  If the load is
+     triggered by a scroll-up event, we actually have the current scroll top.
+     Except before any scroll event. But if there has not been a scroll event
+     is it true that `scrollTop` is zero?
 
-    If the load is triggered by a scroll-up event, we actually have the current
-    scroll top.
+  -  When loading a new url, and backfilling earlier entries, we don't know
+     what the scroll offset and height are. But since no scrolling has happened
+     yet, `scrollTop` is 0.
 
-    When loading a new url, and backfilling earlier etnries, we dont know what
-    the scroll offset and height are. But since no scrolling has happened yet,
-    `scrollTop` is 0.
+  - So instead of `scrollToEntry` we need something like `scrollToOffset` which
+    can take the pixel height of the new content just added as a parameter.
+
+    - [x] As a first step: create `scrollToOffset` function and use it with the
+      offset calculated from the index of the currently expanded item, if there
+      is one.
+
+  - And then, in `PostList Later` we will receive the payload containing the
+    new entries, calculate he height of those entries, with another function,
+    and pass that to the scroll to offset function.
+
+  - [ ] So We need a function that takes `Array Entry` and a number of columns,
+    and can return an integer for the pixel height of displaying it in the
+    those columns. In case the contents aren't a multiple of the column number
+    it shoudl also return a padded version of the array with additional items
+    to make it up to a multiple of column count to keep the layout looking
+    okay. Since the padding items will be be rendered differently from entries
+    they shuold be of another type so we will probably need a new type for the
+    elements of this array: a union type with branches for entries and padding
+    items. Initially something like:
+
+      type DisplayEntry 
+        = AnEntry Entry
+        | Padding
+
+
+  - So then that function will look like
+
+      f : Int -> Array Entry -> (Int. Array DisplayEntry)
+      f cols entries =
+        ...
+
+  - [ ]  We need to make sure that when we prepend later items above an
+    expanded item, and then scroll to the new scroll offset, that we update the
+    `scrollTop` in scroll info in the model, incase the generated `scrollTo`
+    command doesn't trigger a `Scroll` event.
+
+- [ ] What happens when we introduce the means to navigate from viewing a
+  single expanded entry back to  viewing the list, in the vicinity of that
+  entry. Now we can be viewing the list but from the middle. Scrolling to the
+  selected item won't work because there won't be one, so we'll have to try and
+  preserve the effective offset by adding the height of the newly prepended
+  entries.  
+    
 
 
 - [ ] Once we have scrolled off the single entry we ought to change the route.

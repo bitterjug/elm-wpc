@@ -262,6 +262,11 @@ scrollToOffset pixelOffset =
             toFloat pixelOffset
 
 
+contentHeight : Int -> Entries -> Int
+contentHeight cols entries =
+    ((Array.length entries) // cols * card.height)
+
+
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
@@ -297,11 +302,9 @@ update msg model =
                     case model.page of
                         SingleEntry index ->
                             SingleEntry (index + Array.length entries)
-                                ! [ scrollToOffset
-                                        (card.height
-                                            * (index + Array.length entries)
-                                            // model.cols
-                                        )
+                                ! [ scrollToOffset <|
+                                        (contentHeight model.cols entries)
+                                            + model.scrollInfo.scrollTop
                                   ]
 
                         _ ->
@@ -507,6 +510,7 @@ view model =
                 laterButton
                     ++ [ content ]
                     ++ earlierButton
+              {- [ content ] -}
             ]
 
 

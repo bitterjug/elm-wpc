@@ -9,27 +9,6 @@ elm-live --open --pushstate --dir=src/static src/elm/Main.elm --output src/stati
 To Do
 =====
 
-- [ ] Do we even need `getPostList`? Isn't it the same as 
-
-    `getEarlier <curent date>`?
-
-  Uh! But to get the current date we need to run a task.
-
-  We do this when we start the app or when we visit the top level url.  If this
-  is at start up we could request the current time as one of the commands
-  sent by `init`.
-
-  Technically, if I published a blog while I was in a session with this client, 
-  Id want the now date updated in order to include it in the main list. 
-  So when do we update the now date? On app start would miss this case.
-  Unless we had to hit reload to refresh... is that acceptable? 
-
-  If not we have to refresh it each time he main list is requested which means
-  we would want to defer the load for the content until after receiving the 
-  new current time. It's quick, sure, but there would need to be another
-  internal state where the now date was "unknown" until it arrived. 
-  Maybe we need a `Maybe Date` for `Model.now`?
-
 - [ ] The `PostList Later` branch of `update` does a `scrollToEntry` to
   position the selected entry in the right place, which has the effect of
   zipping us back to the focussed item rather than letting us scroll up. 
@@ -78,11 +57,23 @@ To Do
     new entries, calculate he height of those entries, with another function,
     and pass that to the scroll to offset function.
 
-  - [ ] So We need a function that takes `Array Entry` and a number of columns,
+  - [x] So We need a function that takes `Array Entry` and a number of columns,
     and can return an integer for the pixel height of displaying it in the
-    those columns. In case the contents aren't a multiple of the column number
-    it shoudl also return a padded version of the array with additional items
-    to make it up to a multiple of column count to keep the layout looking
+    those columns. 
+
+      contentHeight : Int -> Array e -> Int
+      contentHeight cols entries =
+              ((Array.length entries) // cols * card.height ) + headerHeight
+    
+    And then we're going to scroll to:
+
+      scrollToOffset 
+        (contentHeight model.cols entries) 
+          + model.scrollInfo.scrollTop
+
+
+  - [ ]  In case the contents aren't a multiple of the column number we need a
+    way to make it up to a multiple of column count to keep the layout looking
     okay. Since the padding items will be be rendered differently from entries
     they shuold be of another type so we will probably need a new type for the
     elements of this array: a union type with branches for entries and padding
@@ -93,16 +84,40 @@ To Do
         | Padding
 
 
-  - So then that function will look like
+      paddToColumnWidth : List Entry -> List DisplayEntry
+      paddToColumnWidth : List Entry -> List DisplayEntry
 
-      f : Int -> Array Entry -> (Int. Array DisplayEntry)
-      f cols entries =
-        ...
 
-  - [ ]  We need to make sure that when we prepend later items above an
+  - [x]  We need to make sure that when we prepend later items above an
     expanded item, and then scroll to the new scroll offset, that we update the
-    `scrollTop` in scroll info in the model, incase the generated `scrollTo`
-    command doesn't trigger a `Scroll` event.
+    `scrollTop` in scroll info in the model, in case the generated `scrollTo`
+    command doesn't trigger a `Scroll` event. (But it appears to do it.)
+
+- If there are more to get, could we do a "content first" trick and fill in
+  some empty content to allow scrolling to continue, and issue the GET request
+  to fetch them, and replace them with real content when the content arrives?
+  Problem is we don't know how many columns are incoming
+
+- [ ] Do we even need `getPostList`? Isn't it the same as 
+
+    `getEarlier <curent date>`?
+
+  Uh! But to get the current date we need to run a task.
+
+  We do this when we start the app or when we visit the top level url.  If this
+  is at start up we could request the current time as one of the commands
+  sent by `init`.
+
+  Technically, if I published a blog while I was in a session with this client, 
+  Id want the now date updated in order to include it in the main list. 
+  So when do we update the now date? On app start would miss this case.
+  Unless we had to hit reload to refresh... is that acceptable? 
+
+  If not we have to refresh it each time he main list is requested which means
+  we would want to defer the load for the content until after receiving the 
+  new current time. It's quick, sure, but there would need to be another
+  internal state where the now date was "unknown" until it arrived. 
+  Maybe we need a `Maybe Date` for `Model.now`?
 
 - [ ] What happens when we introduce the means to navigate from viewing a
   single expanded entry back to  viewing the list, in the vicinity of that
@@ -110,8 +125,6 @@ To Do
   selected item won't work because there won't be one, so we'll have to try and
   preserve the effective offset by adding the height of the newly prepended
   entries.  
-    
-
 
 - [ ] Once we have scrolled off the single entry we ought to change the route.
   Maybe we should lose the query parameter and return to '#blog' because
@@ -139,7 +152,6 @@ To Do
 - [ ] The variable column version of this is going to create some
   interesting maths for this because sometimes the number of cards arriving
   will not be equivalent to a whole number of additional rows. 
-
 
 - [ ] Fix the layout so #main is only as big as what remains after the header
   is drawn so that the scroll bars are the right size.

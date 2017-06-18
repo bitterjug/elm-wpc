@@ -9,75 +9,12 @@ elm-live --open --pushstate --dir=src/static src/elm/Main.elm --output src/stati
 To Do
 =====
 
-- [ ] The `PostList Later` branch of `update` does a `scrollToEntry` to
-  position the selected entry in the right place, which has the effect of
-  zipping us back to the focussed item rather than letting us scroll up. 
-
-  Now this is correct behaviour when we're viewing a single item and we just
-  fetched the single page of entries that precede it: we didn't get triggered
-  by a scroll event, or a click on he button, we were triggered automatically
-  because only one entry was fetched and we need its neighbours to have a
-  proper up to date display. Because rebuilding the page with entries above
-  changes the layout and the result is that the focussed entry effectively
-  moves down the page, so we need to move to it.  
-
-  But its not the right behaviour when we were triggered by a scroll event (or
-  click on the more button). In this case we assume the user is no longer
-  looking at the current entry (although the URL/route hasn't yet been updated
-  to suggest that his is no longer the case) but at, for example, whatever item
-  is the first one after that button. So maybe we should in this case do
-  `scrollToEntry` to refocus that one?
-
-
-  I wonder if there is a more general solution?
-
-  - If we know what the current scroll offset is, and the size of content being
-    added above. But we don't always know the current scroll top. We get it
-    only when we receive the `scrollInfo` from a scroll event. But prior to any
-    scroll event, the `scrolltop` is 0. And after we insert something at top
-    it's the size of that.
-
-  -  We have the current scroll info stored in the model.  If the load is
-     triggered by a scroll-up event, we actually have the current scroll top.
-     Except before any scroll event. But if there has not been a scroll event
-     is it true that `scrollTop` is zero?
-
-  -  When loading a new url, and backfilling earlier entries, we don't know
-     what the scroll offset and height are. But since no scrolling has happened
-     yet, `scrollTop` is 0.
-
-  - So instead of `scrollToEntry` we need something like `scrollToOffset` which
-    can take the pixel height of the new content just added as a parameter.
-
-    - [x] As a first step: create `scrollToOffset` function and use it with the
-      offset calculated from the index of the currently expanded item, if there
-      is one.
-
-  - And then, in `PostList Later` we will receive the payload containing the
-    new entries, calculate he height of those entries, with another function,
-    and pass that to the scroll to offset function.
-
-  - [x] So We need a function that takes `Array Entry` and a number of columns,
-    and can return an integer for the pixel height of displaying it in the
-    those columns. 
-
-      contentHeight : Int -> Array e -> Int
-      contentHeight cols entries =
-              ((Array.length entries) // cols * card.height ) + headerHeight
-    
-    And then we're going to scroll to:
-
-      scrollToOffset 
-        (contentHeight model.cols entries) 
-          + model.scrollInfo.scrollTop
-
-
-  - [ ]  In case the contents aren't a multiple of the column number we need a
-    way to make it up to a multiple of column count to keep the layout looking
-    okay. Since the padding items will be be rendered differently from entries
-    they shuold be of another type so we will probably need a new type for the
-    elements of this array: a union type with branches for entries and padding
-    items. Initially something like:
+- [ ]  In case the contents aren't a multiple of the column number we need a
+  way to make it up to a multiple of column count to keep the layout looking
+  okay. Since the padding items will be be rendered differently from post
+  entries, they should be of another type. So we will probably need a new type
+  for the elements of this array: a union type with branches for entries and
+  padding items. Initially something like:
 
       type DisplayEntry 
         = AnEntry Entry
@@ -87,13 +24,13 @@ To Do
       paddToColumnWidth : List Entry -> List DisplayEntry
       paddToColumnWidth : List Entry -> List DisplayEntry
 
+  Put these in another module. Maybe called posts as that's what wordpress has.
 
-  - [x]  We need to make sure that when we prepend later items above an
-    expanded item, and then scroll to the new scroll offset, that we update the
-    `scrollTop` in scroll info in the model, in case the generated `scrollTo`
-    command doesn't trigger a `Scroll` event. (But it appears to do it.)
+  Change the main model to refer to an array of these.  Major refactor to separate
+  server-side posts and client side entries.??
 
-- If there are more to get, could we do a "content first" trick and fill in
+
+- [ ] If there are more to get, could we do a "content first" trick and fill in
   some empty content to allow scrolling to continue, and issue the GET request
   to fetch them, and replace them with real content when the content arrives?
   Problem is we don't know how many columns are incoming
@@ -126,6 +63,9 @@ To Do
   preserve the effective offset by adding the height of the newly prepended
   entries.  
 
+  - [ ] Clicking on an open card should maybe close it -- return to the list
+    view?
+
 - [ ] Once we have scrolled off the single entry we ought to change the route.
   Maybe we should lose the query parameter and return to '#blog' because
   although there is an expanded card, its no being looked at any more.
@@ -142,19 +82,22 @@ To Do
   would try and 
 
 
+
+- [ ] Check how we handle an invalid slug in url
+
+- [x] The variable column version of this is going to create some
+  interesting maths for this because sometimes the number of cards arriving
+  will not be equivalent to a whole number of additional rows. 
+
+  This should be handled by 
+
+- [ ] Fix the layout so #main is only as big as what remains after the header
+  is drawn so that the scroll bars are the right size.
+
 - [ ] Here's another interesting looking bug: if you click an entry (like
   'tools' on April 9th) and then reload the resulting url, there are 2 copies
   of the tools entry shown (both expanded). So it looks like the date parsing
   still isn't working properly for some set of dates.
-
-- [ ] Check how we handle an invalid slug in url
-
-- [ ] The variable column version of this is going to create some
-  interesting maths for this because sometimes the number of cards arriving
-  will not be equivalent to a whole number of additional rows. 
-
-- [ ] Fix the layout so #main is only as big as what remains after the header
-  is drawn so that the scroll bars are the right size.
 
 - [ ] looks like the timezone bug is back. When you go directly to the
   [Steps](http://localhost:8000/#blog/steps) entry, you get two copies of the
@@ -164,7 +107,7 @@ To Do
   
     "date_gmt": "2012-10-13T22:08:28",
 
-  - [ ] We appear to have a bug where you can scroll quick down past the last
+- [ ] We appear to have a bug where you can scroll quick down past the last
     `card-height` pixels and arrive at the bottom without being spotted by an
     `onScroll` event, and then it doesn't scroll. Not sure how to approach that
     aps I need the target of the `onScroll` event to get the scroll top from.
@@ -173,7 +116,6 @@ To Do
 - [ ] Tidy up all the update logic using
   [Return](http://package.elm-lang.org/packages/Fresheyeball/elm-return/6.0.3/Return)
 
-- [ ] Clicking on an open card should maybe close it -- return to the list view?
 
 - [ ]  We're not using the WP API native paging, so we don't actually care how
   many pages there are.  Instead we're taking page-sized chunks earlier than a
@@ -442,3 +384,69 @@ Done
     is greater than zero. (and optionally show some feedback on how many 
     are remaining).
   
+- [x] The `PostList Later` branch of `update` does a `scrollToEntry` to
+  position the selected entry in the right place, which has the effect of
+  zipping us back to the focussed item rather than letting us scroll up. 
+
+  Now this is correct behaviour when we're viewing a single item and we just
+  fetched the single page of entries that precede it: we didn't get triggered
+  by a scroll event, or a click on he button, we were triggered automatically
+  because only one entry was fetched and we need its neighbours to have a
+  proper up to date display. Because rebuilding the page with entries above
+  changes the layout and the result is that the focussed entry effectively
+  moves down the page, so we need to move to it.  
+
+  But its not the right behaviour when we were triggered by a scroll event (or
+  click on the more button). In this case we assume the user is no longer
+  looking at the current entry (although the URL/route hasn't yet been updated
+  to suggest that his is no longer the case) but at, for example, whatever item
+  is the first one after that button. So maybe we should in this case do
+  `scrollToEntry` to refocus that one?
+
+
+  I wonder if there is a more general solution?
+
+  - If we know what the current scroll offset is, and the size of content being
+    added above. But we don't always know the current scroll top. We get it
+    only when we receive the `scrollInfo` from a scroll event. But prior to any
+    scroll event, the `scrolltop` is 0. And after we insert something at top
+    it's the size of that.
+
+  -  We have the current scroll info stored in the model.  If the load is
+     triggered by a scroll-up event, we actually have the current scroll top.
+     Except before any scroll event. But if there has not been a scroll event
+     is it true that `scrollTop` is zero?
+
+  -  When loading a new url, and backfilling earlier entries, we don't know
+     what the scroll offset and height are. But since no scrolling has happened
+     yet, `scrollTop` is 0.
+
+  - So instead of `scrollToEntry` we need something like `scrollToOffset` which
+    can take the pixel height of the new content just added as a parameter.
+
+    - [x] As a first step: create `scrollToOffset` function and use it with the
+      offset calculated from the index of the currently expanded item, if there
+      is one.
+
+  - And then, in `PostList Later` we will receive the payload containing the
+    new entries, calculate he height of those entries, with another function,
+    and pass that to the scroll to offset function.
+
+  - [x] So We need a function that takes `Array Entry` and a number of columns,
+    and can return an integer for the pixel height of displaying it in the
+    those columns. 
+
+      contentHeight : Int -> Array e -> Int
+      contentHeight cols entries =
+              ((Array.length entries) // cols * card.height ) + headerHeight
+    
+    And then we're going to scroll to:
+
+      scrollToOffset 
+        (contentHeight model.cols entries) 
+          + model.scrollInfo.scrollTop
+
+  - [x]  We need to make sure that when we prepend later items above an
+    expanded item, and then scroll to the new scroll offset, that we update the
+    `scrollTop` in scroll info in the model, in case the generated `scrollTo`
+    command doesn't trigger a `Scroll` event. (But it appears to do it.)

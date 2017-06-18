@@ -1,9 +1,9 @@
 module WordpressRestApi
     exposing
         ( getPostList
-        , getEarlierEntries
-        , getLaterEntries
-        , getEntry
+        , getEarlierPosts
+        , getLaterPosts
+        , getPost
         , Payload
         )
 
@@ -11,7 +11,7 @@ import Array exposing (Array)
 import Date exposing (Date)
 import Date.Extra exposing (toUtcIsoString)
 import Dict
-import Entry exposing (Entry, Slug, Entries)
+import Post exposing (Post, Slug, Posts)
 import Http
 import HttpBuilder exposing (..)
 import Json.Decode as Decode exposing (Decoder)
@@ -27,27 +27,27 @@ postUrl =
 
 type alias Payload =
     { remaining : Int
-    , entries : Entries
+    , posts : Posts
     }
 
 
 type alias Preprocessor =
-    List Entry -> List Entry
+    List Post -> List Post
 
 
-{-| Entry list to Array decoder with preprocessing
- (decodeEntries id) preserves order
- (decodeEntries List.reverse) reverses it
+{-| Post list to Array decoder with preprocessing
+ (decodePosts id) preserves order
+ (decodePosts List.reverse) reverses it
 -}
-decodeEntries : Preprocessor -> Decoder Entries
-decodeEntries preprocessList =
-    Entry.decodeEntry
+decodePosts : Preprocessor -> Decoder Posts
+decodePosts preprocessList =
+    Post.decodePost
         |> Decode.list
         |> Decode.map (preprocessList >> Array.fromList)
 
 
-expectEntriesAndTotal : Preprocessor -> Http.Response String -> Result String Payload
-expectEntriesAndTotal preprocessList response =
+expectPostsAndTotal : Preprocessor -> Http.Response String -> Result String Payload
+expectPostsAndTotal preprocessList response =
     let
         total =
             Dict.get "X-WP-Total" response.headers
@@ -55,13 +55,13 @@ expectEntriesAndTotal preprocessList response =
                 |> Maybe.andThen (Result.toMaybe)
                 |> Maybe.withDefault 0
 
-        entryResult =
-            Decode.decodeString (decodeEntries preprocessList) response.body
+        postResult =
+            Decode.decodeString (decodePosts preprocessList) response.body
 
-        buildResult entries =
-            Payload (total - Array.length entries) entries
+        buildResult posts =
+            Payload (total - Array.length posts) posts
     in
-        Result.map buildResult entryResult
+        Result.map buildResult postResult
 
 
 getPostList : (Result Http.Error Payload -> a) -> Cmd a
@@ -69,25 +69,25 @@ getPostList message =
     get postUrl
         |> withExpect
             (Http.expectStringResponse
-                (expectEntriesAndTotal List.reverse)
+                (expectPostsAndTotal List.reverse)
             )
         |> send message
 
 
-getEarlierEntries : (Result Http.Error Payload -> a) -> Date.Date -> Cmd a
-getEarlierEntries message date =
+getEarlierPosts : (Result Http.Error Payload -> a) -> Date.Date -> Cmd a
+getEarlierPosts message date =
     get postUrl
         |> withQueryParams
             [ ( "before", (toUtcIsoString date) ) ]
         |> withExpect
             (Http.expectStringResponse
-                (expectEntriesAndTotal (\a -> a))
+                (expectPostsAndTotal (\a -> a))
             )
         |> send message
 
 
-getLaterEntries : (Result Http.Error Payload -> a) -> Date.Date -> Cmd a
-getLaterEntries message date =
+getLaterPosts : (Result Http.Error Payload -> a) -> Date.Date -> Cmd a
+getLaterPosts message date =
     get postUrl
         |> withQueryParams
             [ ( "after", (toUtcIsoString date) )
@@ -95,17 +95,17 @@ getLaterEntries message date =
             ]
         |> withExpect
             (Http.expectStringResponse
-                (expectEntriesAndTotal List.reverse)
+                (expectPostsAndTotal List.reverse)
             )
         |> send message
 
 
-getEntry : (Result Http.Error Payload -> a) -> Slug -> Cmd a
-getEntry message slug =
+getPost : (Result Http.Error Payload -> a) -> Slug -> Cmd a
+getPost message slug =
     get postUrl
         |> withQueryParams [ ( "slug", slug ) ]
         |> withExpect
             (Http.expectStringResponse
-                (expectEntriesAndTotal (\a -> a))
+                (expectPostsAndTotal (\a -> a))
             )
         |> send message

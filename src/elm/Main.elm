@@ -13,10 +13,14 @@ import DOM
 import Dom.Scroll as Scroll
 import Entry
     exposing
-        ( Entry
+        ( Entry(..)
         , Entries
-        , Slug
-        , entryList
+        , padCols
+        , fromPosts
+        )
+import Post
+    exposing
+        ( Slug
         )
 import Html exposing (..)
 import Html.Attributes
@@ -156,7 +160,7 @@ currentRoute model =
 
         SingleEntry index ->
             model.entries
-                |> Array.get index
+                |> Entry.getPost index
                 |> Maybe.map (Blog << .slug)
                 |> Maybe.withDefault BadUrl
 
@@ -209,49 +213,47 @@ fetchForSingleEntry model =
     case model.page of
         Loading (Blog slug) ->
             -- If we're awaiting the single page, fetch it
-            WP.getEntry (PostList Current) slug
+            WP.getPost (PostList Current) slug
 
         SingleEntry index ->
-            -- If we've got the current entry but any of the neighbours are missing, fetch those
+            -- If we've got the current post but any of the neighbours are missing, fetch those
             let
-                entry =
-                    Array.get index model.entries
+                post =
+                    Entry.getPost index model.entries
             in
                 Cmd.batch
-                    [ Array.get (index + 1) model.entries
-                        |> fetchNeighbour entry (WP.getEarlierEntries (PostList Earlier))
-                    , Array.get (index - 1) model.entries
-                        |> fetchNeighbour entry (WP.getLaterEntries (PostList Later))
+                    [ Entry.getPost (index + 1) model.entries
+                        |> fetchNeighbour post (WP.getEarlierPosts (PostList Earlier))
+                    , Entry.getPost (index - 1) model.entries
+                        |> fetchNeighbour post (WP.getLaterPosts (PostList Later))
                     ]
 
         _ ->
             Cmd.none
 
 
-fetchNeighbour : Maybe Entry -> (Date -> Cmd Msg) -> Maybe Entry -> Cmd Msg
-fetchNeighbour entry fetcher neighbour =
-    if neighbour == Nothing then
-        Maybe.map (fetcher << .date) entry
+fetchNeighbour : Maybe Post.Post -> (Date -> Cmd Msg) -> Maybe Post.Post -> Cmd Msg
+fetchNeighbour post fetcher neighbourPost =
+    if neighbourPost == Nothing then
+        Maybe.map (fetcher << .date) post
             |> Maybe.withDefault Cmd.none
     else
         Cmd.none
 
 
-fetchEarlier : Model -> Cmd Msg
-fetchEarlier model =
+fetchEarlier : Entries -> Cmd Msg
+fetchEarlier entries =
     -- returns a comand to fetch a page that preceed the entries in the model in date order
-    model.entries
-        |> Array.get (Array.length model.entries - 1)
-        |> Maybe.map (WP.getEarlierEntries (PostList Earlier) << .date)
+    Entry.lastPost entries
+        |> Maybe.map (WP.getEarlierPosts (PostList Earlier) << .date)
         |> Maybe.withDefault Cmd.none
 
 
-fetchLater : Model -> Cmd Msg
-fetchLater model =
+fetchLater : Entries -> Cmd Msg
+fetchLater entries =
     -- returns a comand to fetch a page that follow the entries in the model in date order
-    model.entries
-        |> Array.get 0
-        |> Maybe.map (WP.getLaterEntries (PostList Later) << .date)
+    Entry.firstPost entries
+        |> Maybe.map (WP.getLaterPosts (PostList Later) << .date)
         |> Maybe.withDefault Cmd.none
 
 
@@ -278,7 +280,7 @@ update msg model =
                 newPage =
                     case model.page of
                         Loading (Blog slug) ->
-                            payload.entries
+                            payload.posts
                                 |> Array.get 0
                                 |> filter (.slug >> (==) slug)
                                 |> Maybe.map (always <| SingleEntry 0)
@@ -289,21 +291,24 @@ update msg model =
 
                 newModel =
                     { model
-                        | entries = payload.entries
+                        | entries = fromPosts payload.posts
                         , page = newPage
                     }
             in
                 newModel
                     ! [ fetchForSingleEntry newModel ]
 
-        PostList Later (Ok { remaining, entries }) ->
+        PostList Later (Ok { remaining, posts }) ->
             let
+                newEntries =
+                    padCols model.cols <| fromPosts posts
+
                 ( newPage, cmd ) =
                     case model.page of
                         SingleEntry index ->
-                            SingleEntry (index + Array.length entries)
+                            SingleEntry (index + Array.length newEntries)
                                 ! [ scrollToOffset <|
-                                        (contentHeight model.cols entries)
+                                        (contentHeight model.cols newEntries)
                                             + model.scrollInfo.scrollTop
                                   ]
 
@@ -312,7 +317,7 @@ update msg model =
 
                 newModel =
                     { model
-                        | entries = Array.append entries model.entries
+                        | entries = Array.append newEntries model.entries
                         , laterRequested = False
                         , laterRemaining = remaining
                         , page = newPage
@@ -322,7 +327,10 @@ update msg model =
 
         PostList Earlier (Ok payload) ->
             { model
-                | entries = Array.append model.entries payload.entries
+                | entries =
+                    fromPosts payload.posts
+                        |> padCols model.cols
+                        |> Array.append model.entries
                 , earlierRequested = False
                 , earlierRemaining = payload.remaining
             }
@@ -343,7 +351,7 @@ update msg model =
 
                 newModel =
                     { model
-                        | entries = payload.entries
+                        | entries = padCols model.cols <| fromPosts payload.posts
                         , earlierRemaining = payload.remaining
                         , laterRemaining = 0
                         , page = newPage
@@ -416,9 +424,9 @@ update msg model =
                         && (model.laterRemaining > 0)
             in
                 if earlierNeeded then
-                    { newModel | earlierRequested = True } ! [ fetchEarlier model ]
+                    { newModel | earlierRequested = True } ! [ fetchEarlier model.entries ]
                 else if laterNeeded then
-                    { newModel | laterRequested = True } ! [ fetchLater model ]
+                    { newModel | laterRequested = True } ! [ fetchLater model.entries ]
                 else
                     newModel ! []
 
@@ -429,13 +437,13 @@ update msg model =
             if model.earlierRequested then
                 model ! []
             else
-                { model | earlierRequested = True } ! [ fetchEarlier model ]
+                { model | earlierRequested = True } ! [ fetchEarlier model.entries ]
 
         Fetch Later ->
             if model.laterRequested then
                 model ! []
             else
-                { model | laterRequested = True } ! [ fetchLater model ]
+                { model | laterRequested = True } ! [ fetchLater model.entries ]
 
         Fetch _ ->
             model ! []
@@ -471,13 +479,13 @@ view model =
             case model.page of
                 EntryList ->
                     Nothing
-                        |> entryList (Show << Blog) model.entries
+                        |> Entry.viewList (Show << Blog) model.entries
 
                 SingleEntry index ->
                     model.entries
-                        |> Array.get index
+                        |> Entry.getPost index
                         |> Maybe.map .slug
-                        |> entryList (Show << Blog) model.entries
+                        |> Entry.viewList (Show << Blog) model.entries
 
                 Loading route ->
                     div [] [ text "Loading..." ]

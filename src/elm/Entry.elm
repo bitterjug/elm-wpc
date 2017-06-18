@@ -1,32 +1,21 @@
 module Entry exposing (..)
 
 import Array exposing (Array)
-import Bootstrap.Card as Card
-import Date exposing (Date)
-import Date.Extra
-    exposing
-        ( fromIsoString
-        , toUtcFormattedString
-        )
+import Array.Extra exposing (filterMap)
+import Maybe.Extra exposing (isJust)
 import Html exposing (..)
 import Html.Attributes exposing (..)
-import Html.Events exposing (onClick)
-import Json.Decode as Decode exposing (Decoder)
-import Markdown
-import Maybe.Extra exposing (filter, unwrap)
+import Padding
+import Post
+    exposing
+        ( Post
+        , Slug
+        )
 
 
-type alias Slug =
-    String
-
-
-type alias Entry =
-    { title : String
-    , content : String
-    , excerpt : String
-    , slug : String
-    , date : Date
-    }
+type Entry
+    = Post Post
+    | Padding
 
 
 type alias Entries =
@@ -38,112 +27,73 @@ none =
     Array.empty
 
 
-decodeContent : Decoder String
-decodeContent =
-    Decode.at [ "content", "rendered" ] Decode.string
+toPost : Entry -> Maybe Post
+toPost entry =
+    case entry of
+        Post post ->
+            Just post
+
+        Padding ->
+            Nothing
 
 
-decodeDate : Decoder Date.Date
-decodeDate =
-    let
-        stringToDate =
-            fromIsoString >> Maybe.withDefault boringdDate
-
-        ensureZulu dateString =
-            if dateString |> String.endsWith "Z" then
-                dateString
-            else
-                dateString ++ "Z"
-
-        decodeGmtDate =
-            Decode.string
-                |> Decode.map (ensureZulu >> stringToDate)
-    in
-        Decode.field "date_gmt" decodeGmtDate
-
-
-decodeExcerpt : Decoder String
-decodeExcerpt =
-    Decode.at [ "excerpt", "rendered" ] Decode.string
-
-
-decodeTitle : Decoder String
-decodeTitle =
-    Decode.at [ "title", "rendered" ] Decode.string
-
-
-decodeSlug : Decoder String
-decodeSlug =
-    Decode.field "slug" Decode.string
-
-
-decodeEntry : Decoder Entry
-decodeEntry =
-    Decode.map5
-        Entry
-        decodeTitle
-        decodeContent
-        decodeExcerpt
-        decodeSlug
-        decodeDate
-
-
-decodeEntries : Decoder Entries
-decodeEntries =
-    decodeEntry
-        |> Decode.list
-        |> Decode.map Array.fromList
-
-
-loading : Entry
-loading =
-    Entry "..." "Loading..." "" "" boringdDate
-
-
-{-| If we have Just slug and it matches the entry slug then
-    render the entry details, otherwise render its summary
--}
-viewEntry : (Slug -> msg) -> Maybe Slug -> Entry -> Html msg
-viewEntry msg slug entry =
-    let
-        ( typeClass, content ) =
-            slug
-                |> filter ((==) entry.slug)
-                |> unwrap ( "entry-summary", entry.excerpt )
-                    (always ( "entry-detail", entry.content ))
-    in
-        Card.config
-            [ Card.attrs
-                [ id entry.slug
-                , class <| " entry " ++ typeClass
-                , onClick <| msg entry.slug
-                ]
-            ]
-            |> Card.block []
-                [ Card.titleH4 [] [ text entry.title ]
-                , Card.text [] [ Markdown.toHtml [] content ]
-                ]
-            |> Card.footer [] [ formatDate entry.date ]
-            |> Card.view
-
-
-entryList : (Slug -> msg) -> Entries -> Maybe Slug -> Html msg
-entryList msg entries slug =
-    entries
-        |> Array.map (viewEntry msg slug)
-        |> Array.toList
-        |> div [ class "entry-list-container" ]
-
-
-formatDate : Date.Date -> Html msg
-formatDate =
-    toUtcFormattedString "d MMMM y, HH:mm" >> text
-
-
-boringdDate =
-    Date.fromTime 0
+getPost : Int -> Entries -> Maybe Post
+getPost index entries =
+    Array.get index entries
+        |> Maybe.andThen toPost
 
 
 hasSlug : Slug -> Entry -> Bool
 hasSlug slug entry =
-    entry.slug == slug
+    case entry of
+        Post post ->
+            post.slug == slug
+
+        Padding ->
+            False
+
+
+{-| For the moment we ignore cols
+-}
+padCols : Int -> Entries -> Entries
+padCols cols entries =
+    -- TODO: padding here
+    -- Don't pad the first entry. OR the last one for that matter
+    entries
+
+
+fromPosts : Post.Posts -> Entries
+fromPosts posts =
+    Array.map Post posts
+
+
+firstPost : Entries -> Maybe Post
+firstPost entries =
+    filterMap toPost entries
+        |> Array.get 0
+
+
+lastPost : Entries -> Maybe Post
+lastPost entries =
+    let
+        posts =
+            filterMap toPost entries
+    in
+        Array.get (Array.length posts - 1) posts
+
+
+viewList : (Slug -> msg) -> Entries -> Maybe Slug -> Html msg
+viewList msg entries slug =
+    let
+        render entry =
+            case entry of
+                Post post ->
+                    Post.viewPost msg slug post
+
+                Padding ->
+                    Padding.view
+    in
+        entries
+            |> Array.map render
+            |> Array.toList
+            |> div [ class "entry-list-container" ]

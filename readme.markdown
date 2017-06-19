@@ -8,35 +8,15 @@ elm-live --open --pushstate --dir=src/static src/elm/Main.elm --output src/stati
 ```
 To Do
 =====
-
-- [x]  In case the contents aren't a multiple of the column number we need a
-  way to make it up to a multiple of column count to keep the layout looking
-  okay. Since the padding items will be be rendered differently from post
-  entries, they should be of another type. So we will probably need a new type
-  for the elements of this array: a union type with branches for entries and
-  padding items. Initially something like:
-
-      type DisplayEntry 
-        = AnEntry Entry
-        | Padding
-
-
-      paddToColumnWidth : List Entry -> List DisplayEntry
-      paddToColumnWidth : List Entry -> List DisplayEntry
-
-  Put these in another module. Maybe called posts as that's what wordpress has.
-
-  Change the main model to refer to an array of these.  Major refactor to separate
-  server-side posts and client side entries.??
-
-- [ ] Add the actual padding. Currently `Entry.padCols` is the identify function.
-Make it insert padding up to mod cols 
-
 - [ ] Set the default page size to 12 instead of 10 so divisible by 3
   
 - [ ] Possible fetch 11 or 10 on the first load of the main list so we have
   space for the spacers -- if they're cool
 
+- [ ] Make the whole earlier/later button clickable (this is a work-round for
+  the fast scrolling bug, I guess
+
+- [ ] Make larger version of the logo man artwork, with neutral background.
 
 - [ ] If there are more to get, could we do a "content first" trick and fill in
   some empty content to allow scrolling to continue, and issue the GET request
@@ -458,3 +438,27 @@ Done
     expanded item, and then scroll to the new scroll offset, that we update the
     `scrollTop` in scroll info in the model, in case the generated `scrollTo`
     command doesn't trigger a `Scroll` event. (But it appears to do it.)
+
+- [x]  In case the contents aren't a multiple of the column number we need a
+  way to make it up to a multiple of column count to keep the layout looking
+  okay. Since the padding items will be be rendered differently from post
+  entries, they should be of another type. So we will probably need a new type
+  for the elements of this array: a union type with branches for entries and
+  padding items. Initially something like:
+
+      type DisplayEntry 
+        = AnEntry Entry
+        | Padding
+
+
+      paddToColumnWidth : List Entry -> List DisplayEntry
+      paddToColumnWidth : List Entry -> List DisplayEntry
+
+  Put these in another module. Maybe called posts as that's what wordpress has.
+
+  Change the main model to refer to an array of these.  Major refactor to separate
+  server-side posts and client side entries.??
+
+- [x] Add the actual padding. Currently `Entry.padCols` is the identify function.
+Make it insert padding up to mod cols 
+

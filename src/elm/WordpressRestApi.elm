@@ -69,7 +69,8 @@ getPostList message =
     get postUrl
         |> withExpect
             (Http.expectStringResponse
-                (expectPostsAndTotal List.reverse)
+                (expectPostsAndTotal (\a -> a))
+             -- (expectPostsAndTotal List.reverse) For some reason this is no longer needed. What did I do?
             )
         |> send message
 

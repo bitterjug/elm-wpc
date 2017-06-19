@@ -83,13 +83,6 @@ decodePost =
         decodeDate
 
 
-decodePosts : Decoder Posts
-decodePosts =
-    decodePost
-        |> Decode.list
-        |> Decode.map Array.fromList
-
-
 loading : Post
 loading =
     Post "..." "Loading..." "" "" boringdDate

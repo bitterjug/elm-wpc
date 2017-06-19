@@ -7,10 +7,17 @@ import Html.Attributes exposing (..)
 
 view : Html msg
 view =
-    Card.config
-        [ Card.attrs
-            [ class "post" ]
-        ]
-        |> Card.block []
-            [ Card.titleH4 [] [ text "Padding" ] ]
-        |> Card.view
+    div [ class "padding" ]
+        [ img [ src "images/man.front.png" ] [] ]
+
+
+
+{-
+   Card.config
+       [ Card.attrs
+           [ class "entry" ]
+       ]
+       |> Card.block []
+           [ Card.titleH4 [] [ text "Padding" ] ]
+       |> Card.view
+-}

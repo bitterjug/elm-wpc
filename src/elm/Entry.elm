@@ -59,7 +59,7 @@ padCols : Int -> Entries -> Entries
 padCols cols entries =
     -- TODO: padding here
     -- Don't pad the first entry. OR the last one for that matter
-    entries
+    Array.push Padding entries
 
 
 fromPosts : Post.Posts -> Entries

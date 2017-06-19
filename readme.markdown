@@ -33,6 +33,9 @@ To Do
 Make it insert padding up to mod cols 
 
 - [ ] Set the default page size to 12 instead of 10 so divisible by 3
+  
+- [ ] Possible fetch 11 or 10 on the first load of the main list so we have
+  space for the spacers -- if they're cool
 
 
 - [ ] If there are more to get, could we do a "content first" trick and fill in

@@ -49,3 +49,10 @@ body {
     height: 140px;
     background-color: #eee;
 }
+
+.padding {
+    height: 400px;
+    margin: 10px;
+    width: 100%;
+    max-width: 532px;
+}

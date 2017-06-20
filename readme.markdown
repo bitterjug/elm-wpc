@@ -8,13 +8,20 @@ elm-live --open --pushstate --dir=src/static src/elm/Main.elm --output src/stati
 ```
 To Do
 =====
+
+- [ ] Check how we handle an invalid slug in url
+
+  This isn't a good story: We enter an infinite loop.
+
+- [-] Make the whole earlier/later button clickable (this is a work-round for
+  the fast scrolling bug, I guess. 
+  [ ]  And use the mouse click hover state whatever that is.
+
 - [ ] Set the default page size to 12 instead of 10 so divisible by 3
   
 - [ ] Possible fetch 11 or 10 on the first load of the main list so we have
   space for the spacers -- if they're cool
 
-- [ ] Make the whole earlier/later button clickable (this is a work-round for
-  the fast scrolling bug, I guess
 
 - [ ] Make larger version of the logo man artwork, with neutral background.
 
@@ -71,7 +78,6 @@ To Do
 
 
 
-- [ ] Check how we handle an invalid slug in url
 
 - [x] The variable column version of this is going to create some
   interesting maths for this because sometimes the number of cards arriving

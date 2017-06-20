@@ -275,23 +275,30 @@ update msg model =
         Noop ->
             model ! []
 
-        PostList Current (Ok payload) ->
+        PostList Current (Ok { remaining, posts }) ->
             let
                 newPage =
                     case model.page of
                         Loading (Blog slug) ->
-                            payload.posts
-                                |> Array.get 0
-                                |> filter (.slug >> (==) slug)
-                                |> Maybe.map (always <| SingleEntry 0)
-                                |> Maybe.withDefault model.page
+                            if Array.length posts == 1 then
+                                posts
+                                    |> Array.get 0
+                                    |> filter (.slug >> (==) slug)
+                                    |> Maybe.map (always <| SingleEntry 0)
+                                    |> Maybe.withDefault model.page
+                            else
+                                NotFound
 
                         _ ->
-                            model.page
+                            let
+                                _ =
+                                    Debug.log "Current post payload received but not expected: " posts
+                            in
+                                model.page
 
                 newModel =
                     { model
-                        | entries = fromPosts payload.posts
+                        | entries = fromPosts posts
                         , page = newPage
                     }
             in

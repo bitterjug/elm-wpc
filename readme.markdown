@@ -13,6 +13,8 @@ To Do
 
   This isn't a good story: We enter an infinite loop.
 
+  - [ ] Don't show the earlier and later buttons on NotFound page.
+
 - [-] Make the whole earlier/later button clickable (this is a work-round for
   the fast scrolling bug, I guess. 
   [ ]  And use the mouse click hover state whatever that is.

@@ -9,11 +9,9 @@ elm-live --open --pushstate --dir=src/static src/elm/Main.elm --output src/stati
 To Do
 =====
 
-- [ ] Check how we handle an invalid slug in url
-
-  This isn't a good story: We enter an infinite loop.
-
-  - [ ] Don't show the earlier and later buttons on NotFound page.
+- [ ] Should we show the Not Found under the bad url route or under the
+  original bad route so there is a chance to modify it?  We would need a
+  parameter to the NotFound constructor to store the route object.
 
 - [-] Make the whole earlier/later button clickable (this is a work-round for
   the fast scrolling bug, I guess. 
@@ -470,3 +468,9 @@ Done
 - [x] Add the actual padding. Currently `Entry.padCols` is the identify function.
 Make it insert padding up to mod cols 
 
+- [x] Check how we handle an invalid slug in url
+
+  This isn't a good story: We enter an infinite loop.
+  Fix with redirect if payload is empty for Current case
+
+- [x] Don't show the earlier and later buttons on NotFound page.

@@ -501,13 +501,13 @@ view model =
                     div [] [ text "404 not found" ]
 
         earlierButton =
-            if model.earlierRemaining == 0 then
+            if (model.earlierRemaining == 0) || (model.page == NotFound) then
                 []
             else
                 [ moreButton Earlier "Earlier" model.earlierRequested ]
 
         laterButton =
-            if model.laterRemaining == 0 then
+            if (model.laterRemaining == 0) || (model.page == NotFound) then
                 []
             else
                 [ moreButton Later "Later" model.laterRequested ]

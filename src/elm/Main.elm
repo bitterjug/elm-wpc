@@ -524,13 +524,14 @@ view model =
 
 moreButton : Role -> String -> Bool -> Html Msg
 moreButton role label loading =
-    div
+    a
         [ classList
             [ ( "more-button", True )
             , ( "loading", loading )
             ]
+        , onClick <| Fetch role
         ]
-        [ a [ onClick <| Fetch role ] [ text label ] ]
+        [ text label ]
 
 
 header : Navbar.State -> Html Msg

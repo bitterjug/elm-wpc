@@ -79,7 +79,8 @@ getEarlierPosts : (Result Http.Error Payload -> a) -> Date.Date -> Cmd a
 getEarlierPosts message date =
     get postUrl
         |> withQueryParams
-            [ ( "before", (toUtcIsoString date) ) ]
+            -- [ ( "before", (toUtcIsoString date) ) ]
+            [ ( "before", (Date.Extra.toIsoString date) ) ]
         |> withExpect
             (Http.expectStringResponse
                 (expectPostsAndTotal (\a -> a))
@@ -91,7 +92,8 @@ getLaterPosts : (Result Http.Error Payload -> a) -> Date.Date -> Cmd a
 getLaterPosts message date =
     get postUrl
         |> withQueryParams
-            [ ( "after", (toUtcIsoString date) )
+            -- [ ( "after", (toUtcIsoString date) )
+            [ ( "after", (Date.Extra.toIsoString date) )
             , ( "order", "asc" )
             ]
         |> withExpect

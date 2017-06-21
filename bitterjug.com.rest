@@ -20,7 +20,7 @@ http://bitterjug.localhost
 GET /wp-json/wp/v2/posts?page=1
 
 http://bitterjug.localhost
-GET /wp-json/wp/v2/posts?slug=fallout
+GET /wp-json/wp/v2/posts?slug=tools
 
 http://bitterjug.localhost
 GET /wp-json/wp/v2/posts?slug=unrecognised
@@ -35,7 +35,7 @@ http://bitterjug.localhost
 GET /wp-json/wp/v2/posts?before=2015-10-10T20:34:17
 
 http://bitterjug.localhost
-GET /wp-json/wp/v2/posts?order=asc&after=2015-10-10T20:34:17
+GET /wp-json/wp/v2/posts?order=asc&after=2012-04-09T08:12:48
 
 http://bitterjug.localhost
 GET /wp-json/wp/v2/posts?order=asc&after=2016-10-10T20:34:17

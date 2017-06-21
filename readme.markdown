@@ -81,14 +81,6 @@ To Do
   of the tools entry shown (both expanded). So it looks like the date parsing
   still isn't working properly for some set of dates.
 
-- [ ] looks like the timezone bug is back. When you go directly to the
-  [Steps](http://localhost:8000/#blog/steps) entry, you get two copies of the
-  entry. Similarly for [fallout](http://localhost:8000/#blog/fallout): The date
-  displayed on the card says 22:08, but the date in the model says 23:08.
-  The `date_gmt` returned from the API is: 
-  
-    "date_gmt": "2012-10-13T22:08:28",
-
 - [ ] We appear to have a bug where you can scroll quick down past the last
     `card-height` pixels and arrive at the bottom without being spotted by an
     `onScroll` event, and then it doesn't scroll. Not sure how to approach that
@@ -117,3 +109,14 @@ To Do
 
 Done
 ====
+
+- [ ] looks like the timezone bug is back. When you go directly to the
+  [Steps](http://localhost:8000/#blog/steps) entry, you get two copies of the
+  entry. Similarly for [fallout](http://localhost:8000/#blog/fallout): The date
+  displayed on the card says 22:08, but the date in the model says 23:08.
+  The `date_gmt` returned from the API is: 
+  
+    "date_gmt": "2012-10-13T22:08:28",
+
+  Mayb solved by using the date not date_gmt. If Wordpress is using
+  the normal date, not the  GMT date to do the comparisons in the API

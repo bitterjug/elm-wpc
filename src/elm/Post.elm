@@ -54,7 +54,8 @@ decodeDate =
             Decode.string
                 |> Decode.map (ensureZulu >> stringToDate)
     in
-        Decode.field "date_gmt" decodeGmtDate
+        -- Decode.field "date_gmt" decodeGmtDate
+        Decode.field "date" decodeGmtDate
 
 
 decodeExcerpt : Decoder String

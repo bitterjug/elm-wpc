@@ -109,7 +109,7 @@ viewPost msg slug post =
                 ]
             ]
             |> Card.block []
-                [ Card.titleH4 [] [ text post.title ]
+                [ Card.titleH4 [] [ Markdown.toHtml [] post.title ]
                 , Card.text [] [ Markdown.toHtml [] content ]
                 ]
             |> Card.footer [] [ formatDate post.date ]

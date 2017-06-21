@@ -13,10 +13,6 @@ To Do
   original bad route so there is a chance to modify it?  We would need a
   parameter to the NotFound constructor to store the route object.
 
-- [-] Make the whole earlier/later button clickable (this is a work-round for
-  the fast scrolling bug, I guess. 
-  [ ]  And use the mouse click hover state whatever that is.
-
 - [ ] Set the default page size to 12 instead of 10 so divisible by 3
   
 - [ ] Possible fetch 11 or 10 on the first load of the main list so we have
@@ -474,3 +470,8 @@ Make it insert padding up to mod cols
   Fix with redirect if payload is empty for Current case
 
 - [x] Don't show the earlier and later buttons on NotFound page.
+
+- [x] Make the whole earlier/later button clickable (this is a work-round for
+  the fast scrolling bug, I guess. 
+  [x]  And use the mouse click hover state whatever that is.
+
